@@ -1,0 +1,42 @@
+<div id="pageInfo" data-title="订单跟踪"></div>
+{set:$item = $this->order_info;}
+<div class="sub-order">
+    <div class="brief mtg_10">
+        <ul>
+            <li><span class="tit abe-gray3"><i class="iconfont mrg_10">&#xe68e;</i>订单状态：</span>
+                <span class="vi-org1">{echo:Order_Class::orderStatusText($orderStatus)}</span></li>
+            {if:$item['pay_status'] == 1 && $item['distribution_status'] == 1}
+            <li><span class="tit abe-gray3">配送公司：</span><span>{$item['freight']['freight_name']}</span></li>
+            <li><span class="tit abe-gray3">物流单号：</span><span>{$item['freight']['delivery_code']}</span></li>
+            {/if}
+        </ul>
+    </div>
+    <dl class="ord-tracking-info mtg_10">
+        {if:$this->line}
+        {foreach:items = $this->line}
+        {if:$key==0}
+
+        <dt><i class="iconfont">&#xe612;</i>{$item['station']}<br>
+            {$item['time']}
+        </dt>
+        {else:}
+        <dd>
+            <div>{$item['station']}
+            <span class="abe-block">{$item['time']}</span></div>
+        </dd>
+        {/if}
+        {/foreach}
+        {else:}
+            暂无记录
+        {/if}
+
+    </dl>
+</div>
+
+
+<script>
+	$(function(){
+        hideNav()
+	})
+
+</script>

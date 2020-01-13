@@ -1,0 +1,38 @@
+<div id="pageInfo" data-title="我的咨询"></div>
+
+{set:$queryConsultList = Api::run('getUcenterConsult',$this->user['user_id'])}
+<section class="consult_list">
+	{foreach:items = $queryConsultList->find()}
+	<div class="consult">
+		<u class="status">{if:$item['status']==1} <span onclick='show_msg(this, {echo:JSON::encode($item)} )'>查看</span>{else:}未回复{/if}</u>
+		<time>{echo:substr($item['time'],0,10)}</time>
+		<article>{$item['question']}</article>
+		<a href="{url:/site/products/id/$item[gid]}">{$item['name']}</a>
+	</div>
+	{/foreach}
+</section>
+{$queryConsultList->getPageBar()}
+<section id="show_msg" class="complain none">
+	<div class="close" onclick='$(this).parents("#show_msg").hide()'></div>
+		<strong>商家</strong> 于
+		<time id="re_time">2016年7月5日 21:46:48</time> 回复您
+		<article id="answer"></article>
+</section>
+
+
+<script type="text/javascript">
+function show_msg(_self,obj){
+   $('#show_msg').show();
+
+	//设置数据
+	obj.answer ? $('#show_msg').show() : $('#show_msg').hide();
+    for(var i in obj)
+    {
+    	$('#show_msg #'+i).text(obj[i]);
+    }
+}
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+});
+</script>

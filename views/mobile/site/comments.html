@@ -1,0 +1,130 @@
+<div id="pageInfo" data-title="{$this->goods['name']}评论"></div>
+<script type='text/javascript' src='{theme:javascript/jquery.raty.js}'></script>
+<script src='{theme:javascript/LocalResizeIMG.js}'></script>
+<script src='{theme:javascript/patch/mobileBUGFix.mini.js}'></script>
+<form method="post" id="login_form" action="{url:/site/comment_add}">
+    <input type="hidden" name="id" value="{$this->comment['id']}" />
+    <input type='hidden' name="_imgList" value="" />
+
+    <div class="appraise mtg_10">
+    <div class="are-top"> <img src="{url:/pic/thumb/img/$this->goods['img']/w/150/h/150}" alt="" class="img">
+        <textarea name="contents" datatype="*" errormsg="请填写商品评价" nullmsg="请填写商品评价"  placeholder="拿到商品的那一刻一定很激动吧？您就不想说点啥~"></textarea>
+    </div>
+    <div class="are-bottom clearfix" id="are-bottom">
+        <label for="" class="up-proimg abe-fl">
+            <input id="uploadphoto" type="file">
+            <i class="iconfont">&#xe61d;</i> <span class="abe-block">添加晒单图片</span>
+        </label>
+
+    </div>
+</div>
+<div class="star-box mtg_10 clearfix"> <span class="abe-fl abe-block">评价等级：</span>
+    <div class="abe-fl" id="star" style="width: 100%"></div>
+</div>
+<div class="pdt_20 pdl_10 pdr_10">
+    <input type="submit" value="发表评价" onclick="checkForm();" class="sub-btn">
+</div>
+</form>
+
+<script>
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+    $(".category-search").hide();
+    $.fn.raty.defaults.path = '{skin:image}';
+    $('#star').raty({
+        score: 5,
+        size : 24
+    });
+
+    $('#uploadphoto').localResizeIMG({
+        width: 400,
+        quality: 1,
+        success: function (result) {
+            var submitData={
+                base64_string:result.clearBase64,
+            };
+            $.ajax({
+                type: "POST",
+                url: "{url:simple/upload_pic}",
+                data: submitData,
+                dataType:"json",
+                success: function(data){
+                    if (0 == data.status) {
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        return false;
+                    }else{
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+
+                        var html='<div class="proimg"> ' +
+                                '<a onclick="del_img(this);" class="close iconfont">&#xe641;</a> ' +
+                                '<img width="100" height="100" alt="'+data.url+'" src="'+data.url+'" alt=""> </div> ';
+                        $("#are-bottom").append(html);
+                        //$("#order_img").val(data.url);
+                        return false;
+                    }
+                },
+                complete :function(XMLHttpRequest, textStatus){
+                },
+                error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+            });
+        }
+    });
+
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            if(data.info=="评论成功"){
+                setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+            }
+        }
+    });
+
+
+
+})
+
+function checkForm()
+{
+    //整理商品图片
+    var goodsPhoto = [];
+    $('.proimg img').each(function(){
+        goodsPhoto.push(this.alt);
+    });
+    if(goodsPhoto.length > 0)
+    {
+        $('input[name="_imgList"]').val(goodsPhoto.join(','));
+    }
+    return true;
+}
+
+    function del_img(obj){
+        $(obj).parent().remove()
+    }
+</script>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+  <title>铃贝聊吧</title>
+  <link rel="stylesheet" href="{skin:lb/jg/reset.css}" />
+  <link rel="stylesheet" href="{skin:lb/jg/index.css}" />
+
+  <script type="text/javascript" src="{skin:lb/js/jquery-1.7.1.min.js}"></script>
+
+</head>
+
+<body>
+
+
+<div class="wrap-box wrap-bg">
+  <header class="header"><a href="javascript:history.go(-1)" class="return"><i class="iconfont abe-ft18">&#xe612;</i></a>
+    <h1 class="hdtitle">用户消息</h1>
+  </header>
+
+
+<ul class="chat-list">
+{foreach:items=$cssfile}
+  <li value="{$item['username']}">
+
+    <a href="{url:jgim/room/friendid/$item['username']}">
+    <div class="img">
+        {if:$item['url'] == ''}
+        <img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+        {/if}
+        <img src="{$item['url']}" alt="">
+    </div>
+    <input type="hidden"   value="{$item['username']}">
+    <h1><span class="name">{$item['nickname']}</span>
+      <time>{$item['mtime']}</time>
+    </h1>
+    <div class="msg-info">
+      <p>测试测试</p>
+      <i class="iconfont no-like">&#xe655;</i> <i class="iconfont like">&#xe642;</i> </div>
+    </a>
+  </li>
+
+{/foreach}
+
+</ul>
+
+</div>
+</body>
+</html>

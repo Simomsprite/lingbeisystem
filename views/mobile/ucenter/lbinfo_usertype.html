@@ -1,0 +1,59 @@
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="{url:ucenter/lb_info}"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 修改用户类型 </h1>
+    </header>
+    <ul class="pub-form user-form mb7">
+
+    </ul>
+    {set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+    <form action='{url:/ucenter/info_usertype_act}' id="login_form" name='user_info' method="POST" role="form">
+        <input type="hidden" value="{$memberInfo['usertype']}" id="usertype" name="usertype">
+        <ul class="user-form-edit u-sele-form">
+            <li onclick="qv_class(this,1)" {if:$memberInfo['usertype'] == 1} class="actived" {/if}>
+                <span  onclick="qv_class(this,1)"   class="tit"  rel="1">个人</span>
+                <div class="sarrow" ></div>
+            </li>
+            <li onclick="qv_class(this,2)" {if:$memberInfo['usertype'] == 2} class="actived" {/if}>
+                <span onclick="qv_class(this,2)"  class="tit"   rel="2">公司</span>
+                <div class="sarrow" ></div>
+            </li>
+        </ul>
+        <div class="sub-box">
+            <input type="submit" value="保存" class="pub-btn vpink-btn">
+        </div>
+    </form>
+</div>
+<script type="application/javascript">
+    hideNav();
+    //表单回填
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+
+
+    function qv_class(obj,value){
+        $(".user-form-edit li").removeClass("actived");
+        $(obj).addClass("actived");
+        $("#usertype").val(value)
+    }
+
+</script>

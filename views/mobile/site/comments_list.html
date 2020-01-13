@@ -1,0 +1,24 @@
+{set:$commentList = $this->commentQuery->find();}
+<div id="pageInfo" data-title="评论详情"></div>
+{if:$commentList}
+<section class="comments_list">
+    <ul>
+        {foreach:items=$commentList key=$key item=$item}
+        <li>
+            <strong>{$item['username']}说：</strong><span>{$item['contents']}</span><br>
+            <strong>评价星级：</strong><em class="star star_{$item['point']}"></em>
+        </li>
+        {/foreach}
+    </ul>
+</section>
+{$this->commentQuery->getPageBar()}
+{else:}
+<section class="nodata">当前没有评价信息~</section>
+{/if}
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+    $(".category-search").hide();
+})
+</script>

@@ -1,0 +1,93 @@
+{set:$queryWithdrawList = Api::run('getWithdrawList',$this->user['user_id'])}
+{set:$items = $queryWithdrawList->find()}
+<div id="pageInfo" data-title="申请提现"></div>
+<section class="my_account">
+    <strong>帐户余额</strong>
+    <em>￥{$this->memberRow['balance']}</em>
+</section>
+<section class="us_tab">
+    <ul>
+        <li class="on">申请提现</li>
+        <li>提现记录</li>
+    </ul>
+</section>
+<form action="{url:/ucenter/withdraw_act}" method="POST" class="form-inline form" role="form">
+<section class="uc_con">
+    <div class="uc_con_box">
+        <section class="login input_li">
+            <ul>
+                <li>
+                    <input type="text" name='name' class="input_text" placeholder="收款人姓名" pattern='required' initmsg="" alt="请输入收款人姓名">
+                </li>
+                <li>
+                    <input type="text" name='amount' class="input_text" placeholder="提现金额" pattern='float' initmsg="" alt="请输入提现金额">
+                </li>
+                <li>
+                    <input type="text" name='note' class="input_text" placeholder="备注信息" pattern='required' initmsg="" alt="请输入备注信息">
+                </li>
+            </ul>
+        </section>
+		<input id="goSubmit" type="submit" class="none">
+		<footer id="viewport_bottom">
+			<div class="btn_bottom">
+				<div class="btn_tab">
+					<label class="btn_tab_submit blue" for="goSubmit">确认提现</label>
+				</div>
+			</div>
+		</footer>
+    </div>
+    <div class="uc_con_box none">
+        {if:$items}
+        <div class="withdraw_list">
+            {foreach:items = $items}
+            <div class="withdraw_box">
+                <div class="base">
+                    <time>{echo:substr($item['time'],0,10)}</time>
+                    <i class="{if:$item['status'] == -1}bg_red{elseif:$item['status'] == 2}bg_green{else:}bg_blue{/if}">{echo:AccountLog::getWithdrawStatus($item['status'])}</i>
+                    <strong>提现金额：</strong>
+                    <em>￥{$item['amount']}元</em>
+                </div>
+                <div class="note">
+                    <strong>我的备注：</strong><span>{$item['note']}</span>
+                </div>
+                {if:$item['re_note']}
+                <div class="note">
+                    <strong>管理员备注：</strong><span>{$item['re_note']}</span>
+                </div>
+                {/if}
+                {if:$item['status']==0}
+                <div class="btn btn_s btn_fa" onclick="delModel({link:'{url:/ucenter/withdraw_del/id/$item[id]}'});">
+                    取消
+                </div>
+                {/if}
+            </div>
+            {/foreach}
+        </div>
+        {$queryWithdrawList->getPageBar()}
+        {else:}
+        <section class="nodata">暂时没有提现记录</section>
+        {/if}
+    </div>
+</section>
+</form>
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+    // 简易选项卡切换JS
+    var $tab = $(".us_tab");
+    var $con = $(".uc_con"),
+        $conBox = $con.children('.uc_con_box');
+    $tab.on('click', 'li',function(){
+        var t = $(this),i = t.index();
+        t.addClass('on').siblings('li').removeClass('on');
+        $conBox.eq(i).removeClass('none').siblings('.uc_con_box').addClass('none');
+		if (i === 1) {
+			$('.btn_bottom').addClass('none');
+		} else {
+			$('.btn_bottom').removeClass('none');
+		}
+    });
+})
+</script>

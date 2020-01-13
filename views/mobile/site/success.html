@@ -1,0 +1,91 @@
+{set:$callback = plugin::trigger('getCallback')}
+<script src='{skin:lb/js/Validform_v5.3.2.js}'></script>
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"></div>
+        <h1 class="title"> 操作成功 </h1>
+    </header>
+
+<div class="operation-hint">
+    <div class="hint-icon">
+        {if:IReq::get('message')=="恭喜，您的账号激活成功，请去App登录！"}
+        <img src="{skin:lb/images/icon/img72.png}" alt="">
+        {else:}<img src="{skin:lb/images/icon/img95.png}" alt="">
+        {/if}
+    </div>
+    <span class="hint-title">
+        {echo:IReq::get('message') ? IFilter::act(IReq::get('message'),'text') : '操作成功！'}
+        <form action='{url:/simple/reg_act_email}' id="login_form" method='post'>
+        <input type="hidden" id="username" name="username" value="{echo:IReq::get('username')}"/>
+            <input type="hidden" id="message"  value="{echo:IReq::get('message')}"/>
+            <input type="submit" id="sub" class="pub-btn hgbtn hpbtn" value="点击此处重新发送激活链接"  /></form>
+    </span>
+    <div class="blank20"></div>
+    <div class="faq">
+        <a href="{url:/site/index}" class="pub-btn pb-bd2">网站首页</a>
+    </div>
+</div>
+
+<script>
+{if:$callback}
+$('#pageInfo').attr('data-goback','{url:$callback}');
+{/if}
+    $(function(){
+         //hideNav();
+        $(".category-search").hide();
+        //checkbox选中样式
+
+        //checkbox选中样式
+        $(".checkhl2").click(function(){
+            if($(this).hasClass("mn-checked")){
+                $(this).removeClass("mn-checked")
+            }else{
+                $(this).addClass("mn-checked");
+            }
+        });
+
+        $(".checkhl").click(function(){
+            $(".checkhl").removeClass("mn-checked")
+            $(this).addClass("mn-checked");
+        });
+        
+        let message=$("#message").val();
+        if (message=="恭喜，您的账号激活成功，请去App登录！"){
+            $("#sub").prop('style','display:none')
+        }
+
+
+        $("#login_form").Validform({
+            tiptype:function(msg){
+                console.log(1111);
+                layer.open({
+                    content: msg
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+            },
+            tipSweep:true,
+            ajaxPost:true,
+            callback:function(data){
+                console.log(2222);
+                if(data.info == "注册成功,请去您的邮箱点击激活链接激活账号"){
+                    layer.open({
+                        content: '发送成功'
+                        ,skin: 'msg'
+                        ,time: 10 //2秒后自动关闭
+                    });
+                    //1秒后执行
+                }else{
+                    console.log(3333)
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        });
+
+    });
+</script>

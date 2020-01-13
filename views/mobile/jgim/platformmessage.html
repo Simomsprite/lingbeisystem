@@ -1,0 +1,72 @@
+
+	<div class="wrap-box wrap-nav">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 用户消息 </h1>
+		</header>
+		<div class="filter filter-user-mesg mb5">
+
+			{if:$mlist["type"] === '1'}
+			<a href="{url:jgim/friendlist}" class="actived"><i class="iconfont">&#xe603;</i>用户消息</a>
+			<a href="{url:jgim/platformmessage}"><i class="iconfont">&#xe608;</i>平台信息
+				<?php if($mlist["unreadplatformmessagenum"]!=0){ ?><em>{$mlist["unreadplatformmessagenum"]}</em><?php } ?>
+			</a>
+			{elseif:$mlist["type"] === '2'}
+			<a href="{url:jgim/friendlist}"><i class="iconfont">&#xe603;</i>用户消息</a>
+			<a href="{url:jgim/platformmessage}" class="actived"><i class="iconfont">&#xe608;</i>平台信息
+				<?php if($mlist["unreadplatformmessagenum"]!=0){ ?><em>{$mlist["unreadplatformmessagenum"]}</em><?php } ?>
+			</a>
+			{/if}
+
+		</div>
+
+
+
+		{if:$mlist["type"] === '1'}
+		<ul class="chat-list">
+			{foreach:items=$mlist["cssfile"]}
+			<li value="{$item['username']}">
+
+				<a href="{url:jgim/room/fusername/$item['username']}">
+					<div class="img">
+						{if:$item['url'] == ''}
+						<img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+						{/if}
+						<img src="{$item['url']}" alt="">
+					</div>
+					<input type="hidden"   value="{$item['username']}">
+					<h1><span class="name">{$item['nickname']}</span>
+						<time>{$item['mtime']}</time>
+					</h1>
+					<div class="msg-info">
+						<p>测试测试</p>
+						<i class="iconfont no-like">&#xe655;</i> <i class="iconfont like">&#xe642;</i> </div>
+				</a>
+			</li>
+
+			{/foreach}
+
+		</ul>
+
+		<!--类型为2的时候显示平台消息-->
+		{elseif:$mlist["type"] === '2'}
+		<dl class="plat-mesg">
+
+			{foreach:items=$mlist["platformmessagelist"]}
+
+			<dt><time>{$item['create_time']}</time></dt>
+			<dd>
+				<a href="{url:jgim/readplatformmessage/messageid/$item['id']}" class="abk">
+					<h1>{$item['title']}</h1>
+					<div class="pm-info">
+						<div class="imgbox"><img src="{$item['image']}" alt=""></div>
+						<p>{$item['content']}</p>
+					</div>
+				</a>
+			</dd>
+			{/foreach}
+
+		</dl>
+		{/if}
+	</div>

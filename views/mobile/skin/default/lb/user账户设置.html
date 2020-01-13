@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>FUI</title>
+<link type="text/css" rel="stylesheet" href="style/reset.css">
+<link type="text/css" rel="stylesheet" href="style/index.css">
+<link type="text/css" rel="stylesheet" href="style/swiper.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+</head>
+
+<body>
+	<div class="wrap-box">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 账户设置 </h1>
+		</header>	
+		<!--头部导航结束-->
+		<ul class="pub-form user-form mb7">
+			<li class="uhead-set">
+				<div class="imgbox"><img src="images/uhead.jpg" alt=""></div>
+				<h1 class="uname">五哥好帅</h1>
+				<div class="ft12 vi-gray2"><span class="pr10">公司<em class="space2">|</em>五哥真帅公司</span><span>建国武</span></div>
+			</li>
+		</ul>	
+		<ul class="pub-form user-form mb7">
+			<li>
+				<a href="#" class="txtbox abk" id="uhead-set">
+					<span class="tit">修改头像</span>
+					<div class="info"></div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+		</ul>		
+		<ul class="pub-form user-form mb7">
+			<li>
+				<a href="#" class="txtbox abk">
+					<span class="tit">手机号</span>
+					<div class="info"></div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+			<li>
+				<a href="#" class="txtbox abk">
+					<span class="tit">微信号</span>
+					<div class="info tr vi-gray2">帅逼五哥</div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+			<li>
+				<a href="#" class="txtbox abk">
+					<span class="tit">邮箱绑定</span>
+					<div class="info tr vi-gray2">wugehaoshuai@vip.com</div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+		</ul>
+		<ul class="pub-form user-form mb7">
+			<li>
+				<a href="#" class="txtbox abk">
+					<span class="tit">常用地</span>
+					<div class="info"></div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+			<li>
+				<a href="收货地址.html" class="txtbox abk">
+					<span class="tit">常用收发货地址</span>
+					<div class="info"></div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+		</ul>
+		<div class="uhead-set-pop">
+			<ul>
+				<li><a href="#" class="abk vi-red">从手机相册选择</a><input type="file"></li>
+				<li><a href="#" class="abk">拍照</a></li>
+			</ul>
+			<ul>
+				<li><a href="#" class="abk" id="cancel">取消</a></li>
+			</ul>
+		</div>
+		<div class="pop-up-bg uhead-set-bg" style="display:none"></div>
+		<script>
+		$(function(){
+			$("#uhead-set").click(function(){
+			   $(".uhead-set-pop").animate({bottom:'0'},350);
+			   $(".uhead-set-bg").show();	
+			});
+			$("#cancel,.uhead-set-bg").click(function(){
+			   $(".uhead-set-pop").animate({bottom:'-100%'},350);
+			   $(".uhead-set-bg").hide();	
+			});
+		});
+		</script>
+	</div>
+</body>
+</html>

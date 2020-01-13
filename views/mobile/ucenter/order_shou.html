@@ -1,0 +1,90 @@
+<div id="pageInfo" data-title="待发货订单"></div>
+
+<div class="order-box">
+    <div class="od-tab">
+        <a href="{url:ucenter/order}" class="">全部</a>
+        <a href="{url:ucenter/order_nopay}">待付款</a>
+        <a href="{url:ucenter/order_pay}" class="">待发货</a>
+        <a href="{url:ucenter/order_shou}" class="active">待收货</a>
+        <a href="{url:ucenter/evaluation}">待评价</a>
+    </div>
+
+    {set:$user_id = $this->user['user_id']}
+    {set:$queryOrderList = Api::run('getOrderListShou',$user_id)}
+    {set:$orderList = $queryOrderList->find()}
+    {if:$orderList}
+    {foreach:items = $orderList}
+    <dl class="cart-list order-list">
+        <dt>
+
+            <span class="abe-fl" onclick="gourl('{url:/ucenter/order_detail/id/$item[id]}');">{$item['order_no']}</span>
+            <a href="{url:/ucenter/order_detail/id/$item[id]}" class="abe-fr vi-org2">
+                {echo:Order_Class::orderStatusText(Order_Class::getOrderStatus($item))}
+            </a> </dt>
+
+        {set:$order_id=$item['id']}
+        {foreach:items=Api::run('getOrderGoodsListByGoodsid',array('#order_id#',$order_id)) item=$good}
+        {set:$good_info = JSON::decode($good['goods_array'])}
+
+        <dd>
+            <div class="item">
+                <img src="{url:/pic/thumb/img/$good[img]/w/100/h/100}" alt="" width="100" class="img">
+                <h1 class="pro-name">
+                    <a href="{url:/ucenter/order_detail/id/$item[id]}">
+                        {if:$good['goods_type'] == 1}
+                        <i class="tags" style="background: #ff0000">OTC</i>
+                        {elseif:$good['goods_type'] == 2}
+                        <i class="tags" style="background: #00602e">OTC</i>
+                        {elseif:$good['goods_type'] == 3}
+                        <i class="tags" style="background: #cc1717">RX</i>
+                        {/if}
+                        {$good_info['name']}</a>
+                </h1>
+                <div class="price">￥{$good['goods_price']} <em>x{$good['goods_nums']}</em></div>
+
+            </div>
+        </dd>
+
+        {/foreach}
+
+
+
+            <dt class="tot-up">
+            <div class="abe-txtr" style="font-size: 12px;">
+            {$item['create_time']}　　
+            总计：
+            <em class="vi-org2 abe-ft15 abe-space" style="padding: 0px;font-size: 12px;">￥{$item['order_amount']}</em>
+            </div>
+
+        <div class="abe-txtr">
+
+        {set:$orderStatus = Order_Class::getOrderStatus($item)}
+        {if:in_array($orderStatus,array(1,2))}
+            <a href="javascript:delModel({link:'{url:/ucenter/order_status/order_id/$item[id]/op/cancel}',msg:'你确定要取消订单？'})" class="pub-btn pb-bd2">取消订单</a>
+        {/if}
+        {if:$orderStatus == 2}
+            <a href="javascript:gourl('{url:/block/doPay/order_id/$item[id]}');" class="pub-btn">立即付款</a>
+        {/if}
+        {if:in_array($orderStatus,array(11,3))}
+            <a href="javascript:gourl('{url:/ucenter/order_status/order_id/$item[id]/op/confirm}');" class="pub-btn">确认收货</a>
+        {/if}
+        </div>
+
+         </dt>
+    </dl>
+    {/foreach}
+
+    {$queryOrderList->getPageBar()}
+
+    {else:}
+    <div class="nodata">当前暂无数据</div>
+    {/if}
+
+
+
+</div>
+<script>
+$(function(){
+	hideNav()
+})
+</script>

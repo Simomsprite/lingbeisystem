@@ -1,0 +1,630 @@
+{js:artTemplate}
+{js:areaSelect}
+<script type='text/javascript' src='{theme:javascript/orderFormClass.js}'></script>
+<script src='{theme:javascript/LocalResizeIMG.js}'></script>
+<script src='{theme:javascript/patch/mobileBUGFix.mini.js}'></script>
+
+<script type='text/javascript'>
+//创建订单表单实例
+orderFormInstance = new orderFormClass();
+
+//DOM加载完毕
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+    //商家信息
+    orderFormInstance.seller = {echo:JSON::encode($this->seller)};
+
+    //商品价格
+    orderFormInstance.goodsSum = "{$this->final_sum}";
+
+    //配送方式初始化
+    orderFormInstance.deliveryInit(1);
+ //   orderFormInstance.deliveryInit("{$this->custom['delivery']}");
+
+    //收货地址数据
+    orderFormInstance.addressInit();
+
+    //支付方式
+    {if:$this->is_prescription == 1}
+        orderFormInstance.paymentInit("{$this->custom['payment']}");
+    {else:}
+        orderFormInstance.paymentInit2();
+    {/if}
+
+    //免运费
+    orderFormInstance.freeFreight = {echo:JSON::encode($this->freeFreight)};
+});
+</script>
+
+<style>
+    .pay-list .sty-sele label{
+        cursor: pointer;
+    }
+
+
+</style>
+<div id="pageInfo" data-title="确认订单"></div>
+{if:$this->is_prescription == 2}
+<form action='{url:/simple/cart3}' class="form" method='post' name='order_form' onsubmit='return orderFormInstance.isSubmit2()'>
+{else:}
+<form action='{url:/simple/cart3}' class="form" method='post' name='order_form' onsubmit='return orderFormInstance.isSubmit()'>
+{/if}
+    <input type='hidden' name='direct_gid' value='{$this->gid}' />
+    <input type='hidden' name='direct_type' value='{$this->type}' />
+    <input type='hidden' name='direct_num' value='{$this->num}' />
+    <input type='hidden' name='direct_promo' value='{$this->promo}' />
+    <input type='hidden' name='direct_active_id' value='{$this->active_id}' />
+    <input type='hidden' name='order_img' id="order_img" value='' />
+<div class="sub-order">
+    {if:$this->addressList}
+    <div class="sele-address sele-addresshl" id="sele_address">
+        {foreach:items=$this->addressList}
+        {if:$key==0}
+        <input style="display: none" name="radio_address" type="radio" value="{$item['id']}"
+               onclick="orderFormInstance.getDelivery({$item['province']});"/>
+        <i class="iconfont vi-org1">&#xe612;</i>
+        <a href="javascript:void(0);" class="abe-block" id="sele-address">
+            <div class="abe-ft14"><span class="name">{$item['accept_name']}</span>
+                <span class="number pdl_30">{$item['mobile']}</span></div>
+            <p class="abe-gray3">
+                <em class="vi-org1">[默认]</em>
+                {$item['province_val']} {$item['city_val']} {$item['area_val']} {$item['address']}
+            </p>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+        {/if}
+        {/foreach}
+
+    </div>
+
+    {else:}
+    <div class="sele-address" id="sele_address"  onclick="orderFormInstance.addressAdd();">
+        <i class="iconfont vi-org1">&#xe612;</i>
+        <a href="javascript:void(0);" class="abe-block" >
+        <div class="abe-ft14"><span class="name">添加收货地址</span></div>
+        <div class="arrow iconfont">&#xe603;</div>
+    </a> </div>
+    {/if}
+
+    {if:$this->is_prescription == 2}
+    <div class="prescription mtg_10">
+        <div class="clearfix pdb_5"><span class="tit abe-fl abe-ft14">
+      		处方信息
+      	</span>
+            <label for="" class="up-chufang abe-fr" >
+                <div id="prescription_div"></div>
+                <input type="file" id="uploadphoto">
+                <i class="iconfont">&#xe61d;</i>
+            </label>
+        </div>
+        <p class="vi-org2">注： 处方药订单预定成功后将由专业药师进行审核，上传处方可缩短审核时间（仅限1张）</p>
+    </div>
+
+    {/if}
+
+
+    <!--收货地址项模板-->
+    <script type='text/html' id='addressLiTemplate'>
+        <input name="radio_address" style="display: none" type="radio" value="<%=item['id']%>"
+               onclick="orderFormInstance.getDelivery(<%=item['province']%>);" />
+        <i class="iconfont vi-org1">&#xe612;</i>
+        <a href="javascript:void(0);" class="abe-block" id="sele-address">
+            <div class="abe-ft14"><span class="name"><%=item['accept_name']%></span>
+                <span class="number pdl_30"><%=item['mobile']%></span></div>
+            <p class="abe-gray3">
+                <em class="vi-org1">[默认]</em>
+                <%=item['province_val']%> <%=item['city_val']%> <%=item['area_val']%> <%=item['address']%>
+            </p>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </script>
+
+
+
+    <dl class="cart-list order-list">
+        <dt> <span class="abe-fl">来益旗舰店</span> </dt>
+        {foreach:items = $this->goodsList}
+        <dd>
+            <div class="item">
+                <img src="{url:/pic/thumb/img/$item[img]/w/100/h/100}" alt="" width="100" class="img">
+                <h1 class="pro-name">
+                        {if:$item['goods_type'] == 1}
+                        <i class="tags" style="background: #ff0000">OTC</i>
+                        {elseif:$item['goods_type'] == 2}
+                        <i class="tags" style="background: #00602e">OTC</i>
+                        {elseif:$item['goods_type'] == 3}
+                        <i class="tags" style="background: #cc1717">RX</i>
+                        {/if}
+                        {$item['name']}
+                        {if:isset($item['spec_array'])}
+                        {set:$spec_array=Block::show_spec($item['spec_array']);}
+                        <div class="tip">
+                            {foreach:items=$spec_array item=$specValue key=$specName}
+                            <!-- {$specName}： -->
+                            <span>{$specValue}</span>
+                            {/foreach}
+                        </div>
+                        {/if}
+                </h1>
+                <div class="price">￥{echo:number_format($item['sum'],2)} <em>x{$item['count']}</em></div>
+            </div>
+            <h10 class="disnone" style="display: none" id="deliveryFeeBox_{$item['goods_id']}_{$item['product_id']}_{$item['count']}"></h10>
+
+        </dd>
+
+        {/foreach}
+        <dd class="clt-bnd"></dd>
+    </dl>
+    <!--选择支付方式等-->
+    <ul class="mode-style" id="deliveryShow">
+    </ul>
+
+    <!--配送信息-->
+    <!--配送信息-->
+    <script type='text/html' id='deliveryTemplate'>
+        <li>
+            <div class="tit">配送服务</div>
+            <div class="item">
+                <div>运费：￥<%=item['price']%></div>
+                <%if(item['protect_price'] > 0){%>
+                <div>保价：￥<%=item['protect_price']%></div>
+                <%}%>
+
+                <p class="abe-ft12 abe-gray3">快递将由来益健康网合作方送达</p>
+            </div>
+        </li>
+    </script>
+
+
+
+    <ul class="mode-style mtg_10">
+        <li>
+            <a href="javascript:void(0);" class="abe-block" id="sele-pay">
+            <div class="tit">支付配送</div>
+            <div class="item">
+                <div class="payment_show">选择支付方式</div>
+                <p class="abe-ft12 abe-gray3 payment_show" id="">选择支付方式</p>
+            </div>
+            {if:$this->is_prescription == 1}
+            <div class="arrow iconfont">&#xe603;</div>
+            {/if}
+        </a> </li>
+        <li><a href="javascrpit:void(0);" class="abe-block" id="sele-invoice">
+            <input type="hidden" id="tax_title" name="tax_title">
+            <div class="tit">发票信息</div>
+            <div class="item">
+                <div id="fapiao_html1">不开发票</div>
+                <p class="abe-ft12 abe-gray3" id="fapiao_html2"></p>
+            </div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a> </li>
+    </ul>
+
+    <ul class="mode-style mtg_10">
+        <li><a href="javascript:void(0);" class="abe-block" id="sele-coupons">
+            <div class="tit">优惠券</div>
+            <div class="item">
+                {if:$this->pro_num >0}
+                <div class="abe-gray3" id="ticketShow_html">可用<em class="vi-org2 abe-space">{$this->pro_num}</em>张优惠券</div>
+                {else:}
+                <div class="abe-gray3" id="ticketShow_html">暂无可用优惠券</div>
+                {/if}
+            </div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a> </li>
+        <li>
+            <input type="text"  class="txt-area" name="message" placeholder="选填给客服留言（100字以内）">
+        </li>
+    </ul>
+
+
+    <ul class="amount-money mtg_10">
+        <li><span class="tit abe-fl">商品金额</span><span class="vi-org2 abe-ft16 abe-fr">￥{echo:number_format($this->final_sum,2)}</span></li>
+        <li style="display: none"><span class="tit abe-fl" >税金</span><span class="vi-org2 abe-ft16 abe-fr">￥<span id="tax_fee">0.00</span></span></li>
+        <li><span class="tit abe-fl">优惠券</span><span class="vi-org2 abe-ft16 abe-fr">￥<span name="ticket_value">0.00</span></span></li>
+        <li><span class="tit abe-fl">运费</span><span class="vi-org2 abe-ft16 abe-fr">￥<span id="delivery_fee_show">0.00</span></span></li>
+        <li style="display: none"><span class="tit abe-fl" >保价</span><span class="vi-org2 abe-ft16 abe-fr">￥<span id="protect_price_value">0.00</span></span></li>
+        <li style="display: none"><span class="tit abe-fl" >支付手续费</span><span class="vi-org2 abe-ft16 abe-fr">￥<span id="payment_value">0.00</span></span></li>
+    </ul>
+    <div class="blank10"></div>
+</div>
+
+<div class="shop-menu">
+    <div class="combined-style2">
+        <div>应付金额：<em class="vi-org1">¥ <span id="final_sum">{$this->final_sum}</span></em></div>
+    </div>
+    <input type="submit" class="combined-btn" value="确认订单">
+</div>
+
+
+
+<div class="order-pop address-pop">
+    <header class="abe-header am-header-default">
+        <a href="javascript:void(0);" class="return returnhl"><i class="iconfont">&#xe611;</i></a>
+        <h1 class="abe-header-title"> 选择收货地址 </h1>
+    </header>
+    <ul class="sele-ad-list">
+        {foreach:items=$this->addressList}
+        <li class="{if:$item['is_default'] == 1} active {/if}" id="addressItem{$item['id']}">
+            <i class="iconfont vi-org1">&#xe615;</i>
+            <a href="javascript:orderFormInstance.addressDefault({$item['id']});" class="abe-block">
+            <div class="abe-ft14">
+                <span class="name">{$item['accept_name']}</span>
+                <span class="number pdl_30">{$item['mobile']}</span>
+            </div>
+            <p class="abe-gray3">
+                {if:$item['is_default'] == 1}
+                <em class="vi-org1">[默认]</em>
+                {/if}
+                {$item['province_val']} {$item['city_val']} {$item['area_val']} {$item['address']}
+            </p>
+            </a>
+            <div class="edit">
+                <a href="javascript:orderFormInstance.addressEdit({$item['id']});" class="iconfont">&#xe709;</a>
+                <a href="javascript:orderFormInstance.addressDel({$item['id']});" class="iconfont">&#xe627;</a>
+            </div>
+        </li>
+        {/foreach}
+
+    </ul>
+    <input type="button" onclick="orderFormInstance.addressAdd();" class="opfoot-btn" id="add-city" value="添加新地址">
+</div>
+
+
+
+
+<div class="order-pop pay-pop">
+    <header class="abe-header am-header-default">
+        <a href="javascript:void(0);" class="return returnhl"><i class="iconfont">&#xe611;</i></a>
+        <h1 class="abe-header-title"> 选择支付配送方式 </h1>
+    </header>
+    <div class="pay-list-box">
+        <dl class="pay-list">
+            <dt class="clearfix"><span class="abe-fl"><i class="iconfont">&#xe66c;</i>支付方式</span></dt>
+            {if:$this->is_prescription == 1}
+            <dd class="sty-sele" id="pay_ul">
+                {foreach:items = Api::run('getPaymentList')}
+                {if:$item['id']>0}
+                {set:$paymentPrice = CountSum::getGoodsPaymentPrice($item['id'],$this->sum);}
+                <label id="payment_html{$item['id']}" class="payment_class">
+                    <input name="payment" alt="{$paymentPrice}"  style="display:none"  type="radio" value="{$item['id']}"
+                           onclick='orderFormInstance.paymentSelected({$item['id']});' title="{$item['name']}" />
+                    {$item['name']}
+                </label>
+                {/if}
+                {/foreach}
+           {else:}
+                {foreach:items = Api::run('getPaymentList')}
+                {if:$item['id']==0}
+                {set:$paymentPrice = CountSum::getGoodsPaymentPrice($item['id'],$this->sum);}
+                <label id="payment_html{$item['id']}" class="payment_class">
+                    <input name="payment" alt="{$paymentPrice}"  style="display:none"  type="radio" value="{$item['id']}"
+                           onclick='orderFormInstance.paymentSelected({$item['id']});' title="{$item['name']}" />
+                    {$item['name']}
+                </label>
+                {/if}
+                {/foreach}
+
+           {/if}
+
+
+            </dd>
+        </dl>
+        <dl class="pay-list">
+            <dt class="clearfix"><span class="abe-fl"><i class="iconfont">&#xe616;</i>配送方式</span></dt>
+            <dd class="sty-sele bd1">
+                {foreach:items = Api::run('getDeliveryList')}
+                {if:$item['id'] !=2}
+                <label id="delivery_html{$item['id']}" class="delivery_class">
+                    <input title="{$item['name']}" style="display:none" type="radio" name="delivery_id" value="{$item['id']}" paytype="{$item['type']}"
+                           onclick='orderFormInstance.deliverySelected({$item['id']});' />
+                    {$item['name']}
+                </label>
+                {/if}
+                {/foreach}
+            </dd>
+            <dd class="abe-gray3">快递将由来益健康网合作方送达</dd>
+        </dl>
+    </div>
+    <input type="button" onclick="ps_button();" class="opfoot-btn" value="确认">
+
+</div>
+
+
+
+<div class="order-pop invoice-pop">
+    <input class="radio" name="taxes" style="display: none" type="checkbox" value="{$this->goodsTax}" />
+    <header class="abe-header am-header-default">
+        <a href="javascript:void(0);" class="return returnhl"><i class="iconfont">&#xe611;</i></a>
+        <h1 class="abe-header-title"> 发票信息 </h1>
+    </header>
+    <div class="pay-list-box">
+        <dl class="pay-list">
+            <dt class="clearfix"><span class="abe-fl"><i class="iconfont">&#xe64c;</i>选择发票</span></dt>
+            <dd class="sty-sele" id="hl_fapiao">
+                <a rel="1" href="javascript:void(0);" class="active">普通发票</a>
+                <a rel="0" href="javascript:void(0);" class="">不开发票</a>
+            </dd>
+        </dl>
+        <dl class="pay-list" id="fapiaotaitou">
+            <dt class="clearfix bd1"><span class="abe-fl">发票抬头</span></dt>
+            <dd class="mtg_10 abe-ft14">
+                <div class="top" id="hl_tt">
+                    <span class="pdr_20"><label rel="1" class="fapiaocheck mrg_10 mn-checked"> <i class="iconfont">&#xe6ab;</i></label>个人</span>
+                    <span class="pdr_20"><label rel="2" class="fapiaocheck mrg_10"> <i class="iconfont">&#xe6ab;</i></label>单位</span>
+                </div>
+                <div class="bottom mtg_10">
+                    <span>抬头</span><em class="abe-space">|</em>
+                    <input type="text" id="tt_tax" class="intxt" placeholder="请输入抬头名">
+                </div>
+            </dd>
+        </dl>
+        <!--<dl class="pay-list">-->
+            <!--<dt class="clearfix bd1"><span class="abe-fl">发票内容</span></dt>-->
+            <!--<dd class="mtg_10 abe-ft14">-->
+                <!--<div class="top">-->
+                    <!--<span class="pdr_20"><label class="check mrg_10 mn-checked"> <i class="iconfont">&#xe6ab;</i></label>明细</span>-->
+                <!--</div>-->
+
+            <!--</dd>-->
+        <!--</dl>-->
+    </div>
+
+    <input type="button" onclick="tax_button();" class="opfoot-btn" value="确认">
+
+</div>
+
+
+
+
+<div class="order-pop coupons-pop">
+    <header class="abe-header am-header-default">
+        <a href="javascript:void(0);" class="return returnhl"><i class="iconfont">&#xe611;</i></a>
+        <h1 class="abe-header-title"> 选择优惠券 </h1>
+    </header>
+    <ul>
+        {foreach:items=$this->pro_list}
+        <li>
+            <div class="abe-ft18 vi-org1">{$item['value']}元</div>
+            {if:$item['max_price']>0}
+            <div>订单满{$item['max_price']}元使用（不含邮费）,
+                {if:$item['goods_id']>0}
+                指定商品使用
+                {else:}
+                {echo:block::getCateInfo($item['cat_id'])}使用
+                {/if}
+            </div>
+            {else:}
+            <div>{$item['value']}元 代金券（不含邮费）,
+                {if:$item['goods_id']>0}
+                指定商品使用
+                {else:}
+                {echo:block::getCateInfo($item['cat_id'])}使用
+                {/if}
+            </div>
+            {/if}
+            <div class="abe-gray3">使用期限 {$item['start_time']} <br> {$item['end_time']} </div>
+            {if:$item['is_usable'] == 1}
+            <a href="javascript:orderFormInstance.ticketShow({$item['id']},{$item['value']})" class="pub-btn pb-nobg">使用</a>
+            {else:}
+            <a href="javascript:void(0);" class="pub-btn  pb-nobg-gray">不可用</a>
+            {/if}
+        </li>
+        {/foreach}
+    </ul>
+
+    <!--<input type="button" class="opfoot-btn" value="确认">-->
+
+</div>
+</form>
+
+
+
+<div class="order-pop address-pop2 order-pop-ch1">
+    <header class="abe-header am-header-default">
+        <a href="javascript:void(0);" class="return returnhl"><i class="iconfont">&#xe611;</i></a>
+        <h1 class="abe-header-title"> 添加收货地址 </h1>
+    </header>
+    <form action='{url:/simple/address_add_ajax}' name='edit_address' method="POST" id="edit_address">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="is_default" id="is_default" value="0" />
+        <ul class="cart-ul-info address address-edit">
+            <li><span class="tit">收货人：</span>
+                <input name="accept_name" datatype="*" nullmsg="请输入收件人" errormsg="请输入收件人"  type="text" placeholder="输入收货人姓名">
+            </li>
+            <li><span class="tit">联系方式：</span>
+                <input name="mobile" datatype="m" nullmsg="请输入手机号" errormsg="请输入正确的手机号" type="text" placeholder="输入手机号">
+            </li>
+            <li><span class="tit">所在地区：</span>
+
+                <select name="province"  datatype="*" nullmsg="请选择省" child="city,area"class="hl_select"></select>
+                <select name="city" child="area" datatype="*" nullmsg="请选择市" class="hl_select "></select>
+                <select name="area" datatype="*" nullmsg="请选择区"  class="hl_select "></select>
+
+            </li>
+            <li><span class="tit">详细地址：</span>
+                <input name="address" datatype="*" nullmsg="输入地址" errormsg="输入地址"  type="text" placeholder="输入地址">
+            </li>
+            <li class="check-add">
+                <label class="check mn-checked"> <i class="iconfont">&#xe6ab;</i></label>
+                <div><em class="abe-block pdb_5">设为默认地址</em>
+                    <p class="abe-cgray2 abe-ft12">注：每次下单时会使用该地址</p>
+                </div>
+            </li>
+        </ul>
+        <input type="submit" onclick="orderFormInstance.addressSave();" class="opfoot-btn" value="保存并使用">
+    </form>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+    $(function() {
+
+        $(".category-search").hide();
+        $(".sele-addresshl").click(function () {
+
+            $(".address-pop").animate({left: '0'}, 200);
+        });
+
+        {if:$this->is_prescription == 1}
+        $("#sele-pay").click(function(){
+            $(".pay-pop").animate({left:'0'},200);
+        });
+        {/if}
+//        $("#add-city").click(function(){
+//            $(".address-pop2").animate({left:'0'},200);
+//        });
+
+        $(".check").click(function(){
+            if($(this).hasClass("mn-checked")){
+                $("#is_default").val(0);
+                $(this).removeClass("mn-checked")
+            }else{
+                $(this).addClass("mn-checked");
+                $("#is_default").val(1);
+            }
+        });
+
+        $(".fapiaocheck").click(function(){
+            $(".fapiaocheck").removeClass("mn-checked");
+            $(this).addClass("mn-checked")
+        });
+
+        {if:$this->pro_num >0}
+        $("#sele-coupons").click(function(){
+            $(".coupons-pop").animate({left:'0'},200);
+        });
+        {/if}
+
+
+
+
+        $(".payment_class").click(function(){
+            $(".payment_class").removeClass("active");
+            $(this).addClass("active");
+        });
+
+        $("#sele-invoice").click(function(){
+            $(".invoice-pop").animate({left:'0'},200);
+        });
+
+
+        $(".delivery_class").click(function(){
+            $(".delivery_class").removeClass("active");
+            $(this).addClass("active");
+        });
+
+        $("#hl_fapiao a").click(function(){
+            $("#hl_fapiao a").removeClass("active");
+            $(this).addClass("active");
+            var rel = $(this).attr("rel");
+            realAlert(rel);
+            if(rel == 0){
+                $("#fapiaotaitou").hide();
+            }else{
+                $("#fapiaotaitou").show();
+            }
+
+        });
+
+        $(".returnhl").click(function(){
+            $(this).parents(".order-pop").animate({left:'-100%'},200);
+        });
+
+
+
+        $('#uploadphoto').localResizeIMG({
+            width: 400,
+            quality: 1,
+            success: function (result) {
+                var submitData={
+                    base64_string:result.clearBase64,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "{url:simple/upload_pic}",
+                    data: submitData,
+                    dataType:"json",
+                    success: function(data){
+                        if (0 == data.status) {
+                            layer.open({
+                                content: data.content
+                                ,skin: 'msg'
+                                ,time: 2 //2秒后自动关闭
+                            });
+                            return false;
+                        }else{
+                            layer.open({
+                                content: data.content
+                                ,skin: 'msg'
+                                ,time: 2 //2秒后自动关闭
+                            });
+                            var attstr= '<img width="60" height="60" src="/'+data.url+'">';
+                            $("#prescription_div").html(attstr);
+                            $("#order_img").val(data.url);
+                            return false;
+                        }
+                    },
+                    complete :function(XMLHttpRequest, textStatus){
+                    },
+                    error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    }
+                });
+            }
+        });
+
+
+
+    })
+
+
+    function ps_button(){
+       var title =  $("input[name='payment']:checked").attr("title");
+        $(".payment_show").html(title);
+        $(".order-pop").animate({left:'-100%'},200);
+    }
+
+    function tax_button(){
+        var is_tax = $("#hl_fapiao .active").attr("rel");
+        var fa_tt = $("#hl_tt .mn-checked").attr("rel");
+        if(is_tax == 1){
+            var tt_tax = $("#tt_tax").val();
+            if(tt_tax == ""){
+                layer.open({
+                    content: "请输入发票抬头"
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+                return false;
+            }else{
+                $("input[name='taxes']").attr("checked",true);
+                if(fa_tt == 1){
+                    var fa_tt_str = "个人";
+                }else{
+                    var fa_tt_str = "单位";
+                }
+                var msg = fa_tt_str+"-"+tt_tax;
+                $('#fapiao_html1').html(fa_tt_str);
+                $('#fapiao_html2').html(msg);
+                $('#tax_title').val(msg);
+            }
+        }else{
+            $("input[name='taxes']").attr("checked",false);
+            var msg = "不开发票"
+            $('#fapiao_html1').html(msg);
+            $('#fapiao_html2').html(msg);
+            $('#tax_title').val("");
+        }
+        orderFormInstance.doAccount();
+        $(".order-pop").animate({left:'-100%'},200);
+    }
+</script>
+
+

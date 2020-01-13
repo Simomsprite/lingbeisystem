@@ -1,0 +1,244 @@
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+        {if:$mlist['type'] === '1'}
+        <h1 class="title"> 我的货源 </h1>
+        {elseif:$mlist['type'] === '0'}
+        <h1 class="title"> 我的求购 </h1>
+        {/if}
+        <input type="hidden" id="type" value="{$mlist['type']}">
+
+    </header>
+    <!--头部导航结束-->
+
+
+    <?php if(count($mlist["mlist"])!=0){ ?>
+    <div class="inside-search">
+        <div class="head-search skin-search">
+            <div class="cs-box">
+                <!--<input type="text" class="txt" placeholder="请输入商品名，关键词或条形码" >-->
+                <input type="text" class="txt" placeholder="请输入商品名，品牌或条形码">
+                <i class="iconfont icon">&#xe60f;</i>
+                <button class="rclear iconfont hide">&#xe602;</button>
+            </div>
+            <button class="btn" onclick="search()">搜索</button>
+        </div>
+    </div>
+    <!--筛选结束-->
+
+    <div class="probox mt5">
+
+        <ul class="pro-list" id="lists">
+
+            {foreach:items=$mlist["mlist"]}
+
+            <li class="lis">
+
+                <div class="imgbox">
+                    <a href="{url:site/release_view/release_id/$item['id']}"><img
+                            src="{url:/pic/thumb/img/$item['good']['img']/w/80/h/80}" alt=""></a>
+                </div>
+
+
+                <h1 class="name">
+                    <a href="{url:site/release_view/release_id/$item['id']}">
+                        {$item["good"]["name"]}
+                    </a>
+                    <input type="hidden" id="goods_no" value="{$item['good']['goods_no']}">
+                    <input type="hidden" id="brand" value="{$item['good']['brand']}">
+                </h1>
+
+                <div class="time item pb10">发布时间：{$item["up_time"]}</div>
+
+                <div class="price pb5">
+                    <span class="ml-3">￥{$item["price"]}</span>
+                    <a href="#" class="share"><i class="iconfont">&#xe613;</i>分享</a>
+                </div>
+
+                <!--********************状态判断显示*****************-->
+                {if:$item['status'] == '0'}
+                <div class="state vi-org1"><i class="iconfont">&#xe63e;</i>待审核</div>
+                {elseif:$item['status'] == '1'}
+                <div class="state vi-gray2"><i class="iconfont">&#xe616;</i>已拒绝</div>
+                {elseif:$item['status'] == '2'}
+                {if:$item['matchingnum'] == '0'}
+                <div class="state vi-blue1"><i class="iconfont">&#xe60d;</i>撮合中</div>
+                {elseif:$item['matchingnum'] != '0'}
+                <a href="{url:ucenter/matchingdetailslist/infomationid/$item['id']}">
+                    <div class="state vi-green1"><i class="iconfont">&#xe60d;</i>已撮合({$item["matchingnum"]})</div>
+                </a>
+                {/if}
+                {elseif:$item['status'] == '3'}
+                <div class="state vi-gray2"><i class="iconfont">&#xe616;</i>已下架</div>
+                <!--********************状态判断显示*****************-->
+                {/if}
+                <div class="code item"><span>货源地:<em>{$item["areaname"]}</em></span><span class="pl10">库存:<em>{$item["number"]}</em></span>
+                </div>
+
+            </li>
+
+            {/foreach}
+            <a href="#" id="looding" onclick="looding()" class="tc abk ft14 pt10 pb20 vi-gray2">点击加载更多...</a>
+
+        </ul>
+    </div>
+
+    <div style="height: 50px">
+    </div>
+
+    <?php }else{ ?>
+    <!--没有一条发布记录的时候-->
+    <div class="operation-hint">
+        <div class="hint-icon">
+            <img src="{skin:lb/images/matchimg/unpublish.png}" alt="">
+        </div>
+
+        {if:$mlist['type'] == '1'}
+        <h1 class="hint-title">您还没有发布货源</h1>
+        <div class="hint-sub">
+            <a href="{url:ucenter/release_index}" class="pub-btn hgbtn hpbtn">发布你的第一个货源</a>
+        </div>
+
+
+        {elseif:$mlist['type'] === '0'}
+        <h1 class="hint-title">您还没有发布求购</h1>
+        <div class="hint-sub">
+            <a href="{url:ucenter/release_seek}" class="pub-btn hgbtn hpbtn">发布你的第一个求购</a>
+        </div>
+        {/if}
+
+
+    </div>
+
+
+    <?php } ?>
+
+
+    <script>
+        /**
+         * 加载更多
+         */
+        let page = 1;
+        console.log("1");
+        function looding() {
+            console.log("2");
+            let submitData = {
+                page: page,
+                type: $("#type").val()
+            };
+            console.log("3");
+            $.ajax({
+                type: "POST",
+                url: "{url:ucenter/looding}",
+                data: submitData,
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    let mist = data.mlist;
+                    $("#looding").remove();
+                    for (var i = 0; i < mist.length; i++) {
+                        console.log(mist);
+                        var id=mist[i].id;
+                        var html = "<li class=\"lis\">" +
+                            "<div class=\"imgbox\">" +
+                            "<a href=\"/index.php?controller=ucenter&action=release_view&release_id="+mist[i].id+"\"  id=\""+mist[i].id+"\"><img src=\"" + mist[i].good.img + "\" alt=\"\"></a>" +
+                            "</div>" +
+                            "<h1 class=\"name\"><a href=\"/index.php?controller=ucenter&action=release_view&release_id="+mist[i].id+"\">" + mist[i].good.name + "</a></h1>" +
+                            "<div class=\"time item pb10\">发布时间：" + mist[i].up_time + "</div>" +
+                            "<div class=\"price pb5\">" +
+                            "<span class=\"ml-3\">￥" + mist[i].price + " </span>" +
+                            "<a href=\"#\" class=\"share\"><i class=\"iconfont\">&#xe613;</i>分享</a>" +
+                            "</div>";
+                        if (mist[i].status == '0') {
+                            html+="<div class=\"state vi-org1\"><i class=\"iconfont\">&#xe63e;</i>待审核</div>"
+                        } else if (mist[i].status == '1') {
+							html+= "<div class=\"state vi-gray2\"><i class=\"iconfont\">&#xe616;</i>已拒绝</div>"
+                        } else if (mist[i].status == '2') {
+
+                            if (mist[i].matchingnum == '0') {
+								html+=    "<div class=\"state vi-blue1\"><i class=\"iconfont\">&#xe60d;</i>撮合中</div>"
+                            } else {
+								html+="<a href=\"/index.php?controller=ucenter&action=matchingdetailslist&infomationid="+mist[i].id+"\"  id=\""+mist[i].id+"\">" +
+                                "<div class=\"state vi-green1\"><i class=\"iconfont\">&#xe60d;</i>已撮合(" + mist[i].matchingnum + ")</div>" +
+                                "</a>"
+                            }
+                        } else if (mist[i].status == '3') {
+							html+=  "<div class=\"state vi-gray2\"><i class=\"iconfont\">&#xe616;</i>已下架</div>"
+                        } else {
+                        }
+						html+=  "<div class=\"code item\"><span>货源地:<em>" + mist[i].areaname + "</em></span><span class=\"pl10\">库存:<em>" + mist[i].number + "</em></span></div>" +
+                        "</li>";
+
+
+                        $("#lists").append(html);
+                    }
+                    if (mist.length > 0) {
+                        console.log("6");
+                        $("#lists").append("<a href=\"#\" id=\"looding\" onclick=\"looding()\" class=\"tc abk ft14 pt10 pb20 vi-gray2\" >点击加载更多...</a>" );
+                    }
+                }
+            });
+            console.log("4");
+            page++;
+            console.log("5");
+        }
+        
+        function infomationid(object) {
+            console.log(object.id);
+             //window.location.href="{url:ucenter/matchingdetailslist/infomationid/" + object.id + "}"
+            $.get("{url:ucenter/matchingdetailslist}",{"infomationid":object.id},function(content)
+            {
+                    console.log(content);
+
+                window.document.write(content);
+            });
+            //$.get(html("ucenter/matchingdetailslist"),{"infomationid":object.id});
+        }
+
+        function release_id(object) {
+            console.log(object.id);
+            //window.location.href="{url:ucenter/release_view/release_id/" + object.id + "}"
+            // window.location="{url:ucenter/release_view/release_id/"+index+"}"
+            $.get("{url:site/release_view}",{"release_id":object.id},function(content)
+            {
+                console.log(content);
+
+                window.document.write(content);
+            });
+
+           // $.get(html("ucenter/release_view"),{"release_id":object.id});
+        }
+
+        /**
+         * 根据商品名字进行检索
+         */
+        function search() {
+            /**
+             * 决定显示加载更多与否
+             */
+            if(($(".txt").val()).match(/^[ ]*$/)){
+                $("#looding").remove();
+                $("#lists").append("<a href=\"#\" id=\"looding\" onclick=\"looding()\" class=\"tc abk ft14 pt10 pb20 vi-gray2\" >点击加载更多...</a>" );
+            }else{
+                $("#looding").remove();
+            }
+
+            $(".lis").each(function (i, n) {
+                var name = $(n).find(".name a").text();
+                var goods_no = $(n).find(".name #goods_no").val();
+                var brand = $(n).find(".name #brand").val();
+
+                if (name.indexOf($(".txt").val()) != -1 || goods_no.indexOf($(".txt").val()) != -1 || brand.indexOf($(".txt").val()) != -1) {
+                    //说明存在(显示)
+                    $(n).show();
+                } else {
+                    //说明不存在(隐藏)
+                    $(n).hide();
+                }
+                console.log();
+            })
+
+        }
+    </script>
+</div>

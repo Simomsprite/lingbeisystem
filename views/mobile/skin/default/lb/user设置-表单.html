@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>FUI</title>
+<link type="text/css" rel="stylesheet" href="style/reset.css">
+<link type="text/css" rel="stylesheet" href="style/index.css">
+<link type="text/css" rel="stylesheet" href="style/swiper.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+</head>
+
+<body>
+	<div class="wrap-box">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 设置表单合集 </h1>
+		</header>	
+		<ul class="user-form-edit">
+			<li>
+				<div class="txtbox">
+					<input type="text" class="txt" placeholder="请输入你想表达的">
+				</div>
+			</li>
+			<li>
+				<div class="txtbox">
+					<textarea class="txtarea" placeholder="请输入你想表达的"></textarea>
+				</div>
+			</li>
+			<li>
+				<div class="txtbox">
+					<input type="text" class="txt" placeholder="请输入你想表达的">
+				</div>
+			</li>
+			<li>
+				<div class="txtbox">
+					<input type="text" class="txt" placeholder="请输入你想表达的">
+				</div>
+			</li>
+		</ul>
+		<ul class="user-form-edit u-sele-form">
+			<li>
+				<span class="tit">接收新消息</span>
+				<div class="sele-radio"></div>
+			</li>
+			<li class="actived">
+				<span class="tit">接收新消息</span>
+				<div class="sele-radio"></div>
+			</li>
+			<li class="actived">
+				<span class="tit">男</span>
+				<div class="sarrow"></div>
+			</li>
+			<li class="">
+				<span class="tit">女</span>
+				<div class="sarrow"></div>
+			</li>
+		</ul>
+		 <script>
+			$(function(){
+				//checkbox选中样式
+				$(".sele-radio").click(function(){
+					if($(this).hasClass("sele-actived")){
+						$(this).removeClass("sele-actived")
+					}else{
+						$(this).addClass("sele-actived");
+					}
+				});
+			});
+		  </script> 
+		<div class="sub-box">
+			<input type="button" class="pub-btn vpink-btn" value="完成">
+		</div>
+	
+	</div>
+</body>
+</html>

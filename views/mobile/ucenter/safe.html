@@ -1,0 +1,17 @@
+<div id="pageInfo"  data-goback="{url:ucenter/info}" data-title="安全中心"></div>
+{set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+
+<ul class="user-form user-form-style2 mtg_10">
+    <li>
+        <a href="{url:ucenter/password}" class="abe-block item">
+            <div class="info abe-txtl"><div>修改密码</div><p class="abe-ft12 abe-gray3">*建议您定期更改密码以保护账户安全</p></div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="abe-block item">
+            <div class="info abe-txtl"><div>修改手机号码<span class="pdl_40">{$memberInfo['username']}</span></div><p class="abe-ft12 abe-gray3">*若您的验证手机已丢失或停用，请立即修改更换</p></div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+</ul>

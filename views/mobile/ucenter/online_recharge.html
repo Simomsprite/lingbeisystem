@@ -1,0 +1,99 @@
+{set:$paymentList=Api::run('getPaymentListByOnline')}
+<div id="pageInfo" data-goback="{url:ucenter/index}" data-title="在线充值"></div>
+{if:$paymentList}
+
+
+<div class="abe-ft14 pdt_10 pdl_10 pdb_10">
+    选择充值金额（元）
+</div>
+<form action="{url:/block/doPay}" method="POST" class="form-inline form" role="form">
+    <input type="hidden" name="recharge" id="recharge" value="100">
+<div class="recharge">
+    <a href="javascript:void(0);" onclick="recharge_hl(this,100);" class="item active">100</a>
+    <a href="javascript:void(0);" onclick="recharge_hl(this,200);" class="item ">200</a>
+    <a href="javascript:void(0);" onclick="recharge_hl(this,350);" class="item ">350</a>
+    <a href="javascript:void(0);" onclick="recharge_hl(this,500);" class="item ">500</a>
+    <a href="javascript:void(0);" onclick="recharge_hl(this,800);" class="item ">800</a>
+    <input type="text" class="item " onclick="recharge_hl1(this);" id="diy_text" onblur="recharge_hl2(this.value,this)" placeholder="其他金额">
+</div>
+<div class="abe-ft14 pdt_10 pdl_10 pdb_10">
+    选择充值方式
+</div>
+<ul class="user-form user-form-style2">
+
+
+    {foreach:items = $paymentList}
+    {if:$item['id'] == 10}
+    <li>
+        <label class="active">
+            <input type="radio" {if:$key==0}checked{/if} name="payment_id" value="{$item['id']}">
+            <em class="iconfont zblue">&#xe61b;</em>支付宝支付<i class="iconfont" style="top: 0px;">&#xe615;</i>
+        </label>
+    </li>
+    {/if}
+    {if:$item['id'] == 12}
+    <li>
+        <label class="active">
+            <input type="radio" {if:$key==0}checked{/if} name="payment_id" value="{$item['id']}">
+            <em class="iconfont wgreen">&#xe6bb;</em>微信移动支付<i class="iconfont" style="top: 0px;">&#xe615;</i>
+        </label>
+    </li>
+    {/if}
+    {/foreach}
+
+</ul>
+<div class="exit-sub mtg_15">
+    <input type="submit" value="确认充值" class="sub-btn">
+</div>
+</form>
+
+
+{else:}
+<section class="nodata">当前没有可用的在线充值方式</section>
+{/if}
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+});
+
+    function recharge_hl(obj,value){
+        $(".recharge a").removeClass("active");
+        $("#diy_text").removeClass("active");
+        $(obj).addClass("active");
+        $("#recharge").val(value);
+    }
+    function recharge_hl1(obj){
+        $(".recharge a").removeClass("active");
+        $(obj).addClass("active");
+    }
+
+
+    function recharge_hl2(value,obj){
+        if(checkRate(value)){
+            $("#recharge").val(value);
+        }else{
+            layer.open({
+                content:"请输入正确的金额"
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        }
+
+    }
+
+
+    function checkRate(input)
+    {
+        var re = /^[0-9]+.?[0-9]*$/;
+        if (!re.test(input))
+        {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
+</script>

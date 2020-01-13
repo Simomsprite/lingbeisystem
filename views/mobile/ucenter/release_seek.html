@@ -1,0 +1,546 @@
+{js:fileUpload}
+<script src="{skin:lb/js/lrz.all.bundle.js}"></script>
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 发布求购 </h1>
+    </header>
+    <!--头部导航结束-->
+    <div>
+        <input type='hidden' id="area_id" value="" />
+
+            <ul class="pub-form mb7">
+                {if:$apply_info}
+                <input type='hidden' id="goods_id" value="{$goods_id}" />
+                <li>
+                    <span class="tit">商品条形码</span>
+                    <div class="txtbox"><input type="text" name="goods_no" value="{$apply_info['goods_no']}" readonly  class="txt" placeholder="商品条形码"></div>
+                </li>
+                <li>
+                    <span class="tit">商品名称</span>
+                    <div class="txtbox"><input type="text" name="name" value="{$apply_info['name']}" readonly class="txt" placeholder="商品名称"></div>
+                </li>
+                <li>
+                    <span class="tit">品牌</span>
+                    <div class="txtbox"><input type="text" name="brand" value="{$apply_info['brand']}" readonly class="txt" placeholder="品牌名"></div>
+                </li>
+                <li>
+                    <span class="tit">商品简介</span>
+                    <div class="txtbox"><textarea class="txtarea" name="content" value="" readonly placeholder="商品简介选填">{$apply_info['content']}</textarea></div>
+                </li>
+                <li>
+                    <span class="tit">商品图片</span>
+                    <div class="txtbox up-list">
+                        <div id="add_pic">
+                            {foreach:items = $img_path key=$k item=$v}
+                            <div class="item"  style="height: 80px;width: 80px;"><img src="{url:}{$v['img']}" name="picThumb" style="max-height: 80px;min-width: 80px;" alt="{$v['img']}" /></div>
+                            {/foreach}
+                        </div>
+                        <!--<div class="item"><img src="{skin:ucenter/images/temp6.jpg}" style="max-height: 63px;min-width: 63px;" alt=""><a href="javascript:;" onclick="del_img(this)" class="close iconfont">&#xe767;</a></div>-->
+                    </div>
+                </li>
+                {else:}
+                <li>
+                    <span class="tit">商品条形码</span>
+                    <div class="txtbox"><input type="text" name="goods_no" value="" onblur="check(this)" class="txt" placeholder="商品条形码"></div>
+                </li>
+                <li>
+                    <span class="tit">商品名称</span>
+                    <div class="txtbox"><input type="text" name="name" value="" class="txt" placeholder="商品名称"></div>
+                </li>
+                <li>
+                    <span class="tit">品牌</span>
+                    <div class="txtbox"><input type="text" name="brand" value="" class="txt" placeholder="品牌名"></div>
+                </li>
+                <li>
+                    <span class="tit">商品简介</span>
+                    <div class="txtbox"><textarea class="txtarea" name="content" value="" placeholder="商品简介选填"></textarea></div>
+                </li>
+                <li>
+                    <span class="tit">商品图片</span>
+                    <div class="txtbox up-list">
+                        <div class="item up-faqbox">
+                            <i class="iconfont up-icon">&#xe600;</i>
+                            <input type="file" id="fileUpload" name="_goodsFile" multiple="multiple" class="up-btn">
+                            <img src="{skin:lb/images/transparent.png}" alt="">
+                        </div>
+                        <div id="add_pic">
+                            <!--<div class="item"><img src="{skin:ucenter/images/temp6.jpg}" style="max-height: 63px;min-width: 63px;" alt=""><a href="javascript:;" onclick="del_img(this)" class="close iconfont">&#xe767;</a></div>-->
+                        </div>
+                    </div>
+                    <div class="vi-gray2 remark">请先上传主图</div>
+                </li>
+                {/if}
+            </ul>
+            <!--选择数量模块-->
+            <div class="release-mod mb7">
+                <div class="titlebar">
+                    <h1>求购量价格</h1>
+                    <div class="tb-nav">
+                        <a href="javascript:;" onclick="reset()" class="vi-gray2">重置</a>
+                    </div>
+                </div>
+                <ul class="count-form">
+                    <li id="add_text">
+                        <div class="item">求购数量</div>
+                        <div class="item">求购价格</div>
+                    </li>
+                    <li id="over">
+                        <div class="item">
+                            <input type="text" class="txt" name="num_seek"  placeholder="求购数量">
+                        </div>
+                        <div class="item"><input type="text" class="txt" name="price" placeholder="求购价格"></div>
+                    </li>
+                    <li class="c-sub">
+                        <input type="button" onclick="add_trg()" value="添加" class="btn">
+                    </li>
+                </ul>
+            </div>
+            <div class="release-mod mb7">
+                <div class="titlebar">
+                    <h1>详细信息</h1>
+                </div>
+                <ul class="pub-form pdt0 mb7">
+                    <li>
+                        <span class="tit">求购地</span>
+                        <div class="txtbox abk" onclick="show_area(this)">
+                            <div class="info" id="a_id1info"></div>
+                        </div>
+                    </li>
+                    <!--<li id="time">-->
+                    <!--<span class="tit">备货时间</span>-->
+                    <!--<div class="txtbox"><input type="text" name="delivery_cycle" class="txt" placeholder="备货时间"></div>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+            <div class="release-mod">
+                <div class="titlebar ft13">
+                    <label class="abk"><input type="checkbox" class="psi mr5">设定为精准匹配</label>
+                </div>
+            </div>
+            <div class="sub-box">
+                <input type="button" class="pub-btn vpink-btn" onclick="submit(this)" value="提交">
+            </div>
+            <div style="height: 80px">
+
+            </div>
+    </div>
+    <!--x操作提示框-->
+    <div class="alert-hint skin-alert ft13 hint-layer" style="display: none">
+        <div>
+            <i class="iconfont">&#xe65b;</i>
+            <span id="msg"></span>
+        </div>
+        <div class="tc hint-sub">
+            <a href="javascript:;" onclick="closeed(this)" class="pub-btn okbtn">确定</a>
+            <a href="javascript:;" onclick="closeed(this)" class="pub-btn">取消</a>
+
+        </div>
+    </div>
+    <div class="address-pop wrap-tlayer add-state">
+        <!--头部导航开始-->
+        <header class="pub-header skin-header">
+            <div class="left-nav"><a href="javascript:;" onclick="back(this)"><i class="iconfont">&#xe65c;</i></a></div>
+            <h1 class="title"> 选择地区 </h1>
+            <div class="right-nav"><a href="javascript:;" onclick="shut()" class="add-end">完成</a></div>
+        </header>
+        <!--头部导航结束-->
+        <div class="add-sele">
+            <ul class="add-list">
+                {foreach:items = $nation}
+                <li class="item">
+                    <div class="city" onclick="add_city(this,{$item['area_id']})" tag="{$item['area_id']}">{$item['area_name']}</div><i class="iconfont arrow">&#xe607;</i>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    //设定起参
+    var count = 0;
+    //地址栏参数
+    var city_id = '';
+    //地址栏展示信息
+    var city_name = [];
+    //地址信息数组
+    var nation_id = [];
+
+
+    // 新建地址弹窗
+    function show_area(d) {
+        city_id = $(d).parent().attr("id");
+        city_name = [];
+        nation_id = [];
+        $(".add-state").animate({left:'0'},200);
+    }
+
+    //弹窗后退
+    function back(b) {
+        city_name.pop();
+        nation_id.pop();
+        $(b).parent().parent().parent(".address-pop").animate({left:'-100%'},200);
+    }
+
+    //确认框关闭
+    function closeed(r) {
+        $(r).parents(".alert-hint").hide();
+    }
+
+    //校验是否已发布过此信息
+    function check_goods() {
+        var goods_no = $("input[name='goods_no']").val();
+        var area_id = $("#area_id").val();
+        var check_data ={
+            goods_no:goods_no,
+            area_id:area_id,
+            type:0
+        };
+        $.ajax({
+            type: "POST",
+            url: "{url:ucenter/check_goods}",
+            data: check_data,
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 1) {
+                    $("#msg").html(data.msg);
+                    $(".alert-hint").show();
+                }
+            },
+        });
+    }
+
+    //弹窗完成
+    function shut() {
+        $("#a_id1info").text(city_name);
+        $("#area_id").val(nation_id);
+        $(".add-city").remove();
+        check_goods();
+        $(".address-pop").animate({left:'-100%'},200);
+    }
+
+    //三级联动
+    function add_city(r,area_id){
+        let area = $(r);
+        $.ajax({
+            type: "POST",
+            url: "{url:ucenter/search_city}",
+            data: {"area_id":area_id},
+            dataType:"json",
+            success: function(data){
+                city_name.push(data.name );
+                nation_id.push(area_id,);
+                if(data.content != ''){
+                    var html = '';
+                    html += "<div class=\"address-pop wrap-tlayer add-city\" style=\" z-index: 102\">";
+                    html += "<header class=\"pub-header skin-header\">";
+                    html +="<div class=\"left-nav\"><a href=\"javascript:;\" onclick=\"back(this)\"><i class=\"iconfont\">&#xe65c;</i></a></div>";
+                    html += "<h1 class=\"title\"> 请选择 </h1>";
+                    html +=	"<div class=\"right-nav\"><a href=\"javascript:;\" onclick=\"shut()\" class=\"add-end\">完成</a></div>";
+                    html +=	"</header>";
+                    html +=	"<div class=\"add-sele\">";
+                    html +=	"<ul class=\"add-list\">";
+                    var text = data.content;
+                    $.each(text,function(key,val){
+                        html +=	"<li class=\"item\"><div class=\"city\" onclick=\"add_city(this,"+val['area_id']+")\"  tag="+val.area_id+">"+val.area_name+"</div><i class=\"iconfont arrow\">&#xe607;</i></li>";
+                    });
+                    html +=	"</ul>";
+                    html +=	"</div>";
+                    html +=	"</div>";
+                    area.next().after(html);
+                    area.siblings(".address-pop").animate({left:'0'},200);
+                }else{
+                    $(".address-pop").animate({left:'-100%'},200);
+                    $("#a_id1info").text(city_name);
+                    $("#area_id").val(nation_id);
+                    check_goods();
+                    $(".add-city").remove();
+                }
+            },
+        });
+    }
+
+    //添加求购信息
+    function add_trg() {
+        var price = $("input[name='price']").val();
+        var num_seek = parseInt($("input[name='num_seek']").val());
+
+        if(num_seek == ''){
+            layer.open({
+                content: '求购数量不能为空',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(isNaN(num_seek)){
+            layer.open({
+                content: '求购数量须为整数',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(price == ''){
+            layer.open({
+                content: '求购价格不能为空',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var html = '';
+        html += "<li id='aft'>";
+        html += "<div class=\"item\" id='num'>"+num_seek+"</div>";
+        html += "<div class=\"item\" id='price'>"+price+"</div>";
+        html += "</li>";
+        $("#over").before(html);
+        $("#over").hide();
+        $(".c-sub").hide();
+    }
+
+    //求购信息重置
+    function reset() {
+        var text1 = $("#aft");
+        if(text1){
+            text1.remove();
+        }
+
+        $("#over").show();
+        $(".c-sub").show();
+        $("input[name='price']").val("");
+        $("input[name='num_seek']").val("");
+    }
+
+    //上传图片
+    document.querySelector("#fileUpload").addEventListener('change', function () {
+        var that = this;
+        lrz(that.files[0], {width: 400}).then(function (rst) {
+            var img = new Image();
+            img.src = rst.base64;
+
+            var submitData = {
+                base64_string: img.src,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "{url:jgim/upload}",
+                data: submitData,
+                dataType: "json",
+                async:true,
+                success: function (data) {
+                    var img=data.img;
+                    var flag=data.flag;
+                    if (flag == 1) {
+                        var picHtml = "<div class=\"item\" style=\"height: 80px;width: 80px;\"><img src=\""+img+"\" name=\"picThumb\" style=\"max-height: 80px;min-width: 80px;\" alt=\""+img+"\"><a href=\"javascript:;\" onclick=\"del_img(this)\" tag=\""+img+"\" class=\"close iconfont\">&#xe767;</a></div>";
+                        $('#add_pic').append(picHtml);
+                    }else{
+                        layer.open({
+                            content: '上传失败',
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                        return false;
+                    }
+
+                }
+
+            });
+        });
+    });
+
+    //删除图片
+    function del_img(obj){
+        $(obj).parent().remove();
+    }
+
+    //校验条形码
+    function check(c) {
+        var good_no = $(c).val();
+        if(good_no != ''){
+            var submitData={
+                code:good_no,
+            };
+            $.ajax({
+                type: "POST",
+                url: "{url:ucenter/check_code}",
+                data: submitData,
+                dataType:"json",
+                success: function(data){
+                    if(data.status == 2){
+                        //商品表中存在该商品
+                        layer.open({
+                            content: '商品信息已存在，即将加载商品信息',
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                        //携带商品ID  2秒后跳转
+                        setTimeout(function(){
+                            window.location.href="{url:ucenter/release_seek}&goods_id="+data.id+"";
+                        },2000);
+                    }
+                },
+            });
+        }
+    }
+
+    //校验起订输入框是否为空
+    function is_being() {
+        var num_seek = $("input[name='num_seek']").val();
+        var price = $("input[name='price']").val();
+        var text1 = $("#aft").html();
+        if(text1 == undefined){
+            if(num_seek != '' && price != ''){
+                add_trg();
+            }else if (num_seek != '' || price != ''){
+                if(num_seek == ''){
+                    layer.open({
+                        content: '请填写求购数量',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                    return false;
+                }else if (price == '') {
+                    layer.open({
+                        content: '请填写求购价格',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                    return false;
+                }
+            }
+        }
+    }
+
+    //提交
+    function submit(r) {
+        is_being();
+        var name = $("input[name='name']").val();
+        if(name == ''){
+            layer.open({
+                content: '请填写商品名称',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            setTimeout(function(){
+                $("input[name='name']").focus();
+            },2000);
+            return false;
+        }
+        var brand = $("input[name='brand']").val();
+        if(brand == ''){
+            layer.open({
+                content: '请填写品牌名称',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            setTimeout(function(){
+                $("input[name='brand']").focus();
+            },2000);
+            
+            return false;
+        }
+        var goods_no = $("input[name='goods_no']").val();
+        var content = $("[name='content']").val();
+        var goodsPhoto = [];
+        $('#add_pic  img[name="picThumb"]').each(function(){
+            goodsPhoto.push(this.alt);
+        });
+        if(goodsPhoto.length <= 0){
+            layer.open({
+                content: '请上传商品图片',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            
+            return false;
+        }
+        var seek_num = $("#num").text();
+        if(seek_num == ''){
+            layer.open({
+                content: '请填写求购数量',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            
+            return false;
+        }
+        var price = $("#price").text();
+        if(price == ''){
+            layer.open({
+                content: '请填写求购价格',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            
+            return false;
+        }
+        var area_id = $("#area_id").val();
+        if(area_id == ''){
+            layer.open({
+                content: '请选择求购地',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            setTimeout(function(){
+                $("input[name='area_id']").focus();
+            },2000);
+            
+            return false;
+        }
+
+        var is_exact = 0;
+        if($("input[type='checkbox']").is(':checked')){
+            is_exact = 1;
+        }
+        var submit_data ={
+            name:name,
+            brand:brand,
+            goods_no:goods_no,
+            content:content,
+            img:goodsPhoto,
+            seek_num:seek_num,
+            price:price,
+            area_id:area_id,
+            is_exact:is_exact,
+        };
+        var goods_id = $("#goods_id").val();
+        if(goods_id){
+            submit_data['goods_id'] = goods_id;
+        }
+        $.ajax({
+            type: "POST",
+            url: "{url:ucenter/seek_save}",
+            data: submit_data,
+            dataType:"json",
+            success: function(data){
+                if(data.status == 1){
+                    layer.open({
+                        content: '提交成功',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                    $(r).attr("disabled","disabled");
+
+                    //携带商品ID  2秒后跳转
+                    setTimeout(function(){
+                    	window.location.href="{url:site/release_view}&release_id="+data.release_id+"";
+                    },2000);
+                }else if(data.status == 2){
+                    layer.open({
+                    	content: data.msg,
+                    	skin: 'msg',
+                    	time: 2 //2秒后自动关闭
+                    });
+                    
+                }
+            },
+        });
+    }
+
+
+
+</script>

@@ -1,0 +1,65 @@
+<div id="pageInfo" data-title="分类"></div>
+<!--分类信息 开始-->
+
+<div class="category-box">
+    <div class="cate-list">
+        {foreach:items=Api::run('getCategoryListTopAll') item=$first }
+        <div rel="{$first['id']}" class="item {if:$key==0} active {/if}"><a href="javascript:void(0)">{$first['name']}</a></div>
+        {/foreach}
+    </div>
+
+    {foreach:items=Api::run('getCategoryListTopAll') item=$first }
+    <div id="box_{$first['id']}" class="cate-item-box" {if:$key==0}  style="display: block" {else:} style="display: none" {/if}>
+    {foreach:items=Api::run('getCategoryByParentidAll',array('#parent_id#',$first['id'])) item=$second}
+        <div class="title">
+            <a href="{url:/site/pro_list/cat/$second[id]}">{$second['name']}</a>
+        </div>
+        <ul>
+            {foreach:items=Api::run('getCategoryByParentidAll',array('#parent_id#',$second['id']))  item=$third}
+            <li>
+                <a href="{url:/site/pro_list/cat/$third['id']}">
+                <img src="{url:/pic/thumb/img/$third[img]/w/200/h/200}" alt="" class="img">
+                <div class="name">{$third['name']} </div>
+              </a>
+            </li>
+            {/foreach}
+        </ul>
+        {/foreach}
+    </div>
+
+    {/foreach}
+</div>
+
+
+<section class="map_list" style="display: none;">
+	{foreach:items=Api::run('getCategoryListTop') item=$first }
+	<dl>
+		<dt><a href="{url:/site/pro_list/cat/$first[id]}">{$first['name']}</a></dt>
+		<dd>
+			{foreach:items=Api::run('getCategoryByParentid',array('#parent_id#',$first['id'])) item=$second}
+			<a href="{url:/site/pro_list/cat/$second[id]}">{$second['name']}</a>
+			{/foreach}
+		</dd>
+	</dl>
+	{/foreach}
+</section>
+
+<script>
+ $(function(){
+     $('.footer-menu').find('a:eq(1)').addClass("active");
+     $(".cate-list .item").click(
+             function(){
+                 var rel = $(this).attr("rel");
+                 $(".cate-list .item").removeClass("active");
+                 $(this).addClass("active");
+                 $(".cate-item-box").hide();
+                 $("#box_"+rel).show();
+             }
+     );
+    //分类框架高度重设
+    var ctHei = $(".wrap-box").outerHeight() - $(".abe-header").outerHeight() - $(".footer-menu").outerHeight();
+    $(".category-box").height(ctHei);
+});
+</script>
+
+</script>

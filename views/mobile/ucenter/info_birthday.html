@@ -1,0 +1,66 @@
+{js:artTemplate}
+<div id="pageInfo" data-goback="{url:ucenter/info}" data-title="出生日期"></div>
+
+<link rel="stylesheet" href="{skin:newcss/style/mobiscroll.css}">
+<link rel="stylesheet" href="{skin:newcss/style/mobiscroll_date.css}">
+<script src='{skin:newcss/js/mobiscroll_date.js}'></script>
+<script src='{skin:newcss/js/mobiscroll.js}'></script>
+{set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+<form action='{url:/ucenter/info_birthday_act}' id="login_form" name='user_info' method="POST" role="form">
+    <ul class="user-form mtg_10">
+    <li>
+        <span class="tit">出生日期</span>
+        <div class="info pdr_30"><input type="text" class="txt abe-txtr" value="{$memberInfo['birthday']}" name="birthday" id="USER_AGE"></div>
+        <div class="arrow iconfont">&#xe603;</div>
+    </li>
+</ul>
+
+<div class="exit-sub mtg_15">
+    <input type="submit" value="保存" class="sub-btn">
+</div>
+</form>
+
+<script type="application/javascript">
+    hideNav();
+    //表单回填
+
+    var currYear = (new Date()).getFullYear();
+    var opt={};
+    opt.date = {preset : 'date'};
+    opt.datetime = {preset : 'datetime'};
+    opt.time = {preset : 'time'};
+    opt.default = {
+        theme: 'android-ics light', //皮肤样式
+        display: 'modal', //显示方式
+        mode: 'scroller', //日期选择模式
+        dateFormat: 'yyyy-mm-dd',
+        lang: 'zh',
+        showNow: true,
+        nowText: "今天",
+        startYear: currYear - 50, //开始年份
+        endYear: currYear + 10 //结束年份
+    };
+    $("#USER_AGE").mobiscroll($.extend(opt['date'], opt['default']));
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+
+
+</script>

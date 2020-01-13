@@ -1,0 +1,50 @@
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="{url:ucenter/lb_info}"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 修改公司名 </h1>
+    </header>
+    <ul class="pub-form user-form mb7">
+
+    </ul>
+    {set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+    <form action='{url:/ucenter/info_companyname_act}' id="login_form" name='user_info' method="POST" role="form">
+        <input type="hidden" name="{$this->user['user_id']}"/>
+        <ul class="user-form-edit">
+            <li>
+                <div class="txtbox">
+                    <input type="txtbox"   errormsg="请填写公司名" nullmsg="请填写公司名" name="companyname" class="txt" value="{$memberInfo['companyname']}" placeholder="请输入公司名">
+                </div>
+            </li>
+        </ul>
+        <div class="sub-box">
+            <input type="submit" value="保存" class="pub-btn vpink-btn">
+        </div>
+    </form>
+</div>
+<script type="application/javascript">
+    hideNav();
+    //表单回填
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+
+
+</script>

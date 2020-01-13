@@ -1,0 +1,68 @@
+{set:$queryEvaluationList = Api::run('getUcenterEvaluation',$this->user['user_id'])}
+{set:$items = $queryEvaluationList->find()}
+<div id="pageInfo" data-title="商品评价"></div>
+
+
+<div class="order-box">
+    <div class="od-tab">
+        <a href="{url:ucenter/order}" class="">全部</a>
+        <a href="{url:ucenter/order_nopay}">待付款</a>
+        <a href="{url:ucenter/order_pay}">待发货</a>
+        <a href="{url:ucenter/order_shou}">待收货</a>
+        <a href="{url:ucenter/evaluation}" class="active">待评价</a>
+    </div>
+    {if:$items}
+    {foreach:items = $items}
+    <dl class="cart-list order-list">
+        <dt>
+
+            <span class="abe-fl">{$item['order_no']}</span>
+            <a href="javascript:void(0);" class="abe-fr vi-org2">交易成功</a> </dt>
+        <dd>
+            <div class="item">
+                <img src="{url:$item['img']}" width="100" class="img" alt="{$item['name']}">
+                <h1 class="pro-name">
+                    <a href="{url:/site/products/id/$item[goods_id]}">
+                        {if:$item['goods_type'] == 1}
+                        <i class="tags" style="background: #ff0000">OTC</i>
+                        {elseif:$item['goods_type'] == 2}
+                        <i class="tags" style="background: #00602e">OTC</i>
+                        {elseif:$item['goods_type'] == 3}
+                        <i class="tags" style="background: #cc1717">RX</i>
+                        {/if}
+
+                        {$item['name']}
+                        {if:$item['value']}
+                        <span>规格：{$item['value']}</span>
+                        {/if}
+                    </a>
+                </h1>
+                <div class="price">￥{$item['sell_price']}</div>
+
+            </div>
+        </dd>
+        {if:$item['status'] == 0}
+        <dt class="tot-up">
+        <div class="abe-txtr"><a href="javascript:gourl('{url:/site/comments/id/$item[id]}')" class="pub-btn">立即评价</a></div>
+        </dt>
+        {/if}
+
+
+    </dl>
+    {/foreach}
+
+    {$queryEvaluationList->getPageBar()}
+    {else:}
+    <section class="nodata">您当前没有评价信息~</section>
+    {/if}
+
+</div>
+
+
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+})
+</script>

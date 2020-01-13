@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>FUI</title>
+<link type="text/css" rel="stylesheet" href="style/reset.css">
+<link type="text/css" rel="stylesheet" href="style/index.css">
+<link type="text/css" rel="stylesheet" href="style/swiper.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+</head>
+
+<body>
+	<div class="wrap-box">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 编辑 </h1>
+		</header>	
+		<!--头部导航结束-->
+		<div>
+			<!--选择数量模块-->
+			<div class="release-mod mb7">
+				<div class="titlebar">
+					<h1>起订量价格<sub class="vi-gray1 pl10">(最多可以输入3组)</sub></h1>
+					<div class="tb-nav">
+						<a href="#" class="vi-gray2">重置</a>
+					</div>
+				</div>
+				<ul class="count-form">
+					<li>
+						<div class="item">起订数量</div>
+						<div class="item">起订价格</div>
+					</li>
+					<li>
+						<div class="item">1000-3000个</div>
+						<div class="item">￥2.2</div>
+					</li>
+					<li>
+						<div class="item"><input type="text" class="txt" placeholder="起订数量"></div>
+						<div class="item"><input type="text" class="txt" placeholder="起订价格"></div>
+					</li>
+					<li class="c-sub">
+						<input type="button" value="添加" class="btn">
+					</li>
+				</ul>
+			</div>
+			<div class="release-mod mb7">
+				<div class="titlebar">
+					<h1 class="hid"><div class="fl">库存：</div><div class="vi-pink2 fl" contenteditable="true">15654件</div></h1>
+				</div>
+			</div>
+			<div class="release-mod mb7">
+				<div class="titlebar">
+					<h1>详细信息</h1>
+				</div>
+				<ul class="pub-form pdt0 mb7">
+					<li>
+						<span class="tit">货源地</span>
+						<a href="#" class="txtbox abk" id="sele-city">
+							<div class="info tr">上海市徐汇区</div>
+							<div class="arrow iconfont">&#xe607;</div>
+						</a>
+					</li>
+					<li>
+						<span class="tit">备货时间</span>
+						<a href="#" class="txtbox abk">
+							<div class="info tr"></div>
+							<div class="arrow iconfont">&#xe607;</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="sub-box">
+				<input type="button" class="pub-btn vpink-btn" value="确定">
+			</div>
+		</div>
+		<!--新建地址弹窗-->
+		<script>
+		$(function(){
+			$("#sele-city").click(function(){
+			   $(".add-state").animate({left:'0'},200);
+			});
+			$(".add-list .item .city").click(function(){
+				$(this).siblings(".address-pop").animate({left:'0'},200);
+			});
+			$(".left-nav").click(function(){
+			   $(this).parent().parent(".address-pop").animate({left:'-100%'},200);
+			});
+			$(".add-end").click(function(){
+				$(".address-pop").animate({left:'-100%'},200);
+			});
+		});
+		</script>
+		<div class="address-pop wrap-tlayer add-state">
+			<!--头部导航开始-->
+			<header class="pub-header skin-header">
+				<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+				<h1 class="title"> 选择地区 </h1>
+				<div class="right-nav"><a href="#" class="add-end">完成</a></div>
+			</header>	
+			<!--头部导航结束-->
+			<div class="add-sele">
+				<div class="ad-selected">
+					<em class="vi-gray2">已选择:</em>
+					<span class="">中国，</span>
+					<span class="">江苏</span>
+					<i class="close iconfont">&#xe602;</i>
+				</div>
+				<ul class="add-list">
+					<li class="item actived"><div class="city">中华人民共和国</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item">
+						<div class="city">日本</div><i class="iconfont arrow">&#xe607;</i>
+						<!--省级选择-->
+						<div class="address-pop wrap-tlayer add-city" style=" z-index: 102">
+							<!--头部导航开始-->
+							<header class="pub-header skin-header">
+								<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+								<h1 class="title"> 选择省 </h1>
+								<div class="right-nav"><a href="#" class="add-end">完成</a></div>
+							</header>	
+							<!--头部导航结束-->
+							<div class="add-sele">
+								<div class="ad-selected">
+									<em class="vi-gray2">已选择:</em>
+									<span class="">中国，</span>
+									<span class="">江苏</span>
+									<i class="close iconfont">&#xe602;</i>
+								</div>
+								<ul class="add-list">
+									<li class="item actived"><div class="city">北京</div><i class="iconfont arrow">&#xe607;</i></li>
+									<li class="item">
+										<div class="city">上海</div><i class="iconfont arrow">&#xe607;</i>
+										<!--市级选择-->
+										<div class="address-pop wrap-tlayer add-county" style=" z-index: 102">
+											<!--头部导航开始-->
+											<header class="pub-header skin-header">
+												<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+												<h1 class="title"> 选择城市/区 </h1>
+												<div class="right-nav"><a href="#" class="add-end">完成</a></div>
+											</header>	
+											<!--头部导航结束-->
+											<div class="add-sele">
+												<div class="ad-selected">
+													<em class="vi-gray2">已选择:</em>
+													<span class="">中国，</span>
+													<span class="">江苏</span>
+													<i class="close iconfont">&#xe602;</i>
+												</div>
+												<ul class="add-list">
+													<li class="item actived"><div class="city">徐汇</div><i class="iconfont arrow">&#xe607;</i></li>
+													<li class="item">
+														<div class="city">崇明</div><i class="iconfont arrow">&#xe607;</i>
+													</li>
+													<li class="item">
+														<div class="city">青浦</div><i class="iconfont arrow">&#xe607;</i>
+													</li>
+													<li class="item">
+														<div class="city">奉贤</div><i class="iconfont arrow">&#xe607;</i>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</li>
+									<li class="item">
+										<div class="city">重庆</div><i class="iconfont arrow">&#xe607;</i>
+									</li>
+									<li class="item">
+										<div class="city">吉林</div><i class="iconfont arrow">&#xe607;</i>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="item"><div class="city">韩国</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">朝鲜</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">美国</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">伊拉克</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">伊朗</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">阿富汗</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">以色列</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">索马里</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">吉布提</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">叙利亚</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">巴勒斯坦</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">巴基斯坦</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

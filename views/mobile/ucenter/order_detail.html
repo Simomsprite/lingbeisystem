@@ -1,0 +1,225 @@
+{set:$item = $this->order_info;}
+<div id="pageInfo" data-title="订单详情" data-goback="{url:ucenter/order}"></div>
+<div class="sub-order">
+    <div class="brief mtg_10">
+        <ul>
+            <li><span class="tit abe-gray3">
+                <i class="iconfont mrg_10">&#xe68e;</i>订单状态：</span>
+
+                {if:$item['is_prescription'] == 1}
+                {set:$status_text = Order_Class::orderStatusText($orderStatus)}
+                <span class="vi-org1">{$status_text}</span>
+                {else:}
+                {if:$item['status'] == 3}
+                {echo:Order_Class::orderStatusText(Order_Class::getOrderStatus($item))}
+                {else:}
+                    {if:$item['prescription_status'] == 0}
+                    {set:$status_text = "等待审核"}
+                    {$status_text}
+                    {elseif:$item['prescription_status'] == 1}
+                    {set:$status_text = Order_Class::orderStatusText($orderStatus)}
+                    <span class="vi-org1">{$status_text}</span>
+                    {else:}
+                    审核失败
+                    {/if}
+                    {/if}
+                {/if}
+
+
+
+
+            </li>
+            <li><span class="tit abe-gray3">订单总计：</span><span>{$item['order_amount']} <em class="abe-gray3">（含运费 {$item['real_freight']}）</em></span></li>
+            <li><span class="tit abe-gray3">订单编号：</span><span>{$item['order_no']}</span></li>
+            <li><span class="tit abe-gray3">下单时间：</span><span>{$item['create_time']}</span></li>
+
+            </ul>
+        </ul>
+    </div>
+    <div class="sele-address mtg_10">
+        <i class="iconfont abe-gray3">&#xe612;</i>
+        <a href="javascript:void(0);" class="abe-block" id="sele-address">
+        <div class="abe-ft14">
+            <span class="name">{$item['accept_name']}</span>
+            <span class="number pdl_30">{$item['mobile']}</span></div>
+        <p class="abe-ft13">{$this->order_info['province_str']} {$this->order_info['city_str']} {$this->order_info['area_str']} {$this->order_info['address']}</p>
+    </a> </div>
+    <ul class="mode-style mode-det-style mtg_10">
+        <li><a href="javascript:void(0);" class="abe-block" id="sele-pay">
+            <div class="tit">支付配送</div>
+            <div class="item">
+                <div>{$item['payment']}</div>
+            </div>
+        </a> </li>
+        {if:$item['invoice']==1}
+        <li>
+            <a href="javascript:void(0);" class="abe-block">
+                <div class="tit">发票信息</div>
+                <div class="item">
+                    <div>{$item['invoice_title']}</div>
+                </div>
+             </a>
+        </li>
+        {/if}
+
+
+    </ul>
+
+    {if:$item['pay_status'] == 1 && $item['distribution_status'] == 1}
+    <ul class="mode-style mtg_10">
+        <li><a href="{url:ucenter/orderfreight/id/$item[id]}" class="abe-block">
+            <div class="tit abe-txtl">
+                <div><em class="abe-gray3">配送公司：</em>{$item['freight']['freight_name']}</div>
+                <div><em class="abe-gray3">物流单号：</em>{$item['freight']['delivery_code']}</div>
+            </div>
+            <div class="item">
+                <div>&nbsp;</div>
+                <p class="abe-ft12 abe-gray3">&nbsp;</p>
+            </div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+        </li>
+
+    </ul>
+    {/if}
+
+    {if:$item['pay_status'] == 1}
+    <div class="ord-cou-step">
+        <div class="arrow current"> <span>提交订单</span> <i>1</i>
+            <time>{$item['create_time']}</time>
+
+        </div>
+
+        <div class="arrow current"> <span>已支付</span> <i>2</i>
+            <time>{$item['pay_time']}</time>
+        </div>
+        {if:$item['distribution_status'] == 1}
+        <div class="arrow current"> <span>商品出库</span> <i>3</i>
+            <time>{$item['send_time']}</time>
+        </div>
+        {else:}
+        <div class="arrow"> <span>商品出库</span> <i>3</i>
+            <time></time>
+        </div>
+        {/if}
+
+
+        {if:$item['status'] == 5}
+        <div class="arrow current"> <span>已签收</span> <i>3</i>
+            <time>{$item['completion_time']}</time>
+        </div>
+        {else:}
+        <div class="arrow"> <span>已签收</span> <i>3</i>
+            <time></time>
+        </div>
+        {/if}
+
+    </div>
+    {/if}
+    <dl class="cart-list order-list">
+        <dt> <span class="abe-fl">商品清单</span></dt>
+
+        {set:$order_id=$item['id']}
+        {foreach:items=Api::run('getOrderGoodsListByGoodsid',array('#order_id#',$order_id)) item=$good}
+        {set:$good_info = JSON::decode($good['goods_array'])}
+        <dd>
+            <div class="item">
+                <a href="{url:/site/products/id/$good[goods_id]}">
+                    <img src="{url:/pic/thumb/img/$good[img]/w/140/h/140}" alt="" width="100" class="img">
+                </a>
+                <h1 class="pro-name">
+                    <a href="{url:/site/products/id/$good[goods_id]}">
+                    <!--<i class="tags">OTC</i>-->
+                        {$good_info['name']}
+                        {if:$good_info['value']!=''}<p>{$good_info['value']}</p>{/if}
+                    </a>
+                </h1>
+                <div class="price">￥{$good['goods_price']} <em>x{$good['goods_nums']}</em></div>
+            </div>
+        </dd>
+        {/foreach}
+        <dd class="clt-bnd"></dd>
+    </dl>
+
+    <ul class="amount-money mtg_10">
+        <li><span class="tit abe-fl">商品金额</span><span class="abe-ft16 abe-fr">￥{$this->order_info['payable_amount']}</span></li>
+        {if:$this->order_info['taxes'] > 0}
+        <li><span class="tit abe-fl">税金</span><span class="abe-ft16 abe-fr">￥{$this->order_info['taxes']}</span></li>
+        {/if}
+
+        {if:$this->order_info['pay_fee'] > 0}
+        <li><span class="tit abe-fl">支付手续费</span><span class="abe-ft16 abe-fr">￥{$this->order_info['pay_fee']}</span></li>
+        {/if}
+        {if:$this->order_info['insured'] > 0}
+        <li><span class="tit abe-fl">保价</span><span class="abe-ft16 abe-fr">￥{$this->order_info['insured']}</span></li>
+        {/if}
+        {if:$this->order_info['discount'] > 0}
+        <li><span class="tit abe-fl">订单折扣或涨价</span><span class="abe-ft16 abe-fr">￥{$this->order_info['discount']}</span></li>
+        {/if}
+        {if:$this->order_info['promotions'] > 0}
+        <li><span class="tit abe-fl">会员优惠</span><span class="abe-ft16 abe-fr">￥{$this->order_info['promotions']}</span></li>
+        {/if}
+        <li><span class="tit abe-fl">运费</span><span class="abe-ft16 abe-fr">￥{$this->order_info['real_freight']}</span></li>
+        {if:$status_text == "等待付款"}
+        <li><span class="tit abe-fl">应付金额</span><span class="abe-ft16 abe-fr">￥{$item['order_amount']}</span></li>
+        {/if}
+    </ul>
+    <div class="blank10"></div>
+</div>
+<div class="shop-menu">
+    {if:$orderStatus == 2}
+    <!--<div class="abe-fl dtime"> 剩余付款时间<br>-->
+        <!--30小时33分17秒 </div>-->
+
+    <div class="abe-fr sm-btnbox">
+        {if:in_array($orderStatus,array(1,2))}
+        <input type="button" onclick="window.location.href='{url:/ucenter/order_status/order_id/$this->order_info['order_id']/op/cancel}';" value="取消订单" class="pub-btn pb-nobg-gray">
+        {/if}
+
+        {if:$orderStatus == 2}
+        <input type="button" onclick="gourl('{url:/block/doPay/order_id/$item[id]}');" value="立即支付" class="pub-btn">
+        {/if}
+
+    </div>
+    {elseif:in_array($orderStatus,array(3,4,11,12))}
+        {if:$orderStatus == 12}
+            {set:$refund_doc_id = Order_Class::getrefundmentByOrderId($this->order_info['order_id'])}
+            <div class="abe-fr sm-btnbox">
+
+                <input type="button" onclick="window.location.href='{url:/ucenter/refunds_detail/id/$refund_doc_id}';" value="退款详情" class="pub-btn pb-nobg-gray">
+            </div>
+        {else:}
+            <div class="abe-fr sm-btnbox">
+                <input type="button" onclick="window.location.href='{url:/ucenter/refunds_edit/order_id/$this->order_info['order_id']}';" value="申请退款" class="pub-btn pb-nobg-gray">
+            </div>
+        {/if}
+
+    {else:}
+    <div class="combined-style2 abe-txtr">
+        <div>应付金额：<em class="vi-org1">¥ {$item['order_amount']}</em></div>
+    </div>
+    {/if}
+
+</div>
+
+<script>
+	$(function(){
+        hideNav()
+	})
+	//快递跟踪
+	function freightLine(doc_id) {
+		var urlVal = "{url:/block/freight/id/@id@}";
+		urlVal = urlVal.replace("@id@", doc_id);
+		art.dialog.open(urlVal, {
+			'title': '轨迹查询',
+			'width': '80%',
+			'height': '80%'
+		});
+	}
+
+	//修改表单信息
+	function editForm() {
+		$('#acceptShow').toggle();
+		$('#acceptForm').toggle();
+	}
+</script>

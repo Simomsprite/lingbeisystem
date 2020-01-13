@@ -1,0 +1,129 @@
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 拎贝数据 </h1>
+    </header>
+    <!--头部导航结束-->
+    <input type="hidden" id="type" value="{$this->type}" name="type"/>
+    <input type="hidden" id="rank" value="{$this->rank}" name="rank"/>
+    <div class="filter filter-skin">
+        <a href="{url:site/release_rank&type=}{$this->transaction}&rank=supply"
+           {if: $this->type=="transaction"} class="actived"{/if} id="transaction" name="transaction" value="{$this->transaction}">交易排名</a>
+        <a href="{url:site/release_rank&type=}{$this->releases}&rank=supply"
+           {if: $this->type=="releases"} class="actived"{/if} id="release" name="release"  value="{$this->releases}">发布排名</a>
+        <a href="{url:site/release_rank&type=}{$this->browse}&rank=supply"
+           {if: $this->type=="browse"} class="actived"{/if} id="browse" name="browse" value="{$this->browse}">浏览排名</a>
+        <a href="{url:site/release_rank&type=}{$this->attention}&rank=supply"
+           {if: $this->type=="attention"} class="actived"{/if}  id="attention" name="attention" value="{$this->attention}">关注排名</a>
+    </div>
+    <!--筛选结束-->
+    <div class="probox mt5">
+        <div class="titlebar">
+            {if: $this->type=="transaction"}<h1>交易排名</h1>
+            {elseif:$this->type=="releases"}<h1>发布排名</h1>
+            {elseif:$this->type=="browse"}<h1>浏览排名</h1>
+            {elseif:$this->type=="attention"}<h1>关注排名</h1>
+            {else:}<h1>排名</h1>
+            {/if}
+            </h1>
+            <div class="tb-nav">
+                <a href=""   {if: $this->rank=="supply"} class="actived"{/if} id="supply" name="supply">货源排名</a>
+                <a href=""  {if: $this->rank=="buy"} class="actived"{/if} id="buy" name="buy">求购排名</a>
+            </div>
+        </div>
+
+        <ul class="pro-list" id="lists">
+            {foreach:items=$this->goods_info}
+            <li class="lis">
+                <a href="{url:site/release_view&release_id=}{$item['id']}">
+                    {if:$key == 0}<div class="imgbox"><div class="tip tp1"><i class="iconfont">&#xe622;</i>1</div><img src="{$item['img']}" alt=""></div>
+                    {elseif:$key == 1} <div class="imgbox"><em class="tip tp2"><i class="iconfont">&#xe622;</i>2</em><img src="{$item['img']}" alt=""></div>
+                    {elseif:$key == 2}  <div class="imgbox"><em class="tip tp3"><i class="iconfont">&#xe622;</i>3</em><img src="{$item['img']}" alt=""></div>
+                    {else:}<div class="imgbox"><em class="tip"></em><img src="{$item['img']}" alt=""></div>
+                    {/if}
+                    <h1 class="name">{$item['name']}</h1>
+                    <div class="brand item pb30">{$item['brand']}</div>
+                    <div class="code item">{$item['goods_bar_code']}</div>
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    <div class="more" >
+        <a href="#" id="looding" onclick="loading()" class="tc abk ft14 pt10 pb20 vi-gray2">点击加载更多...</a>
+    </div>
+</div>
+<script>
+    $(function(){
+        var actived=$('.actived').attr('value');
+        $('#supply').prop("href",'{url:site/release_rank&type=}'+actived+'&rank=supply');
+        $('#buy').prop("href",'{url:site/release_rank&type=}'+actived+'&rank=buy');
+    });
+
+    var type=$("#type").val();
+    var rank=$("#rank").val();
+    var page=1;
+    function loading() {
+        let submitData = {
+            page: page,
+            type: type,
+            rank: rank,
+        };
+        $.ajax({
+            type: "POST",
+            url: "{url:site/release_loading}",
+            data: submitData,
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                var html="";
+                for (var i=0;i<data.length;i++){
+                    var msg=data[i];
+                    html+='<li class="lis">' +
+                        '<div class="imgbox"><em class="tip"></em><img src=" '+ msg.img +' "  alt=""></div><a href="{url:site/release_view&release_id=}{$item["id"]}">'
+                        +'<h1 class="name">'+msg.name+'</h1>'
+                        + '<div class="brand item pb30">'+msg.brand+'</div>'
+                        + '<div class="code item">'+msg.goods_bar_code+'</div>'
+                        + '</a></li>';
+                }
+                $("#lists").append(html);
+                if (data.length<10){
+                    $('.more').hide();
+                }
+            }
+
+        });
+        page++;
+    }
+
+    /*$(function() {
+       if ($('.pro-list > li').size()>10){
+           $('.more').prop('style','display:block');
+       }
+    });*/
+
+
+    /**
+     *
+     * 　　　┏┓　　　┏┓
+     * 　　┏┛┻━━━┛┻┓
+     * 　　┃　　　　　　　┃
+     * 　　┃　　　━　　　┃
+     * 　　┃　┳┛　┗┳　┃
+     * 　　┃　　　　　　　┃
+     * 　　┃　　　┻　　　┃
+     * 　　┃　　　　　　　┃
+     * 　　┗━┓　　　┏━┛Code is far away from bug with the animal protecting
+     * 　　　　┃　　　┃    神兽保佑,代码无bug
+     * 　　　　┃　　　┃
+     * 　　　　┃　　　┗━━━┓
+     * 　　　　┃　　　　　 ┣┓
+     * 　　　　┃　　　　 ┏┛
+     * 　　　　┗┓┓┏━┳┓┏┛
+     * 　　　　　┃┫┫　┃┫┫
+     * 　　　　　┗┻┛　┗┻┛
+     *
+     */
+
+</script>

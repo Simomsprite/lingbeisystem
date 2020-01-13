@@ -1,0 +1,40 @@
+{set:$favoriteObj = Api::run('getFavorite',$this->user['user_id'],IReq::get('cat_id'));$favoriteList = $favoriteObj->find()}
+<div id="pageInfo"  data-goback="{url:ucenter/index}" data-title="我的收藏"></div>
+{if:$favoriteList}
+<dl class="cart-list order-list record-list">
+    {foreach:items=$favoriteList}
+
+    <dd>
+        <div class="item">
+            <a href="{url:/site/products/id/$item['goods_id']}">
+                <img src="{url:/pic/thumb/img/$item[img]/w/140/h/140}" alt="" width="100" class="img"></a>
+            <h1 class="pro-name">
+                <a href="{url:/site/products/id/$item['goods_id']}">
+                    {if:$item['is_prescription'] == 1}
+                    <i class="tags">OTC</i>
+                    {/if}
+                    {$item['name']}</a>
+            </h1>
+            <div class="price">￥{$item['sell_price']}
+                <del class="abe-gray3 abe-ft12">￥{$item['market_price']}</del>
+            </div>
+        </div><a href="javascript:void(0)" onclick="delModel({link:'{url:/ucenter/favorite_del/id/$item[id]}',msg:'是否取消收藏？'});" class="del iconfont">&#xe6b2;</a>
+    </dd>
+
+
+    {/foreach}
+
+
+    <dd class="clt-bnd"></dd>
+</dl>
+
+{else:}
+<section class="nodata">您还没有收藏任何宝贝呢!</section>
+{/if}
+
+<script>
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+})
+</script>

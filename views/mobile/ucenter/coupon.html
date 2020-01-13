@@ -1,0 +1,70 @@
+{js:artTemplate}
+<div id="pageInfo" data-goback="{url:ucenter/index}" data-title="优惠券"></div>
+<form action='{url:/ucenter/coupon_act}' id="login_form" name='user_info' method="POST" role="form">
+<div class="coupons-search">
+    <input type="text" class="txt" datatype="*" errormsg="请输入兑换码" nullmsg="请输入兑换码"  name="code" placeholder="请输入兑换码">
+    <input type="submit" value="兑换" class="pub-btn btn">
+</div>
+</form>
+<div class="coupons-tab">
+    <a href="{url:ucenter/coupon}" class="active">未使用</a>
+    <a href="{url:ucenter/couponold}" class="">已过期</a>
+</div>
+<ul class="coupons-page">
+    {set:$user_id=$this->user['user_id']}
+    {set:$page= (isset($_GET['page'])&&(intval($_GET['page'])>0))?intval($_GET['page']):1;}
+    {query: name=prop where=user_id eq $user_id and is_userd eq 0 and is_send eq 1 and NOW() between start_time and  type eq  0 and is_close eq  0  order=id desc page=$page pagesize=50 }
+    <li>
+        <div class="top abe-ofl">
+            <h3 class="face-val abe-fl">{echo:floor($item['value'])}<sub>元</sub></h3>
+
+            <div class="cou-info abe-fl"> {$item['name']} <br>
+                {if:$item['goods_id']>0}
+                限{echo:block::getGoodsnfo($item['goods_id'])}使用
+                {else:}
+                {if:$item['cat_id'] == 0}
+                全站通用
+                {else:}
+                限{echo:block::getCateInfo($item['cat_id'])}分类
+                {/if}
+                {/if}<br>
+                {echo:substr($item['start_time'],0,10)}至{echo:substr($item['end_time'],0,10)} </div>
+        </div>
+        <div class="bottom abe-ofl">
+            <span class="abe-fl abe-ft14">满减券</span>
+            <a href="{url:}" class="abe-fr">立即使用&gt;</a>
+        </div>
+    </li>
+    {/query}
+</ul>
+{if:isset($item)}
+<!--{$query->getPageBar()}-->
+{else:}
+<section class="nodata">您当前没有优惠券</section>
+
+{/if}
+<!--<div class="abe-txtc"><a href="{url:ucenter/couponold}" class="abe-ft14 abe-gray3">查看历史优惠券</a></div>-->
+<a href="{url:site/coupont}" class="foot-btn">领券中心</a>
+
+<script type="text/javascript">
+    //hideNav();
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+</script>

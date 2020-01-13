@@ -1,0 +1,212 @@
+<div id="pageInfo" data-title="退款售后"></div>
+<script src='{theme:javascript/LocalResizeIMG.js}'></script>
+<script src='{theme:javascript/patch/mobileBUGFix.mini.js}'></script>
+<form action="{url:/ucenter/refunds_update}" method="post" callback="checkForm();">
+<input type="hidden" name="order_id" value="{$this->orderRow['id']}" />
+<input type="hidden" name="imgList" value="" />
+<input type="hidden" id="refund_msg" name="refund_msg" value="不想买了">
+<dl class="cart-list order-list tuikuan-list">
+
+    {foreach:items=Api::run('getOrderGoodsListByGoodsid',array('#order_id#',$this->orderRow['id'])) item=$good}
+    {set:$good_info = JSON::decode($good['goods_array'])}
+    {if:$good['is_send'] != 2}
+    <input type="checkbox" style="display: none"  checked name="order_goods_id[]" value="{$good['id']}" />
+    <dd>
+        <div class="item">
+
+            <a href="{url:/site/products/id/$good[goods_id]}">
+                <img src="{url:/pic/thumb/img/$good[img]/w/140/h/140}" alt="" width="100" class="img">
+            </a>
+            <h1 class="pro-name">
+                <a href="{url:/site/products/id/$good[goods_id]}">
+                    {if:$good['goods_type'] == 1}
+                    <i class="tags" style="background: #ff0000">OTC</i>
+                    {elseif:$good['goods_type'] == 2}
+                    <i class="tags" style="background: #00602e">OTC</i>
+                    {elseif:$good['goods_type'] == 3}
+                    <i class="tags" style="background: #cc1717">RX</i>
+                    {/if}
+                    {$good_info['name']}{if:$good_info['value']}{$good_info['value']}{/if}
+                </a>
+            </h1>
+            <div class="price">
+                <div class="abe-fl abe-gray3 abe-ft14"> 商家：来益旗舰店</div>
+                <div class="abe-fr abe-ft15">￥{echo:$good['real_price']*$good['goods_nums']}</div>
+            </div>
+        </div>
+    </dd>
+
+    {/if}
+    {/foreach}
+
+
+</dl>
+
+<ul class="user-form tuikuan-form mtg_10">
+    <li> <span class="tit">退款原因:</span> <a href="#" class="abe-block item" id="get-coupons">
+        <div class="info" id="refund_info">不想买了</div>
+        <div class="arrow iconfont">&#xe603;</div>
+    </a> </li>
+    <li> <span class="tit">退款说明:</span>
+        <div class="item">
+            <div class="info">
+                <input type="text" id="content" name="content" class="txt" placeholder="退款说明">
+            </div>
+        </div>
+    </li>
+</ul>
+
+
+<div class="appraise mtg_10">
+    <div class="pdl_10 abe-ft14">上传凭证</div>
+    <div class="are-bottom clearfix" id="prescription_div">
+        <label for="" class="up-proimg abe-fl" id="prescription_uplode">
+            <input type="file" id="uploadphoto">
+            <i class="iconfont">&#xe61d;</i> <span class="abe-block">上传凭证</span>
+        </label>
+
+
+    </div>
+</div>
+<div class="pdt_20 pdl_10 pdr_10">
+    <input type="submit" onclick="return checkForm()" value="提交" class="sub-btn">
+</div>
+<div class="shop-pop tuikuan-sele" style="display: none;">
+    <ul id="hl_li" class="user-form user-form-style2 mtg_10">
+        <li>
+            <label class="active" rel="不想买了">不想买了<i class="iconfont" style="top: 0px;">&#xe615;</i></label>
+        </li>
+        <li>
+            <label class="" rel="下错单了">下错单了<i class="iconfont" style="top: 0px;">&#xe615;</i></label>
+        </li>
+        <li>
+            <label rel="换个商品">换个商品<i class="iconfont" style="top: 0px;">&#xe615;</i></label>
+        </li>
+        <li>
+            <label rel="服务不好">服务不好<i class="iconfont" style="top: 0px;">&#xe615;</i></label>
+        </li>
+    </ul>
+    <input type="button"  value="确定" class="subbtn">
+</div>
+</form>
+<div class="popup-bg" style="display:none ;"></div>
+
+<script type="text/javascript">
+$(function(){
+
+    $("#get-coupons").click(function(){
+
+        $(".tuikuan-sele").show();
+        $(".tuikuan-sele").animate({'bottom':'0'});
+        $(".popup-bg").show();
+
+    });
+    $(".shop-pop .subbtn").click(function(){
+        var rel = $("#hl_li .active").attr("rel");
+        $("#refund_msg").val(rel);
+        $("#refund_info").html(rel);
+        $(".shop-pop").animate({'bottom':'-500px'});
+        $(".shop-pop").hide(300);
+        $(".popup-bg").hide();
+    });
+
+    $("#hl_li li").click(function(){
+       $("#hl_li label").removeClass("active");
+        $(this).find('label').addClass("active");
+    });
+
+
+    $('#uploadphoto').localResizeIMG({
+        width: 400,
+        quality: 1,
+        success: function (result) {
+            var submitData={
+                base64_string:result.clearBase64,
+            };
+            $.ajax({
+                type: "POST",
+                url: "{url:simple/upload_pic}",
+                data: submitData,
+                dataType:"json",
+                success: function(data){
+                    if (0 == data.status) {
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        return false;
+                    }else{
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        var proimg_count = $(".proimg").length;
+                        var attstr= '<img width="150" height="150" src="/'+data.url+'">';
+                        var html = '<div class="proimg">' +
+                                '<a href="javascript:void(0)" onclick="$(this).parent().remove();" class="close iconfont">&#xe641;</a>' +
+                                '<img name="picThumb" width="150" height="150" alt="/'+data.url+'" src="/'+data.url+'"></div>';
+                        if(proimg_count==1){
+                            $("#prescription_uplode").remove();
+                        }
+                        $("#prescription_div").append(html);
+                        return false;
+                    }
+                },
+                complete :function(XMLHttpRequest, textStatus){
+                },
+                error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+            });
+        }
+    });
+	// 隐藏底部导航
+	hideNav();
+})
+
+
+
+//提交表单前的检查
+
+
+//提交表单检查
+function checkForm(){
+//	if($('#content').val() == ''){
+//        layer.open({
+//            content:'请填写退款原因'
+//            ,skin: 'msg'
+//            ,time: 2 //2秒后自动关闭
+//        });
+//		return false;
+//	}
+
+    if($('[name="order_goods_id[]"]:checked').length == 0)
+    {
+        layer.open({
+            content:'请选择要退款的商品'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+        return false;
+    }
+    var goodsPhoto = [];
+    $('#prescription_div img[name="picThumb"]').each(function(){
+        goodsPhoto.push(this.alt);
+    });
+    if(goodsPhoto.length > 0)
+    {
+        $('input[name="imgList"]').val(goodsPhoto.join(','));
+    }
+    return true;
+
+
+}
+
+function del_img(obj){
+    $(this).parent().remove();
+}
+</script>

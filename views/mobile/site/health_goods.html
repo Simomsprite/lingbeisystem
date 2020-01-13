@@ -1,0 +1,76 @@
+<style>
+.abe-header{display:none;}
+</style>
+<div class="marketing">
+	 <!--幻灯片-->
+  <div class="swiper-container abe-pic-slider">
+    <div class="swiper-wrapper">    
+      <div class="swiper-slide"><img src="{skin:newcss/images/banner.jpg}"></div>      
+      <div class="swiper-slide"><img src="{skin:newcss/images/banner.jpg}"></div>
+      去 </div>
+    <div class="swiper-pagination swp1"></div>
+  </div>
+  <script>
+  $(document).ready(function(e) {
+	  var mySwiper = new Swiper('.abe-pic-slider',{
+	  loop: false,
+	  autoplay: 3000, 
+	  pagination : '.swp1',
+	});
+  });
+</script>
+{foreach:items=Api::run('getCategoryByParentidAll',array('#parent_id#',$this->catId)) item=$second}        
+	<div class="tit">{$second['name']}</div>
+	<div class="m4list qmyx-list">
+      <ul>
+      {set:$goodsObj = search_goods::find(array('category_extend' => 'select id from category where parent_id in ('.$second[id].')'),20);$resultData = $goodsObj->find()}
+      {foreach:items=$resultData  item=$third}
+        <li>
+          <div class="img"> <a target="_blank" href="{url:/site/products/id/$third['id']}"><img src="{url:/pic/thumb/img/$third[img]/w/200/h/200}" alt=""></a></div>
+          <div class="name">
+            <a target="_blank" href="{url:/site/products/id/$third['id']}"><h1>{$third['name']} </h1></a>
+          </div>
+          <div class="price">￥{$third['sell_price']}</div>
+		  <div class="del"><del>￥{$third['market_price']}</del></div>
+		 <a href="javascript:joinCart('{$third[id]}');" class="iconfont m4add">&#xe639;</a>	
+          </li>
+          {/foreach}
+      </ul>
+    </div>
+    {/foreach}
+        
+	</div>
+	<script>
+	function joinCart(goods_id){
+		$.getJSON(creatUrl("simple/joinCart"),{"goods_id":goods_id,"type":'goods',"goods_num":1,"random":Math.random},function(content)
+				{
+					if(content.isError == false)
+					{
+						//获取购物车信息
+						$.getJSON(creatUrl("simple/showCart"),{"random":Math.random},function(json)
+						{
+							//$('[name="mycart_count"]').text(json.count);
+							//$('[name="mycart_sum"]').text(json.sum);
+
+		                    layer.open({
+		                        content:"添加成功"
+		                        ,skin: 'msg'
+		                        ,time: 2 //2秒后自动关闭
+		                    });
+						//	tips("目前选购商品共"+json.count+"件，合计：￥"+json.sum);
+						});
+					}
+					else
+					{
+		                layer.open({
+		                    content:content.message
+		                    ,skin: 'msg'
+		                    ,time: 2 //2秒后自动关闭
+		                });
+					}
+		            //$(".shop-pop").animate({'bottom':'-500px'});
+		            //$(".shop-pop").hide(300);
+		            //$(".popup-bg").hide();
+				});
+			}	
+	</script>

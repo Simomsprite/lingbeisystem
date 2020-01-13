@@ -1,0 +1,107 @@
+<div class="top-search">
+    <form method='get' action="{url:/}">
+    <input type='hidden' name='controller' value='site'>
+    <input type='hidden' name='action' value='search_list'>
+    <div class="ts-box">
+        <input type="text" class="txt" name="word" placeholder="来益天然维生素E">
+        <button type="submit" class="btn"><i class="iconfont">&#xe896;</i></button>
+    </div>
+    </form>    <div class="ts-faq">
+        {if:$this->user}
+        <a href="{url:ucenter/index}" class="iconfont">&#xe66a;</a>
+        {else:}
+        <a href="{url:simple/login}" style="font-size: 14px;" class="">登录</a>
+        {/if}        <!--<a href="#" class="iconfont">&#xe685;</a>-->
+    </div></div><!--幻灯片-->{if:$this->index_slide}<div class="swiper-container abe-pic-slider">    <div class="swiper-wrapper">        {foreach:items=$this->index_slide}        <div class="swiper-slide">            <a href="{$item['url']}"><img src="{url:/pic/thumb/img/$item[img]}" alt="{$item['name']}"></a>        </div>
+        {/foreach}
+    </div>
+    <div class="swiper-pagination swp1"></div></div><script type="text/javascript">
+    $(document).ready(function(e) {
+        var mySwiper = new Swiper('.abe-pic-slider',{
+            loop: false,            autoplay: 3000,            pagination : '.swp1'
+        });
+    });
+</script>
+<!--幻灯片-->{/if}<!--菜单-->
+<ul class="menu">    <li><a href="{url:site/pro_list/cat/1}"><i class="iconfont">&#xe6f9;</i><em>中西药品</em></a></li>    <li><a href="{url:site/pro_list/cat/2}"><i class="iconfont">&#xe737;</i><em>护眼专区</em></a></li>    <li><a href="{url:site/pro_list/cat/113}"><i class="iconfont">&#xe64d;</i><em>生殖专区</em></a></li>    <li><a href="{url:site/pro_list/cat/15}"><i class="iconfont">&#xe68a;</i><em>医疗器械</em></a></li></ul>
+<!--菜单-->
+<!--模块1-->
+<div class="module1 mtg_5">
+    <div class="left" style="background: #fff">
+        {echo:Ad::showmobile("首页导航下面左侧(320*310)")}
+    </div>
+    <div class="right">
+        <div class="rtop">
+            {echo:Ad::showmobile("首页导航下面右上侧(430*155)")}
+        </div>
+        <div class="rbottom">
+            {echo:Ad::showmobile("首页导航下面右下侧(430*155)")}
+        </div>
+    </div>
+</div>
+<!--模块1-->
+<!--模块2-->
+<div class="module2 mtg_5">
+    <div class="mtit"> <span><i class="iconfont">&#xe602;</i>新品推荐</span> </div>    <div class="m2list swiper-container m2list-slide">
+        <div class="swiper-wrapper">
+            {foreach:items=Api::run('getCommendNew',12)}
+            {set:$tmpId=$item['id']}
+            <div class="item swiper-slide">
+                <a title="{$item['name']}" href="{url:/site/products/id/$tmpId}">
+                    <div class="img"><img title="{$item['name']}" src="{url:/pic/thumb/img/$item[img]/w/300/h/300}" alt=""></div>                    <div class="name">{echo:IString::substr($item['name'],10)}</div>
+                    <div class="price">¥{$item['sell_price']}</div>
+                </a>
+            </div>
+            {/foreach}
+        </div>
+        <div class="swiper-pagination swp2"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    var swiper = new Swiper('.m2list-slide', {
+        pagination: '.swp2',
+        slidesPerView: 3,
+        paginationClickable: true,
+        spaceBetween: 30,
+        observer:true
+    });
+</script>
+<!--模块2-->
+<div class="module3 mtg_5">
+    <div class="mtit"> <span><i class="iconfont">&#xe6f7;</i>每周特惠</span> </div>
+    <div class="m3list">
+        <ul>
+            {set:$now    = date("Y-m-d H:i:s",ITime::getNow());}
+            {query:name=ad_manage where=position_id eq 4 and  start_time l '$now' AND end_time g '$now' order=`order` asc limit=10   }            <li><a href="{$item['link']}"><img src="{webroot:}{$item['content']}" alt="">
+                <div class="name">{$item['name']}</div>
+            </a></li>
+            {/query}
+        </ul>
+    </div>
+</div>
+<!--首页推荐商品-->
+{foreach:items=Api::run('getCategoryListTop')  item=$first }<div class="module4 mtg_5">
+    <div class="mtit"> <span><i class="iconfont">&#xe737;</i>{$first['name']}</span> </div>
+    <div class="specie">
+        {foreach:items=Api::run('getCategoryByParentid',array('#parent_id#',$first['id']))  item=$second}
+        <a href="{url:/site/pro_list/cat/$second[id]}">{$second['name']}</a>
+        {/foreach}
+    </div>
+    <div class="m4list">
+        <ul>
+            {foreach:items=Api::run('getCategoryExtendList',array('#categroy_id#',$first['id']),4)}            <li>                <a title="{$item['name']}" href="{url:/site/products/id/$item[id]}">                <div class="img"><img title="{$item['name']}" src="{url:/pic/thumb/img/$item[img]/w/300/h/300}" alt=""></div>                <div class="name">                    <h1>{$item['name']}</h1>
+                    <p>{$item['long_name']}</p>
+                </div>
+                <div class="price">￥{$item['sell_price']}</div>
+            </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+</div>
+{/foreach}
+<style>
+.abe-header{
+	display:none;
+}
+</style>

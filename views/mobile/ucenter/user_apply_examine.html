@@ -1,0 +1,38 @@
+<div id="pageInfo" data-title="提交请求" data-goback="{url:ucenter/index}"></div>  
+<div class="yx-step-box">
+  <div class="yx-step">
+	<img src="{skin:newcss/images/lyico.png}" alt="">
+	{if:$this->apply_info['status'] == 0}
+	<div>正在审核中...</div>  
+	{elseif:$this->apply_info['status'] == 1}
+	<div>抱歉！条件不通过</div>
+	{/if}
+	</div>
+	{if:$this->apply_info['status'] == 0}
+<div class="pdl_15 pdt_10 pdb_10 abe-ft13">您已成功提交申请，请耐心等待审核结果！</div>
+{elseif:$this->apply_info['status'] == 1}
+		<div class="pdl_15 pdt_10 pdb_10 abe-ft13">申请状态：<span class="vi-org1">审核失败</span></div>
+{/if}
+</div>
+	<div class="yx-zysx">
+	<ul>
+		<li>·申请结果将在平台同意后1-3个工作日内回复</li>
+		<li>·如果个人信息有误，您可以修改后再次发起，平台会重新审核</li>
+		<li class="abe-txtr pdt_10"><input type="button" class="pub-btn pb-nobg-gray" value="重新申请" onclick="javascript:ajax_return();"></li>
+	</ul>	
+	</div>
+	 <script>
+	 $(function(){
+			hideNav();
+		});
+function ajax_return()
+{
+	 $.getJSON("{url:/ucenter/apply_return}",{},function(date){
+     	if(date.status=='success'){
+     		window.location.href="{url:ucenter/user_apply}";
+     	}else{
+     		alert(date.error);
+     	}
+     });
+}
+</script>

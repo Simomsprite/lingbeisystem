@@ -1,0 +1,314 @@
+<script type='text/javascript' src="{theme:javascript/cart.js}"></script>
+<div id="pageInfo" data-title="购物车"></div>
+{if:$this->count == 0}
+<!-- 无商品显示 -->
+<div class="none-mes">
+    <i class="iconfont abe-ft32 abe-block">&#xe601;</i>
+    <div class="blank10"></div>
+    <span class="abe-ft18 abe-block">购物车是空的</span>
+    <div class="blank5"></div>
+    <em class="abe-ft12 abe-block abe-gray3">现在开始购物行动吧！</em>
+    <div class="blank20"></div>
+    <a href="{url:}" class="pub-btn pb-nobg abe-ft14">马上去购物</a>
+</div>
+{else:}
+
+<!-- 优惠信息 -->
+<section class="cart_prompt" style="display:none" id="cart_prompt">
+    <h4>恭喜，您的订单已经满足了以下优惠活动！</h4>
+    <ol id="cart_prompt_box"></ol>
+</section>
+
+<!--促销模板-->
+<script type="text/html" id="promotionTemplate">
+    <li><%=item['plan']%>，<%=item['info']%></li>
+</script>
+
+    {if:$this->new_cart_list_a}
+    <dl class="cart-list">
+    <dt style="padding-left: 0px">
+        <span class="abe-fl">普通药品</span>
+    </dt>
+    {foreach:items = $this->new_cart_list_a item=$first}
+    <dt style="">
+        <label class="cartcheck" onclick="qv_seller(this,{$first['seller_id']},1)">
+        <input type="checkbox">
+        <i class="iconfont">&#xe6ab;</i></label>
+        <span class="abe-fl">{echo:Block::getSellerInfo($first['seller_id'])}</span>
+    </dt>
+    <div class="selldiv" id="selldiv_{$first['seller_id']}_1" rel="{$first['seller_id']}">
+    {foreach:items = $first['goods_list'] key=$goodsKey}
+    <script>var item{$goodsKey} = {echo:JSON::encode($item)};</script>
+    <dd>
+        <label price="{$item['sell_price']}" num="{$item['count']}"  title="{$item['is_prescription']}" rel="{$item['car_id']}" onclick="update_iscart(this,{$item['car_id']})" class="check {if:$item['is_cart'] == 1}active {/if}"> <i class="iconfont">&#xe6ab;</i></label>
+        <div class="item"> <a href="{url:/site/products/id/$item['goods_id']}">
+            <img src="{url:/pic/thumb/img/$item[img]/w/100/h/100}" alt="{$item['name']}" class="img">
+        </a>
+            <h1 class="pro-name">
+                <a href="{url:/site/products/id/$item['goods_id']}">
+                    {if:$item['goods_type'] == 1}
+                    <i class="tags" style="background: #ff0000">OTC</i>
+                    {elseif:$item['goods_type'] == 2}
+                    <i class="tags" style="background: #00602e">OTC</i>
+                    {elseif:$item['goods_type'] == 3}
+                    <i class="tags" style="background: #cc1717">RX</i>
+                    {/if}
+
+                    {$item['name']}
+                </a>
+            </h1>
+            <div class="cart-spec">
+                {if:isset($item['spec_array'])} {set:$spec_array=Block::show_spec($item['spec_array']);}
+                {foreach:items=$spec_array item=$specValue key=$specName}
+                {$specName}：{$specValue}&nbsp;
+                {/foreach}
+                {/if}
+                &nbsp;
+            </div>
+            <div class="price">￥{$item['sell_price']}</div>
+            <div class="num abe-fr">
+                <button onclick='cart_reduce(item{$goodsKey});' class="iconfont jian">&#xe64e;</button>
+                <button onclick='cart_increase(item{$goodsKey});' class="iconfont jia">&#xe61f;</button>
+                <input type="text" class="txt"  onchange='cartCount(item{$goodsKey});' id="count_{$item['goods_id']}_{$item['product_id']}" value="{$item['count']}">
+            </div>
+            <a href="javascript:removeCartById({$item['car_id']});" class="del iconfont">&#xe6b2;</a>
+        </div>
+    </dd>
+    {/foreach}
+     <div>
+    {/foreach}
+    </dl>
+    {/if}
+
+{if:$this->new_cart_list_b}
+<dl class="cart-list">
+
+<dt style="padding-left: 0px">
+    <span class="abe-fl">处方药</span>
+</dt>
+{foreach:items = $this->new_cart_list_b item=$first}
+<dt style="">
+    <label class="cartcheck" onclick="qv_seller(this,{$first['seller_id']},2)">
+        <input type="checkbox">
+        <i class="iconfont">&#xe6ab;</i>
+    </label>
+    <span class="abe-fl">{echo:Block::getSellerInfo($first['seller_id'])}</span>
+</dt>
+<div class="selldiv" id="selldiv_{$first['seller_id']}_2" rel="{$first['seller_id']}">
+{foreach:items = $first['goods_list'] key=$goodsKey}
+<script>var item{$goodsKey} = {echo:JSON::encode($item)};</script>
+<dd>
+    <label rel="{$item['car_id']}" price="{$item['sell_price']}" num="{$item['count']}" title="{$item['is_prescription']}" onclick="update_iscart(this,{$item['car_id']})" class="check {if:$item['is_cart'] == 1}active {/if}"> <i class="iconfont">&#xe6ab;</i></label>
+    <div class="item">
+        <a href="{url:/site/products/id/$item['goods_id']}">
+        <img src="{url:/pic/thumb/img/$item[img]/w/100/h/100}" alt="{$item['name']}" class="img">
+        </a>
+        <h1 class="pro-name">
+            <a href="{url:/site/products/id/$item['goods_id']}">
+                {if:$item['is_prescription'] == 1}
+                <i class="tags">OTC</i>
+                {/if}
+                {$item['name']}
+            </a>
+        </h1>
+        <div class="cart-spec">
+            {if:isset($item['spec_array'])} {set:$spec_array=Block::show_spec($item['spec_array']);}
+            {foreach:items=$spec_array item=$specValue key=$specName}
+            {$specName}：{$specValue}&nbsp;
+            {/foreach}
+            {/if}
+            &nbsp;
+        </div>
+        <div class="price">￥{$item['sell_price']}</div>
+        <div class="num abe-fr">
+            <button onclick='cart_reduce(item{$goodsKey});' class="iconfont jian">&#xe64e;</button>
+            <button onclick='cart_increase(item{$goodsKey});' class="iconfont jia">&#xe61f;</button>
+            <input type="text" class="txt"  onchange='cartCount(item{$goodsKey});' id="count_{$item['goods_id']}_{$item['product_id']}" value="{$item['count']}">
+        </div>
+        <a href="javascript:removeCartById({$item['car_id']});" class="del iconfont">&#xe6b2;</a>
+    </div>
+</dd>
+{/foreach}
+ </div>
+{/foreach}
+</dl>
+
+{/if}
+
+
+
+
+<!-- 统计信息 -->
+<section class="cart_count" style="display: none;">
+    <h4>购物车统计</h4>
+    <table>
+        <tr>
+            <th>总重量</th>
+            <th>总金额</th>
+            <th>商品优惠</th>
+            <th>促销优惠</th>
+        </tr>
+        <tr>
+            <td><span id='weight'>{$this->weight}</span>g</td>
+            <td>￥<span id='discount_price'>{$this->reduce}</span></td>
+            <td>￥<span id='promotion_price'>{$this->proReduce}</span></td>
+        </tr>
+    </table>
+</section>
+
+<div class="shop-menu">
+    <div class="combined">
+        <label class="check" onclick="checkAll(this)">
+            <input type="checkbox">
+            <i class="iconfont">&#xe6ab;</i>
+        </label>
+        <div>
+            <div>合计：<em class="abe-ft16 vi-org1">￥<span id='origin_price'>{echo:number_format($this->sum,2)}</span></em></div>
+            <div class="abe-gray3">(不含运费)</div>
+        </div>
+    </div>
+    <input type="button" onclick="sumbit_order();" class="combined-btn" value="去结算">
+</div>
+
+{/if}
+
+<script>
+$(function(){
+    //checkbox选中样式
+//    $(".check").click(function(){
+//        if($(this).hasClass("active")){
+//            $(this).removeClass("active")
+//        }else{
+//            $(this).addClass("active");
+//        }
+//    });
+	hideNav();
+    $(".category-search").hide();
+    sellerdiv();
+    base_price();
+})
+
+function sellerdiv(){
+    $(".selldiv").each(function(i){
+        if($(this).find(".check").hasClass("active")){
+            $(this).prev().find(".cartcheck").addClass("active")
+        }
+    });
+}
+
+
+function sumbit_order(){
+    var is_cart = 0;
+    var is_prescription_1 = 0;
+    var is_prescription_2 = 0;
+    $(".cart-list .check").each(function(i){
+        if($(this).hasClass("active")){
+             is_cart = 1;
+            var is_prescription = $(this).attr("title");
+            if(is_prescription == 1){
+                is_prescription_1 = 1;
+            }else{
+                is_prescription_2 = 1;
+            }
+        }
+    });
+
+    if(is_cart == 0){
+        layer.open({
+            content:'请选择要购买的商品'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+        return false;
+    }
+    if(is_prescription_1 == 1 && is_prescription_2 == 1){
+        layer.open({
+            content:'处方药和普通药不能一起结算'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+        return false;
+    }
+
+    gourl('{url:/simple/cart2}');
+}
+
+function update_iscart(obj,car_id){
+    if($(obj).hasClass("active")){
+        $(obj).removeClass("active");
+        var is_cart = 0;
+    }else{
+        $(obj).addClass("active");
+        var is_cart = 1;
+    }
+    sellerdiv();
+    base_price();
+    //更新购物车中此商品的数量
+    $.getJSON(creatUrl("/simple/update_iscart"),{"car_id":car_id,"is_cart":is_cart,"random":Math.random()},function(content){
+
+    });
+
+}
+function checkAll(obj){
+    if($(obj).hasClass("active")){
+        $(obj).removeClass("active");
+        $(".cart-list .check").removeClass("active");
+        $(".cart-list .cartcheck").removeClass("active");
+        var is_cart = 0;
+    }else{
+        $(obj).addClass("active");
+        $(".cart-list .check").addClass("active");
+        $(".cart-list .cartcheck").addClass("active");
+        var is_cart = 1;
+    }
+    var car_ids=new Array()
+    $(".cart-list .check").each(function(i){
+        var rel = $(this).attr("rel");
+        car_ids.push(rel);
+    });
+
+    sellerdiv();
+    base_price();
+    var str=car_ids.join(",");
+    $.getJSON(creatUrl("/simple/update_iscart"),{"car_id":str,"is_cart":is_cart,"random":Math.random()},function(content){
+
+    });
+
+}
+
+function qv_seller(obj,seller_id,type){
+    if($(obj).hasClass("active")){
+        $(obj).removeClass("active");
+       $("#selldiv_"+seller_id+"_"+type+" .check").removeClass("active");
+        var is_cart = 0;
+    }else{
+        $(obj).addClass("active");
+        $("#selldiv_"+seller_id+"_"+type+" .check").addClass("active");
+        var is_cart = 1;
+    }
+    var car_ids=new Array()
+    $("#selldiv_"+seller_id+"_"+type+" .check").each(function(i){
+        var rel = $(this).attr("rel");
+        car_ids.push(rel);
+    });
+    sellerdiv();
+    base_price();
+    var str=car_ids.join(",");
+    $.getJSON(creatUrl("/simple/update_iscart"),{"car_id":str,"is_cart":is_cart,"random":Math.random()},function(content){
+    });
+}
+
+function base_price(){
+    var zong_price = 0;
+    $(".cart-list .check").each(function(i){
+        if($(this).hasClass("active")) {
+            var price = $(this).attr("price");
+            var num = $(this).attr("num");
+            var price_num = floatMul(price,num);
+            zong_price =floatAdd(zong_price,price_num);
+
+        }
+    });
+    $("#origin_price").html(zong_price.toFixed(2));
+}
+</script>

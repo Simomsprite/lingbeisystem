@@ -1,0 +1,88 @@
+<div id="pageInfo" data-title="收货地址"  data-goback="{url:/ucenter/index}"></div>
+
+<ul class="sele-ad-list ad-list-page">
+
+	{foreach:items=$this->address}
+	<li class=" {if:$item['is_default']==1}active{/if}">
+		<i class="iconfont vi-org1">&#xe615;</i>
+		<a href="#" class="abe-block">
+		<div class="abe-ft14">
+			<span class="name">{$item['accept_name']}</span>
+			<span class="number pdl_30">{$item['mobile']}</span>
+		</div>
+		<p class="abe-gray3">
+			{if:$item['is_default']==1}
+			<em class="vi-org1">[默认]</em>
+			{/if}
+			{$this->areas[$item['province']]} {$this->areas[$item['city']]} {$this->areas[$item['area']]} {$item['address']}
+		</p>
+	</a>
+		<div class="edit">
+			<a href="{url:ucenter/edit_address/id/$item[id]}" class="iconfont">&#xe709;</a>
+			<a href="javascript:void(0);" onclick="delModel({link:'{url:/ucenter/address_del/id/$item[id]}'});" class="iconfont">&#xe627;</a>
+		</div>
+	</li>
+	{/foreach}
+
+</ul>
+
+<div class="exit-sub mtg_15 pdb_15">
+	<input type="button" onclick="gourl('{url:/ucenter/edit_address}')" value="添加新地址" class="sub-btn">
+</div>
+<script>
+$(function(){
+	{if:!$this->address}
+	$('#address_edit_btn').hide();
+	{/if}
+
+	// 内页隐藏页底导航
+	hideNav();
+	// 打开关闭编辑模式
+	var btn = $("#address_edit_btn"),
+		list = $("#address_list").find('li');
+	btn.on('click',function(){
+		var t = $(this),
+			v = t.data('v');
+		if(v==1){
+			t.html("编辑").data('v', '0');
+			list.children('footer').hide();
+			list.find('.select').show();
+		}else{
+			t.html("取消").data('v', '1');
+			// 这里把原来的 show()改成了 css控制
+			list.children('footer').css('display','table');
+			list.find('.select').hide();
+		}
+	});
+});
+
+//地址修改
+function editAddress(addressId)
+{
+	art.dialog.open(creatUrl("block/address/id/"+addressId),
+	{
+		"id":"addressWindow",
+		"title":"收货地址",
+		"ok":function(iframeWin, topWin){
+			var formObject = iframeWin.document.forms[0];
+			if(formObject.onsubmit() === false)
+			{
+				alert("请正确填写各项信息");
+				return false;
+			}
+			$.getJSON(formObject.action,$(formObject).serialize(),function(content){
+				if(content.result == false)
+				{
+					alert(content.msg);
+					return;
+				}
+				window.location.reload();
+			});
+			return false;
+		},
+		"okVal":"提交",
+		"cancel":true,
+		"cancelVal":"取消",
+	});
+}
+</script>

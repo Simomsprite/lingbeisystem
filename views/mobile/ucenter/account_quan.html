@@ -1,0 +1,60 @@
+<div id="pageInfo"  data-goback="{url:ucenter/index}" data-title="全部资产"></div>
+{set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+<ul class="user-form mtg_10">
+    <li>
+        <span class="tit">积分</span>
+        <a href="{url:ucenter/integral}" class="abe-block item">
+            <div class="info vi-org2">{$memberInfo['point']}</div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+    <li>
+        <span class="tit">成长值</span>
+        <a href="{url:ucenter/exp_log}" class="abe-block item">
+            <div class="info vi-org2">{$memberInfo['exp']}</div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+    <li>
+        <span class="tit">优惠券</span>
+        <a href="{url:ucenter/coupon}" class="abe-block item">
+            <div class="info vi-org2">{echo:Block::getPropNumByUserID($memberInfo['user_id'])}</div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+    <li>
+        <span class="tit">余额</span>
+        <a href="{url:ucenter/account_log}" class="abe-block item">
+            <div class="info vi-org2">￥{$memberInfo['balance']}</div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+    <li>
+        <span class="tit">专属活动</span>
+        <a href="javascript:zshd();" class="abe-block item">
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+
+
+</ul><ul class="user-form mtg_10">
+    <li>
+        <span class="tit">安全中心</span>
+        <a href="{url:ucenter/password}" class="abe-block item">
+            <div class="info">修改密码</div>
+            <div class="arrow iconfont">&#xe603;</div>
+        </a>
+    </li>
+
+
+</ul>
+
+<script type="text/javascript">
+    function zshd(){
+        layer.open({
+            content:"暂未开放"
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+    }
+</script>

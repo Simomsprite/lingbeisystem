@@ -1,0 +1,36 @@
+<div id="pageInfo"  data-goback="{url:ucenter/index}" data-title="推广中心"></div>
+<div class="uc-top">
+	    <a href="" class="setting iconfont">&#xe79d;</a>
+		<a class="uhead">
+		{if:stripos($user_ico,"http://")!== false}
+        	<img id="user_ico_img" src="{$user_ico}0"  onerror="this.src='{skin:image/user_ico.jpg}'" />
+        {else:}
+            <img id="user_ico_img" src="{webroot:$user_ico}"  onerror="this.src='{skin:image/user_ico.jpg}'" />
+        {/if}		
+		</a>
+		<h1 class="uname">五哥好帅</h1>
+	</div>
+	<div class="uc-mod all-mark">
+		<div class="order-link clearfix">
+			<a href="{url:ucenter/agent_order}">
+				<i class="iconfont">&#xe62f;</i>
+				我的订单
+			</a>
+			<a href="{url:ucenter/agent_customer}">
+				<i class="iconfont">&#xe649;</i>
+				我的客户
+			</a>
+			<a href="{url:ucenter/agent_poster}">
+				<i class="iconfont">&#xe62b;</i>
+				生成海报
+			</a>
+		</div>
+	</div>
+<!--    全民营销菜单-->
+<ul class="uc-nav">
+  <li><a href="#"><i class="iconfont">&#xe633;</i>推广规则<i class="iconfont arrow-r">&#xe608;</i></a></li>
+  <li><a href="#"><i class="iconfont">&#xe633;</i>推广信息<i class="iconfont arrow-r">&#xe608;</i></a></li>
+	<li><a href="#"><i class="iconfont">&#xe633;</i>关于我们<i class="iconfont arrow-r">&#xe608;</i></a></li>
+	<li><a href="#"><i class="iconfont">&#xe633;</i>意见反馈<i class="iconfont arrow-r">&#xe608;</i></a></li>
+	<li><a href="#"><i class="iconfont">&#xe633;</i>更多产品<i class="iconfont arrow-r">&#xe608;</i></a></li>
+</ul>

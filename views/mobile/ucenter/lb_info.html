@@ -1,0 +1,265 @@
+<script src="{skin:lb/js/lrz.all.bundle.js}"></script>
+
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="{url:/ucenter/index}"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 个人信息设置 </h1>
+    </header>
+    <!--头部导航结束-->
+    {set:$user_ico = $this->userRow['head_ico']}
+    <ul class="pub-form user-form mb7">
+        <li class="uhead-set">
+            <div class="imgbox">
+                <img src="{webroot:$user_ico}" id="img"  onerror="this.src='{skin:lb/images/tip.png}'" alt=""></div>
+                <h1 class="uname">{$this->userRow['nickname']}</h1>
+            <div class="ft12 vi-gray2"><span class="pr10">公司<em class="space2">|</em>{$this->memberRow['companyname']}</span><span>{$this->memberRow['true_name']}</span></div>
+        </li>
+    </ul>
+    <ul class="pub-form user-form mb7">
+        <li>
+            <a href="#" class="txtbox abk" id="uhead-set">
+                <span class="tit">修改头像</span>
+                <div class="info"></div>
+                <div class="arrow iconfont"></div>
+            </a>
+        </li>
+    </ul>
+    <ul class="pub-form user-form mb7">
+        <li>
+            <a href="{url:ucenter/lbinfo_usertype}" class="txtbox abk">
+                <span class="tit">用户类型</span>
+                {if:$this->memberRow['usertype']==1}
+                <div class="info tr vi-gray2">个人</div>
+                {elseif:$this->memberRow['usertype']==2}
+                <div class="info tr vi-gray2">公司</div>
+                {/if}
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+        </li>
+        <li>
+            <a href="{url:ucenter/lbinfo_true_name}" class="txtbox abk">
+                <span class="tit">姓名</span>
+                <div class="info tr vi-gray2">{$this->memberRow['true_name']}</div>
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+        </li>
+        <li>
+            <a href="{url:ucenter/lbinfo_companyname}" class="txtbox abk">
+                <span class="tit">公司名</span>
+                <div class="info tr vi-gray2">{$this->memberRow['companyname']}</div>
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="txtbox abk">
+                <span class="tit">昵称</span>
+                <div class="info tr vi-gray2">{$this->userRow['nickname']}</div>
+                <div class="arrow iconfont"></div>
+            </a>
+        </li>
+        <li>
+            <a href="{url:ucenter/lbinfo_mobile}" class="txtbox abk">
+                <span class="tit">手机号</span>
+                <div class="info tr vi-gray2">{$this->memberRow['mobile']}</div>
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+        </li>
+        <li>
+            <a href="{url:ucenter/lbinfo_wechat}" class="txtbox abk">
+                <span class="tit">微信号/QQ号</span>
+                <div class="info tr vi-gray2">{$this->memberRow['qq']}</div>
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="txtbox abk">
+                <span class="tit">邮箱绑定</span>
+                <div class="info tr vi-gray2">{$this->memberRow['email']}</div>
+                <div class="arrow iconfont"></div>
+            </a>
+        </li>
+    </ul>
+    <ul class="pub-form user-form mb7">
+        <li>
+            <a href="{url:ucenter/lb_address}" class="txtbox abk">
+            <span class="tit">所在地</span>
+                <div class="info tr vi-gray2">{$this->memberRow['area']}</div>
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+        </li>
+        <li>
+            <a href="{url:ucenter/lb_ship_address}" class="txtbox abk">
+                <span class="tit">常用收发货地址</span>
+                <div class="info tr vi-gray2">{$this->addressRow['country']} {$this->addressRow['address']}</div>
+                <div class="arrow iconfont">&#xe607;</div>
+            </a>
+
+        </li>
+    </ul>
+    <div class="uhead-set-pop">
+        <ul>
+            <li><a href="#" class="abk vi-red">头像选择</a><input id="uploadphoto"  name="_goodsFile" type="file" ></li>
+        </ul>
+        <ul>
+            <li><a href="#" class="abk" id="cancel">取消</a></li>
+        </ul>
+    </div>
+
+    <script>
+        $(function () {
+            $("#uhead-set").click(function () {
+                $(".uhead-set-pop").animate({bottom: '0'}, 350);
+                $(".uhead-set-bg").show();
+            });
+            $("#cancel,.uhead-set-bg").click(function () {
+                $(".uhead-set-pop").animate({bottom: '-100%'}, 350);
+                $(".uhead-set-bg").hide();
+            });
+        });
+
+        $(function(){
+            document.querySelector("#uploadphoto").addEventListener('change', function () {
+                var that = this;
+                lrz(that.files[0], {width: 800}).then(function (rst) {
+                    var img = new Image();
+                    img.src = rst.base64;
+                    console.log(img.src);
+                    var submitData = {
+                        base64_string: img.src,
+                    };
+                    console.log(submitData);
+                    $.ajax({
+                        type: "POST",
+                        url: "{url:ucenter/upload_tou}",
+                        data: submitData,
+                        dataType: "json",
+                        async:true,
+                        success: function (msg) {
+                            console.log(msg);
+                            if (data == 1) {
+                                // showtab1(1,data.msg);
+                            } else {
+                                // showtab1(2,data.msg);
+                            }
+                        },
+                        complete: function (XMLHttpRequest, textStatus) {
+                            console.log(3333);
+                            window.location.reload();
+                            $('.aui_outer').hide();
+                        }
+                    });
+                });
+            });
+        });
+
+
+      /*  $(function(){
+            document.querySelector("#uploadphoto").addEventListener('change', function (){
+                var file=this.files[0];
+                console.log(file);
+                if (window.FileReader) {
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+
+                    reader.onloadend  = function (e) {
+                        console.log(e.target.result);
+                        var submitData = {
+                            base64_string: e.target.result,
+                        };
+                        console.log(submitData)
+                        $.ajax({
+                            type: "POST",
+                            url: "{url:ucenter/upload_tou}",
+                            data: submitData,
+                            dataType: "json",
+                            success: function (data) {
+                                console.log(data);
+                                if (0 == data.status) {
+                                    console.log(1111);
+                                    layer.open({
+                                        content: data.content
+                                        , skin: 'msg'
+                                        , time: 2 //2秒后自动关闭
+                                    });
+                                    window.location.reload();
+                                    return false;
+                                } else {
+                                    console.log(2222);
+                                    layer.open({
+                                        content: data.content
+                                        , skin: 'msg'
+                                        , time: 2 //2秒后自动关闭
+                                    });
+                                    var attstr = '<img width="60" height="60" src="' + data.url + '">';
+                                    $("#img").attr("src", "/" + data.url);
+                                    return false;
+                                }
+                            },
+                            complete: function (XMLHttpRequest, textStatus) {
+                                console.log(3333);
+                                window.location.reload();
+                                $('.aui_outer').hide();
+                                $('.aui_buttons').click(function(){
+                                    window.location.reload();
+                                });
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) { //上传失败
+                                alert(XMLHttpRequest.status);
+                                alert(XMLHttpRequest.readyState);
+                                alert(textStatus);
+                            }
+                        });
+                    }
+                }
+            });
+        });*/
+
+       /* $('#uploadphoto').localResizeIMG({
+            width: 400,
+            quality: 1,
+            success: function (result) {
+                var submitData={
+                    base64_string:result.clearBase64,
+                };
+                console.log(submitData)
+                $.ajax({
+                    type: "POST",
+                    url: "{url:ucenter/upload_tou}",
+                    data: submitData,
+                    dataType:"json",
+                    success: function(data){
+                        if (0 == data.status) {
+                            layer.open({
+                                content: data.content
+                                ,skin: 'msg'
+                                ,time: 2 //2秒后自动关闭
+                            });
+                            return false;
+                        }else{
+                            layer.open({
+                                content: data.content
+                                ,skin: 'msg'
+                                ,time: 2 //2秒后自动关闭
+                            });
+                            var attstr= '<img width="60" height="60" src="'+data.url+'">';
+                            $("#img").attr("src","/"+data.url);
+                            return false;
+                        }
+                    },
+                    complete :function(XMLHttpRequest, textStatus){
+                    },
+                    error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    }
+                });
+            }
+        });*/
+
+
+
+    </script>
+</div>
+

@@ -1,0 +1,381 @@
+	<div class="wrap-box wrap-blayer">
+		<!--头部导航开始-->
+		<header class="pub-header">
+			<div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> {$user_info['nickname']} {echo:$release_info['type']==0 ? '求购':'货源'}</h1>
+			<div class="right-nav"><a href="#"><i class="iconfont">&#xe613;</i></a></div>
+		</header>	
+		<!--商品详情开始-->
+		<!--幻灯片开始-->
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+				{if:$release_info['status'] < 2 }
+				{foreach:items=$img_info_list key=$k item=$v}
+			    <div class="swiper-slide"><img src="{url:/pic/thumb/img/$v/w/425/h/425}" alt=""></div>
+				{/foreach}
+				{else:}
+				{foreach:items=$goods_info['goods_photo'] key=$k item=$v}
+				<div class="swiper-slide"><img src="{url:/pic/thumb/img/$v['img']/w/425/h/425}" alt=""></div>
+				{/foreach}
+				{/if}
+				<!-- Add Pagination -->
+				<div class="swiper-pagination" style="display: none"></div>
+				<!-- Add Arrows -->
+				<div class="swiper-button-next" style="display: none"></div>
+				<div class="swiper-button-prev" style="display: none"></div>
+			</div>
+			<!-- 幻灯片导航 -->
+    		<div class="swiper-pagination"></div>
+		</div>
+		<!--商品参数-->
+		<div class="pro-desc mb7">
+			<h1 class="p-name">{$goods_info['form']['name']} <a href="{url:site/release_search/search_word/$goods_info['form']['name']}" class="p-link">查看同款产品</a></h1>
+			<ul class="p-key">
+				<li><em class="vi-gray1">发布时间：</em>{echo:date('Y-m-d',strtotime($goods_info['form']['create_time']))}</li>
+				<li><em class="vi-gray1">收藏量：</em>{if:$release_info['status'] <2}0{else:}{$goods_info['form']['favorite']}{/if}</li>
+				<li><em class="vi-gray1">{if:$release_info['type'] == 1}货源地{else:}求购地{/if}：</em>{$area_name[0][area_name]} {$area_name[1][area_name]} {$area_name[2][area_name]}</li>
+			</ul>
+			<!--<span><em class="vi-gray1">货源地：</em>{$area_name[0][area_name]} {$area_name[1][area_name]} {$area_name[2][area_name]}</span>-->
+		</div>
+		<div class="pro-desc pro-desc-set mb7">
+			{if:$release_info['type'] == 1}
+			{if:$section_num == 1}
+			<ul class="buy-count buy-100p">
+				<li>{$section_min[0]} - {$section_max[0]}</li>
+			</ul>
+			<ul class="buy-count buy-price buy-100p">
+				<li><sub>￥</sub>{$section_price[0]}</li>
+			</ul>
+
+			{elseif:$section_num == 2}
+			<ul class="buy-count buy-50p">
+				<li>{$section_min[0]} - {$section_max[0]}</li>
+				<li>{$section_min[1]} - {$section_max[1]}</li>
+			</ul>
+			<ul class="buy-count buy-price buy-50p">
+				<li><sub>￥</sub>{$section_price[0]}</li>
+				<li><sub>￥</sub>{$section_price[1]}</li>
+			</ul>
+
+			{elseif:$section_num == 3}
+			<ul class="buy-count buy-30p">
+				<li>{$section_min[0]} - {$section_max[0]}</li>
+				<li>{$section_min[1]} - {$section_max[1]}</li>
+				<li>{$section_min[2]} - {$section_max[2]}</li>
+			</ul>
+			<ul class="buy-count buy-price buy-30p">
+				<li><sub>￥</sub>{$section_price[0]}</li>
+				<li><sub>￥</sub>{$section_price[1]}</li>
+				<li><sub>￥</sub>{$section_price[2]}</li>
+			</ul>
+			{/if}
+
+			{else:}
+			<ul class="buy-count  buy-100p">
+				<li>{$release_info['number']}</li>
+			</ul>
+			<ul class="buy-count buy-price buy-100p">
+				<li><sub>￥</sub>{$release_info['price']}</li>
+			</ul>
+			{/if}
+			<!--<div class="p-price">-->
+				<!--<i class="iconfont">&#xe65b;</i>价格隐藏-->
+			<!--</div>-->
+		</div>
+		{if:$release_info['type'] == 1}
+		<div class="pro-desc mb7">
+			<div class="tc ft14">
+				库存：<em class="vi-pink2">{$release_info['number']}</em>
+			</div>
+		</div>
+		<div class="alert-hint skin-alert ft13 mb7">
+			<i class="iconfont">&#xe65b;</i>
+			备货时间预计：{$release_info['delivery_cycle']}天以内
+		</div>
+		{/if}
+
+		<!--商品详情描述-->
+		<div class="pro-info mb7">
+			<div class="titlebar">
+				<h1>商品简介</h1>
+			</div>
+			<div class="p-detail">
+				{$goods_info['form']['content']}
+			</div>
+			<a href="#" class="view-detbtn mt10"><i class="iconfont">&#xe82e;</i></a>
+		</div>
+		<div class="pro-info mb7">
+			<div class="titlebar">
+				<h1>详情信息</h1>
+			</div>
+			<table class="p-desc-table">
+			  <colgroup>
+				<col style="width: 100px;">
+			  </colgroup>
+			  <tbody>
+				<tr>
+				  <th>品牌</th>
+				  <td>{$goods_info['form']['brand']}</td>
+				</tr>
+				<tr>
+				  <th>{if:$release_info['type'] == 1}货源地{else:}求购地{/if}</th>
+				  <td>{$area_name[0][area_name]} {$area_name[1][area_name]} {$area_name[2][area_name]}</td>
+				</tr>
+				  <!--<tr>-->
+				  <!--<th>商品类别</th>-->
+				  <!--<td>白玻璃</td>-->
+				<!--</tr>-->
+				  <tr>
+				  <th>商品条形码</th>
+				  <td>{$goods_info['form']['goods_no']}</td>
+				</tr>
+			  </tbody>
+			</table>
+		</div>
+		<!--商家信息-->
+		<div class="shop-desc mb7">
+			<div class="sd-top">
+				<a href="{url:ucenter/userhomepage}&userid={$release_info['user_id']}">
+					<img src="{url:/pic/thumb/img/$user_info['head_ico']/w/250/h/250}" alt="">
+					<h1 class="s-name">{$user_info['nickname']}</h1>
+					<div class="s-city vi-gray2">{$member_info['area']}</div>
+					<i class="iconfont vi-gray1">&#xe607;</i>
+				</a>
+			</div>
+			<div class="sd-bottom hid">
+				<div class="item">
+					<b class="abk">{$release_num['release_num']}</b>
+					<em class="vi-gray2">发布货源数</em>
+				</div>
+				<div class="item">
+					<b class="abk">{$seek_num['seek_num']}</b>
+					<em class="vi-gray2">发布求购数</em>
+				</div>
+				<div class="item">
+					<b class="abk">0</b>
+					<em class="vi-gray2">被关注次数</em>
+				</div>
+			</div>
+		</div>
+		{if:$$tuijian_info}
+		<div class="shop-pro-box mb7">
+			<div class="titlebar mb7">
+				<h1>推荐商品</h1>
+			</div>
+			<ul class="pro-list splist">
+                {foreach:items = $tuijian_info key=$k item=$v}
+				<li>
+					<a href="{url:site/release_view/release_id/$v['id']}">
+						<div class="imgbox"><img src="{$v['goods_info']['img']}" alt=""></div>
+						<h1 class="name">{$v['goods_info']['name']}</h1>
+					</a>
+				</li>
+                {/foreach}
+			</ul>
+		</div>
+		{/if}
+		{if:$is_man == 1}
+		<div class="pro-det-faq hid">
+			<a href="javascript:void(0)" onclick="confirm('确定要删除么？','delete_info()')" class="pub-btn vpink-btn vpbtn-bdn fl">删除</a>
+			{if:$release_info['type'] == 1}
+			<a href="{url:ucenter/release_edit/release_id/$release_info['id']}" class="pub-btn vpink-btn fr">编辑</a>
+			{elseif:$release_info['type'] == 0}
+			<a href="{url:ucenter/release_seek_edit/release_id/$release_info['id']}" class="pub-btn vpink-btn fr">编辑</a>
+			{/if}
+		</div>
+		{else:}
+		<div class="bottom-bar">
+			<a href="javascript:void(0)" onclick="add_favorite(this)" class="btn icon {if:$favorite_msg == 1}fav{/if}">
+				<i class="iconfont">&#xe614;</i>
+				<em class="abk">收藏</em>
+			</a>
+			<a href="javascript:void(0)" onclick="add_attention(this)" class="btn icon {if:$attention_msg == 1}fav{/if}">
+				<i class="iconfont">&#xe60a;</i>
+				<em class="abk">关注</em>
+			</a>
+			<a href="{url:jgim/room/friendid/$release_info['user_id']}" class="btn sub-btn">立即沟通</a>
+		</div>
+		{/if}
+	</div>
+	<script>
+		//轮播图
+		$(function(){
+			var swiper = new Swiper('.swiper-container',{
+				slidesPerView: 1,
+				spaceBetween: 30,
+				loop: true,
+				pagination: {
+					el: '.swiper-pagination',
+					clickable: true,
+				},
+				navigation: {
+					nextEl: '.swiper-button-next',
+					prevEl: '.swiper-button-prev',
+				},
+				speed:1000,
+				autoplay : {
+					disableOnInteraction: false,
+					delay:2000
+				},
+			});
+
+			$(".view-detbtn").click(function(){
+				if($(this).hasClass("view-hid")){
+					$(this).removeClass("view-hid");
+				}else{
+					$(this).addClass("view-hid");
+				}
+			});
+
+			$("nav.footer-nav skin-fnav").remove();
+		});
+
+		//删除
+		function delete_info(){
+			var release_id = "{$release_info['id']}";
+			var submit_data = {
+				'release_id':release_id,
+			};
+			$.ajax({
+				type: "POST",
+				url: "{url:ucenter/delete_info}",
+				data: submit_data,
+				dataType:"json",
+				success: function(data){
+					if(data.status == 1){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						//携带商品ID  2秒后跳转
+						setTimeout(function(){
+							window.location.href="{url:ucenter/matchinglist}&type=1";
+						},2000);
+					}else if(data.status == 2){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				},
+			});
+		}
+
+		//关注
+		function add_attention(r) {
+			var is_login = "{$is_login}";
+			if(is_login == 1){
+				layer.open({
+					content: '您还未登录，请先去登录',
+					skin: 'msg',
+					time: 1 //1秒后自动关闭
+				});
+				setTimeout(function(){
+					window.location.href = "{url:simple/lb_login}";
+				},2000);
+
+			}
+			var passive_user_id = "{$user_info['id']}";
+			var submit_data = {
+				'passive_user_id':passive_user_id,
+			};
+			$.ajax({
+				type: "POST",
+				url: "{url:ucenter/add_attention}",
+				data: submit_data,
+				dataType:"json",
+				success: function(data){
+					if(data.status == 1){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						$(r).attr('class','btn icon fav');
+					}else if(data.status == 2){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}else if(data.status == 3){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						$(r).attr('class','btn icon');
+					}else if(data.status == 4){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				},
+			});
+
+		}
+
+		//收藏
+		function add_favorite(r) {
+			var is_login = "{$is_login}";
+			if(is_login == 1){
+				layer.open({
+					content: '您还未登录，请先去登录',
+					skin: 'msg',
+					time: 1 //1秒后自动关闭
+				});
+				setTimeout(function(){
+					window.location.href = "{url:simple/lb_login}";
+				},2000);
+
+			}
+			var rid = "{$release_info['id']}";
+			var submit_data = {
+				'rid':rid,
+			};
+			$.ajax({
+				type: "POST",
+				url: "{url:ucenter/add_favorite}",
+				data: submit_data,
+				dataType:"json",
+				success: function(data){
+					if(data.status == 1){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						$(r).attr('class','btn icon fav');
+					}else if(data.status == 2){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}else if(data.status == 3){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						$(r).attr('class','btn icon');
+					}else if(data.status == 4){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				},
+			});
+
+		}
+
+
+
+
+	</script>

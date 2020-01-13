@@ -1,0 +1,81 @@
+<div id="pageInfo" data-title="地址编辑" data-goback="{url:/ucenter/address}"></div>
+{js:artTemplate}
+{js:areaSelect}
+<form action='{url:/ucenter/address_save}' name='edit_address' method="POST" id="edit_address">
+<input type="hidden" name="id" />
+<input type="hidden" name="is_default" id="is_default" value="0" />
+<ul class="cart-ul-info address address-edit">
+	<li><span class="tit">收货人：</span>
+		<input name="accept_name" datatype="*" nullmsg="请输入收件人" errormsg="请输入收件人"  type="text" placeholder="输入收货人姓名">
+	</li>
+	<li><span class="tit">联系方式：</span>
+		<input name="mobile" datatype="m" nullmsg="请输入手机号" errormsg="请输入正确的手机号" type="text" placeholder="输入手机号">
+	</li>
+	<li><span class="tit">所在地区：</span>
+
+		<select name="province"  datatype="*" nullmsg="请选择省" child="city,area"class="hl_select"></select>
+		<select name="city" child="area" datatype="*" nullmsg="请选择市" class="hl_select "></select>
+		<select name="area" datatype="*" nullmsg="请选择区"  class="hl_select "></select>
+
+	</li>
+	<li><span class="tit">详细地址：</span>
+		<input name="address" datatype="*" nullmsg="输入地址" errormsg="输入地址"  type="text" placeholder="输入地址">
+	</li>
+	<li class="check-add">
+		<label class="check mn-checked" id="mn_checked"> <i class="iconfont">&#xe6ab;</i></label>
+		<div><em class="abe-block pdb_5">设为默认地址</em>
+			<p class="abe-cgray2 abe-ft12">注：每次下单时会使用该地址</p>
+		</div>
+	</li>
+</ul>
+<div class="exit-sub mtg_15 pdb_15">
+	<input type="submit" value="保存" class="sub-btn">
+</div>
+</form>
+
+<script>
+    $(function() {
+        hideNav();
+		var areaInstance = new areaSelect('province');
+		areaInstance.init({echo:JSON::encode($this->Row)});
+		{if:$this->Row}
+		var formObj = new Form('edit_address');
+		formObj.init({echo:JSON::encode($this->Row)});
+			{if:$this->Row['is_default'] == 0}
+				$("#mn_checked").removeClass("mn-checked");
+			{/if}
+		{/if}
+
+		$(".check").click(function(){
+			if($(this).hasClass("mn-checked")){
+				$("#is_default").val(0);
+				$(this).removeClass("mn-checked")
+			}else{
+				$(this).addClass("mn-checked");
+				$("#is_default").val(1);
+			}
+		});
+
+		$("#edit_address").Validform({
+			tiptype:function(msg){
+				layer.open({
+					content: msg
+					,skin: 'msg'
+					,time: 2 //2秒后自动关闭
+				});
+
+			},
+			tipSweep:true,
+			ajaxPost:true,
+			callback:function(data){
+                layer.open({
+                    content: "操作成功"
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+                setTimeout('gourl("'+creatUrl("ucenter/address")+'")',2000);//1秒后执行
+			}
+		});
+    })
+
+</script>

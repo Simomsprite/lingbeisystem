@@ -1,0 +1,35 @@
+{js:artTemplate}
+<div id="pageInfo" data-goback="{url:ucenter/index}" data-title="过期优惠券"></div>
+
+<div class="coupons-search"><input type="text" class="txt" placeholder="请输入优惠码"><input type="button" value="兑换" class="pub-btn btn"></div>
+<div class="coupons-tab">
+    <a href="{url:ucenter/coupon}" class="">未使用</a>
+    <a href="{url:ucenter/couponold}" class="active">已过期</a>
+</div>
+<ul class="coupons-page">
+    {set:$user_id=$this->user['user_id']}
+    {set:$page= (isset($_GET['page'])&&(intval($_GET['page'])>0))?intval($_GET['page']):1;}
+    {query: name=prop where=user_id eq $user_id && is_userd eq 0 and is_send eq 1 && end_time l NOW()  && type eq  0 && is_close eq  0   order=id desc page=$page pagesize=50}
+    <li class="old">
+        <div class="odinfo">已过期</div>
+        <div class="top abe-ofl">
+            <h3 class="face-val abe-fl">{echo:floor($item['value'])}<sub>元</sub></h3>
+            <div class="cou-info abe-fl"> {$item['name']} <br>
+                使用范围：{echo:block::getCateInfo($item['cat_id'])}<br>
+                {$item['start_time']}<br>{$item['start_time']} </div>
+        </div>
+        <div class="bottom abe-ofl">
+            <span class="abe-fl abe-ft14">满减券</span>
+            <a href="{url:}" class="abe-fr">立即使用&gt;</a>
+        </div>
+    </li>
+    {/query}
+</ul>
+{if:isset($item)}
+<!--{$query->getPageBar()}-->
+{else:}
+<section class="nodata">您当前没有优惠券</section>
+
+{/if}
+<!--<div class="abe-txtc"><a href="{url:ucenter/couponold}" class="abe-ft14 abe-gray3">查看历史优惠券</a></div>-->
+<a href="{url:site/coupont}" class="foot-btn">领券中心</a>

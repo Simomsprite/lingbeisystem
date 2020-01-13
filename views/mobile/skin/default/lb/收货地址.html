@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>FUI</title>
+<link type="text/css" rel="stylesheet" href="style/reset.css">
+<link type="text/css" rel="stylesheet" href="style/index.css">
+<link type="text/css" rel="stylesheet" href="style/swiper.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+</head>
+
+<body>
+	<div class="wrap-box">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="user账户设置.html"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 常用收发货地址 </h1>
+		</header>	
+		<!--头部导航结束-->
+		<ul class="pub-form user-form mb7">
+			<li>
+				<div class="txtbox txtbox-pdl80">
+					<span class="tit">联系人</span>
+					<div class="info"><input type="text" class="txt" placeholder="请输入联系人名"></div>
+				</div>
+			</li>
+			<li>
+				<div class="txtbox txtbox-pdl80">
+					<span class="tit">联系电话</span>
+					<div class="info"><input type="text" class="txt" placeholder="请输入联系电话"></div>
+				</div>
+			</li>
+			<li>
+				<a href="#" class="txtbox abk" id="sele-city">
+					<span class="tit">所在国家</span>
+					<div class="info tr vi-gray2">请选择</div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+			<li>
+				<a href="#" class="txtbox abk">
+					<span class="tit">所在城市</span>
+					<div class="info tr vi-gray2">请选择</div>
+					<div class="arrow iconfont">&#xe607;</div>
+				</a>
+			</li>
+			<li>
+				<div class="txtbox txtbox-pdl80">
+					<span class="tit">邮编</span>
+					<div class="info"><input type="text" class="txt" placeholder="请输入邮编"></div>
+				</div>
+			</li>
+			<li>
+				<div class="txtbox">
+					<textarea class="txtarea" placeholder="详细地址"></textarea>
+				</div>
+			</li>
+			<li>
+				<div class="txtbox"><input type="checkbox" class="psi mr5">设置为默认地址</div>
+			</li>
+		</ul>
+		<div class="sub-box">
+			<input type="button" class="pub-btn vpink-btn" value="保存">
+		</div>
+	    <!--新建地址弹窗-->
+		<div class="address-pop wrap-tlayer add-state">
+			<!--头部导航开始-->
+			<header class="pub-header skin-header">
+				<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+				<h1 class="title"> 选择地区 </h1>
+				<div class="right-nav"><a href="#" class="add-end">完成</a></div>
+			</header>	
+			<!--头部导航结束-->
+			<div class="add-sele">
+				<div class="ad-selected">
+					<em class="vi-gray2">已选择:</em>
+					<span class="">中国</span>
+					<i class="close iconfont">&#xe602;</i>
+				</div>
+				<ul class="add-list">
+					<li class="item actived"><div class="city">中华人民共和国</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item">
+						<div class="city">日本</div><i class="iconfont arrow">&#xe607;</i>
+						<!--省级选择-->
+						<div class="address-pop wrap-tlayer add-city" style=" z-index: 102">
+							<!--头部导航开始-->
+							<header class="pub-header skin-header">
+								<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+								<h1 class="title"> 选择省 </h1>
+								<div class="right-nav"><a href="#" class="add-end">完成</a></div>
+							</header>	
+							<!--头部导航结束-->
+							<div class="add-sele">
+								<div class="ad-selected">
+									<em class="vi-gray2">已选择:</em>
+									<span class="">中国，</span>
+									<span class="">江苏</span>
+									<i class="close iconfont">&#xe602;</i>
+								</div>
+								<ul class="add-list">
+									<li class="item actived"><div class="city">北京</div><i class="iconfont arrow">&#xe607;</i></li>
+									<li class="item">
+										<div class="city">上海</div><i class="iconfont arrow">&#xe607;</i>
+										<!--市级选择-->
+										<div class="address-pop wrap-tlayer add-county" style=" z-index: 102">
+											<!--头部导航开始-->
+											<header class="pub-header skin-header">
+												<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+												<h1 class="title"> 选择城市/区 </h1>
+												<div class="right-nav"><a href="#" class="add-end">完成</a></div>
+											</header>	
+											<!--头部导航结束-->
+											<div class="add-sele">
+												<div class="ad-selected">
+													<em class="vi-gray2">已选择:</em>
+													<span class="">中国，</span>
+													<span class="">江苏，</span>
+													<span class="">徐州</span>
+													<i class="close iconfont">&#xe602;</i>
+												</div>
+												<ul class="add-list">
+													<li class="item actived"><div class="city">徐汇</div><i class="iconfont arrow">&#xe607;</i></li>
+													<li class="item">
+														<div class="city">崇明</div><i class="iconfont arrow">&#xe607;</i>
+													</li>
+													<li class="item">
+														<div class="city">青浦</div><i class="iconfont arrow">&#xe607;</i>
+													</li>
+													<li class="item">
+														<div class="city">奉贤</div><i class="iconfont arrow">&#xe607;</i>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</li>
+									<li class="item">
+										<div class="city">重庆</div><i class="iconfont arrow">&#xe607;</i>
+									</li>
+									<li class="item">
+										<div class="city">吉林</div><i class="iconfont arrow">&#xe607;</i>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</li>
+					<li class="item"><div class="city">韩国</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">朝鲜</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">美国</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">伊拉克</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">伊朗</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">阿富汗</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">以色列</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">索马里</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">吉布提</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">叙利亚</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">巴勒斯坦</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">巴基斯坦</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+					<li class="item"><div class="city">日本</div><i class="iconfont arrow">&#xe607;</i></li>
+				</ul>
+			</div>
+		</div>
+		<script>
+		$(function(){
+			$("#sele-city").click(function(){
+			   $(".add-state").animate({left:'0'},200);
+			});
+			$(".add-list .item .city").click(function(){
+				$(this).siblings(".address-pop").animate({left:'0'},200);
+			});
+			$(".left-nav").click(function(){
+			   $(this).parent().parent(".address-pop").animate({left:'-100%'},200);
+			});
+			$(".add-end").click(function(){
+				$(".address-pop").animate({left:'-100%'},200);
+			});
+		});
+		</script>
+	</div>
+</body>
+</html>

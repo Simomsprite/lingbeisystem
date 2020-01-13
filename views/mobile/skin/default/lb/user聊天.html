@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>FUI</title>
+<link type="text/css" rel="stylesheet" href="style/reset.css">
+<link type="text/css" rel="stylesheet" href="style/index.css">
+<link type="text/css" rel="stylesheet" href="style/swiper.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+</head>
+
+<body>
+	<div class="wrap-box wrap-nav">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="#"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 余荣荣 </h1>
+		</header>
+		<div class="chat">
+			<dl>
+				<dt>
+					<time>08:35</time>
+				</dt>
+				<dd class="c-left"> 
+					<a href="#" class="u-head"><img src="images/uhead.jpg" alt=""></a>
+					<p class="fl"><img src="images/33.jpg"/></p>
+				</dd>
+				<dd class="c-right"> 
+					<a href="#" class="u-head"><img src="images/photo-temp.jpg" alt=""><i>余荣荣</i></a>
+					<p class="fr"><img src="images/11.jpg"/></p>
+				</dd>
+				<dd class="c-right"> 
+					<a href="#" class="u-head"><img src="images/photo-temp.jpg" alt=""><i>余荣荣</i></a>
+					<p class="fr"><span>陶老师的课！</span></p>
+				</dd>
+				<dd class="c-left"> 
+					<a href="#" class="u-head"><img src="images/photo-temp.jpg" alt=""><i>余荣荣</i></a>
+					<p class="fl"><span>陶老师的课！</span></p>
+				</dd>
+			</dl>
+		</div>
+		<div class="chat-txt">
+			<div class="ct-top">
+				<a class="audio iconfont">&#xe7fb;</a>
+				<div contenteditable="true" class="txt"></div>
+				<a class="iconfont face">&#xe649;</a>
+				<a class="iconfont unfold">&#xe716;</a>
+			</div>
+			<div class="ct-bottom" style="display:none">
+				<a class="item">
+					<div class="iconfont">&#xe63f;</div>
+					<p>相册</p>
+				</a>
+				<a class="item">
+					<div class="iconfont">&#xe62a;</div>
+					<p>拍照</p>
+				</a>
+			</div>  
+		</div>
+	</div>
+	<script>
+		$(function(){
+		   $(".unfold").click(function(){
+			   $(".ct-bottom").show();
+		   }); 
+		   $(".chat dl").click(function(){
+			   $(".ct-bottom").hide();
+		   });   
+		   var chinner_height = $(".chat dl").height();
+		   var cheight = $(".chat").scrollHeight();
+			alert(cheight);	
+		});
+    </script>
+</body>
+</html>

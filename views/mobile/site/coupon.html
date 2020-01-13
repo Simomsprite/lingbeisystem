@@ -1,0 +1,52 @@
+<div id="pageInfo" data-title="领券中心"></div>
+<div class="coupons-pop " style="background: #fff">
+<ul>
+
+    {set:$nowtime = ITime::getDateTime();$isHasTicket = false;}
+    {foreach:items=Api::run('getTicketList',array('#nowtime#',$nowtime),20)}
+    {set:$isHasTicket = true;}
+    <li>
+        <div class="abe-ft18 vi-org1">{$item['value']}元</div>
+        <div>{$item['name']}（不含邮费），
+            {if:$item['goods_id']>0}
+            指定商品使用
+            {else:}
+            {echo:block::getCateInfo($item['cat_id'])}使用
+            {/if}
+        </div>
+        {if:$item['point']>0}
+        <div class="abe-gray3"> 需要{$item['point']}积分兑换</div>
+        {/if}
+        <div class="abe-gray3"> {echo:substr($item['start_time'],0,10)}至{echo:substr($item['end_time'],0,10)}</div>
+        {if:$item['point']>0}
+        <a href="javascript:point_dui({$item['id']});" class="pub-btn pb-nobg">兑换</a>
+        {else:}
+        <a href="javascript:point_dui({$item['id']});" class="pub-btn pb-nobg">领取</a>
+        {/if}
+   </li>
+    {/foreach}
+
+    {if:$isHasTicket == false}
+    <tr><td></td><td colspan="2"><label>暂无代金券</label></td></tr>
+    <section class="nodata">暂无优惠券</section>
+    {/if}
+</ul>
+</div>
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+    $(".category-search").hide();
+});
+
+    function point_dui(id){
+        $.getJSON(creatUrl("site/trade_ticket"),{'ticket_id':id,'random':Math.random},function(json)
+        {
+            layer.open({
+                content: json.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        });
+    }
+</script>

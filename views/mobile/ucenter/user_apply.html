@@ -1,0 +1,84 @@
+<div id="pageInfo" data-title="提交请求" data-goback="{url:ucenter/index}"></div>  
+	<ul class="yx-bm mtg_10">
+		<li>请填写以下个人信息：</li>
+		<li>1、您的名字？</li>
+		<li class="yx-info"><input type="text" class="txt" id="name" value="{$this->apply_info['name']}"></li>
+		<li>2、您的公司名称？</li>
+		<li class="yx-info"><input type="text" class="txt" id="company" value="{$this->apply_info['company']}"></li>
+		<li>3、您的所属部门？</li>
+		<li class="yx-info"><input type="text" class="txt" id="department" value="{$this->apply_info['department']}"></li>
+		<li>4、您的手机号码？</li>
+		<li class="yx-info"><input type="text" class="txt" id="mobile" value="{$this->apply_info['mobile']}"></li>
+		<li>5、您将履行的...</li>
+		<li class="yx-info"><span><input type="checkbox" class="mrg_5" id ="bmtk" onclick="javascript:bmtk();">我同意</span></li>
+	</ul>
+	
+  <div class="exit-sub mtg_15">
+  	<input id ="ok" type="button" value="我要提交" class="sub-btn" onclick="javascript:ajax_sub();" style="display:none;">
+  	<input id ="nok" type="button" value="我要提交" class="sub-btn sub-cancel">
+  </div>
+  
+  <script>
+$(function(){
+	hideNav();
+});
+function ajax_sub()
+{
+	var name =$("#name").val();
+	var company =$("#company").val();
+	var department =$("#department").val();	
+	var mobile =$("#mobile").val();
+	
+	if(name == ""){
+        alert ("请输入姓名！");
+        $("#name").focus();
+        return false;
+    }	
+	if(company == ""){
+        alert ("请输入公司！");
+        $("#company").focus();
+        return false;
+    }
+	if(department == ""){
+        alert ("请输入部门！");
+        $("#department").focus();
+        return false;
+    }
+	
+	if(mobile == ""){
+        alert ("请输入手机号！");
+        $("#mobile").focus();       //输入框获得光标
+        return false;
+    }
+	var isMobile=/^1[34578]\d{9}$/;
+    if(!isMobile.test(mobile) ){ //如果用户输入的值不同时满足手机号和座机号的正则
+        alert("请输入正确的手机号码");  //就弹出提示信息
+        $("#mobile").focus();       //输入框获得光标
+        return false;         //返回一个错误，不向下执行
+    }	
+	if($('#bmtk').is(':checked')) {		
+        $.getJSON("{url:/ucenter/user_apply_save}",{"name":name,"company":company,"department":department,"mobile":mobile},function(date){
+        	//,"mobile_code":mobile_code
+        	if(date.status=='success'){
+        		window.location.href="{url:ucenter/user_apply_examine}";
+        		//alert('提交成功！');
+        	}else{
+        		alert(date.error);
+        	}
+        });
+	}else{
+		$("#bmtk").focus();
+		alert('请勾选同意活动规则！');
+	}
+}
+
+function bmtk(){
+	if($('#bmtk').is(':checked')) {
+		$("#nok").hide();
+		$("#ok").show();
+	}else{
+		$("#ok").hide();
+		$("#nok").show();
+	}
+}
+	</script>

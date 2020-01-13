@@ -1,0 +1,79 @@
+<div id="pageInfo" data-title="{$sellerRow['true_name']}"></div>
+<section class="seller_info">
+    <dl>
+        <dt>评分：</dt>
+        <dd>
+            <em class="star star_{echo:statistics::gradeSeller($sellerRow['id'])}"></em>
+        </dd>
+    </dl>
+    <dl>
+        <dt>销量：</dt>
+        <dd>{echo:statistics::sellCountSeller($sellerRow['id'])} 件</dd>
+    </dl>
+    <dl>
+        <dt>联系电话：</dt>
+        <dd>{$sellerRow['phone']}  {set:plugin::trigger("onServiceButton",$sellerRow['id'])}</dd>
+    </dl>
+    <dl>
+        <dt>所在地：</dt>
+        <dd>{echo:join(' ',area::name($sellerRow['province'],$sellerRow['city'],$sellerRow['area']))} {$sellerRow['address']}</dd>
+    </dl>
+</section>
+
+{set:$goodsObj = search_goods::find(array('go.seller_id' => $seller_id),20);$resultData = $goodsObj->find();}
+{if:$resultData}
+<aside class="goods_sort">
+    {foreach:items=search_goods::getOrderType()}
+    <span class="sort_btn" onclick="gourl('{echo:search_goods::searchUrl(array('order','by'),array($key,search_goods::getOrderBy($key)))}')">{$item}</span>
+    {/foreach}
+</aside>
+<section class="goods_list">
+    <ul>
+        {foreach:items=$resultData}
+        <li>
+            <a href="{url:/site/products/id/$item[id]}">
+                <i class="photo"><img class="goods_photo" src="{url:/pic/thumb/img/$item[img]/w/200/h/200}" alt="{$item['name']}"></i>
+                <h3 class="name"><strong>{$item['name']}</strong></h3>
+                <del class="old_price">￥{$item['market_price']}</del>
+                <em class="price">￥{$item['sell_price']}</em>
+            </a>
+        </li>
+        {/foreach}
+    </ul>
+</section>
+{$goodsObj->getPageBar()}
+{else:}
+<section class="nodata">商品进货中，请稍后关注上架情况</section>
+{/if}
+
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+
+
+    // 切换导航样式
+    var order = getUrlParam("order");
+    var by = getUrlParam("by");
+    var sortBtn = $(".goods_sort").children('.sort_btn');
+    // sortBtn.eq(2).append('<i>');
+    if(order=="sale"){
+        if (by=="desc") {sortBtn.eq(0).addClass('on').append('<i class="icon-angle-down"></i>')}
+        else {sortBtn.eq(0).addClass('on').append('<i class="icon-angle-up"></i>');}
+
+    }else if (order=="cpoint"){
+        if (by=="desc") {sortBtn.eq(1).addClass('on').append('<i class="icon-angle-down"></i>')}
+        else {sortBtn.eq(1).addClass('on').append('<i class="icon-angle-up"></i>');}
+    }else if(order=="price"){
+        if (by=="desc") {sortBtn.eq(2).addClass('on').append('<i class="icon-angle-down"></i>')}
+        else {sortBtn.eq(2).addClass('on').append('<i class="icon-angle-up"></i>');}
+    }else if(order=="new"){
+        if (by=="desc") {sortBtn.eq(3).addClass('on').append('<i class="icon-angle-down"></i>')}
+        else {sortBtn.eq(3).addClass('on').append('<i class="icon-angle-up"></i>');}
+    }else{
+        sortBtn.eq(0).addClass('on');
+    };
+});
+</script>
+

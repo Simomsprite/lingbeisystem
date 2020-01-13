@@ -1,0 +1,72 @@
+<div id="pageInfo" data-title="商品搜索"></div>
+
+{set:$defaultWhere = array('search' => $this->word, 'category_extend' => $this->cat_id)}
+{set:$goodsObj = search_goods::find($defaultWhere,10);$resultData = $goodsObj->find();}
+{if:$resultData}
+<div class="cate-tab">
+    {foreach:items=search_goods::getOrderType()}
+    <a href="javascript:gourl('{echo:search_goods::searchUrl(array('order','by'),array($key,search_goods::getOrderBy($key)))}');" class="">{$item}</a>
+    {/foreach}
+</div>
+
+<div class="pro-box">
+    <dl class="pro-list">
+        {foreach:items=$resultData}
+        <dd>
+            <a href="{url:/site/products/id/$item[id]}" title="{$item['name']}" class="item">
+                <img src="{url:/pic/thumb/img/$item[img]/w/200/h/200}" alt="{$item['name']}" width="100" class="img">
+                <h1 class="pro-name">
+                    {if:$item['goods_type'] == 1}
+                    <i class="tags" style="background: #ff0000">OTC</i>
+                    {elseif:$item['goods_type'] == 2}
+                    <i class="tags" style="background: #00602e">OTC</i>
+                    {elseif:$item['goods_type'] == 3}
+                    <i class="tags" style="background: #cc1717">RX</i>
+                    {/if}
+                    {$item['name']}</h1>
+                <div class="price">￥{$item['sell_price']}</div>
+                <div class="clearfix abe-gray3">
+                    <div class="abe-fl"><em class="vi-org2">{$item['comments']}</em>条评价  </div>
+                    <em class="pdl_10">人气 {$item['visit']}</em>
+                    <div class="abe-fr">已售{$item['sale']}件</div></div>
+            </a>
+        </dd>
+
+        {/foreach}
+    </dl>
+</div>
+{$goodsObj->getPageBar()}
+{else:}
+<section class="nodata">搜索结果为零</section>
+{/if}
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+
+    // 切换导航样式
+    var order = getUrlParam("order");
+    var sortBtn = $(".cate-tab").children('a');
+    // sortBtn.eq(2).append('<i>');
+    if(order=="sale"){
+        sortBtn.eq(0).addClass('active').append('<i class="icon-angle-down"></i>');
+    }else if (order=="sale_toggle"){
+        sortBtn.eq(0).addClass('active').append('<i class="icon-angle-up"></i>');
+    }else if (order=="cpoint"){
+        sortBtn.eq(1).addClass('active').append('<i class="icon-angle-down"></i>');
+    }else if(order=="cpoint_toggle"){
+        sortBtn.eq(1).addClass('active').append('<i class="icon-angle-up"></i>');
+    }else if(order=="price"){
+        sortBtn.eq(2).addClass('on').append('<i class="icon-angle-down"></i>');
+    }else if(order=="price_toggle"){
+        sortBtn.eq(2).addClass('active').append('<i class="icon-angle-up"></i>');
+    }else if(order=="new"){
+        sortBtn.eq(3).addClass('active').append('<i class="icon-angle-down"></i>');
+    }else if(order=="new_toggle"){
+        sortBtn.eq(3).addClass('active').append('<i class="icon-angle-up"></i>');
+    }else{
+        sortBtn.eq(0).addClass('active');
+    };
+});
+</script>

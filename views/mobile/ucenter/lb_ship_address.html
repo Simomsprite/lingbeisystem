@@ -1,0 +1,204 @@
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="{url:ucenter/lb_info}"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 常用收发货地址 </h1>
+    </header>
+    <ul class="pub-form user-form mb7">
+    </ul>
+    {set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+    <form action='{url:ucenter/ship_address_add}' id="login_form" name='user_info' method="POST" role="form">
+        <ul class="pub-form user-form mb7">
+            <li>
+                <div class="txtbox txtbox-pdl80">
+                    <span class="tit">联系人</span>
+                    <div class="info">{if:($this->userInfo['accept_name'])}<input type="text" class="txt" name="accept_name" value="{$this->userInfo['accept_name']}">
+                    {else:}<input type="text" class="txt" name="accept_name"  placeholder="请输入联系人名">
+                    {/if}</div>
+                </div>
+            </li>
+            <li>
+                <div class="txtbox txtbox-pdl80">
+                    <span class="tit">联系电话</span>
+                    <div class="info">{if:($this->userInfo['mobile'])}<input type="text" class="txt"  name="mobile" value="{$this->userInfo['mobile']}">
+                        {else:}<input type="text" class="txt"  name="mobile" placeholder="请输入联系电话">
+                        {/if}</div>
+                </div>
+            </li>
+            <li>
+                <span class="tit">所在地区</span>
+                <div onclick="show_area(this)" class="txtbox abk">
+                    {if:($this->userInfo['country'])}<div class="info tr vi-gray2" id="a_id1info"> {$this->userInfo['country']}</div>
+                    <div class="arrow iconfont">&#xe607;</div>
+                    <input type="hidden" id="address" name="address">
+                    {else:}
+                    <div class="info tr vi-gray2" id="a_id1info"> 请选择</div>
+                    <div class="arrow iconfont">&#xe607;</div>
+                    <input type="hidden" id="address" name="address">
+                    {/if}
+                    <!--<div class="arr                          ow iconfont">&#xe607;</div>-->
+                </div>
+            </li>
+            <!--<li>-->
+                <!--<a href="#" class="txtbox abk" id="sele-city">-->
+                    <!--<span class="tit">所在国家</span>-->
+                    <!--<div class="info tr vi-gray2">请选择</div>-->
+                    <!--<div class="arrow iconfont">&#xe607;</div>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<a href="#" class="txtbox abk">-->
+                    <!--<span class="tit">所在城市</span>-->
+                    <!--<div class="info tr vi-gray2">请选择</div>-->
+                    <!--<div class="arrow iconfont">&#xe607;</div>-->
+                <!--</a>-->
+            <!--</li>-->
+            <li>
+                <div class="txtbox txtbox-pdl80">
+                    <span class="tit">邮编</span>
+                    <div class="info"> {if:($this->userInfo['zip'])}<input type="text" class="txt" name="zip" value="{$this->userInfo['zip']}">
+                    {else:}<input type="text" class="txt" name="zip" placeholder="请输入邮编">
+                    {/if}</div>
+                </div>
+            </li>
+            <li>
+                <div class="txtbox">
+                    {if:($this->userInfo['zip'])}
+                    <textarea class="txtarea" name="contact_addr" >{$this->userInfo['address']}</textarea>
+                    {else:}<textarea class="txtarea" name="contact_addr" placeholder="详细地址"></textarea>
+                    {/if}
+                </div>
+            </li>
+            <!--<li>-->
+                <!--<div class="txtbox"><input type="checkbox" class="psi mr5">设置为默认地址</div>-->
+            <!--</li>-->
+        </ul>
+        <div class="sub-box">
+            <input type="submit" id="submit"  class="pub-btn vpink-btn" value="保存">
+        </div>
+    </form>
+    <div class="address-pop wrap-tlayer add-state">
+        <!--头部导航开始-->
+        <header class="pub-header skin-header">
+            <div class="left-nav"><a href="javascript:;" onclick="back(this)"><i class="iconfont">&#xe65c;</i></a></div>
+            <h1 class="title"> 选择地区 </h1>
+            <div class="right-nav"><a href="javascript:;" onclick="shut()" class="add-end">完成</a></div>
+        </header>
+        <!--头部导航结束-->
+        <div class="add-sele">
+            <ul class="add-list">
+                {foreach:items = $nation}
+                <li class="item">
+                    <div class="city" onclick="add_city(this,{$item['area_id']})" tag="{$item['area_id']}">{$item['area_name']}</div><i class="iconfont arrow">&#xe607;</i>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    //设定起参
+    var count = 0;
+    //地址栏参数
+    var city_id = '';
+    //地址栏展示信息
+    var city_name = [];
+    //地址信息数组
+    var nation_id = [];
+    //图片数组
+    var img_num = [];
+
+
+    // 新建地址弹窗
+    function show_area(d) {
+
+        city_id = $(d).parent().attr("id");
+        city_name = [];
+        nation_id = [];
+        $(".add-state").animate({left:'0'},200);
+    }
+
+    //弹窗后退
+    function back(b) {
+        city_name.pop();
+        nation_id.pop();
+        $(b).parent().parent().parent(".address-pop").animate({left:'-100%'},200);
+    }
+
+    //弹窗完成
+    function shut() {
+        $("#a_id1info").text(city_name);
+        $("#area_id").val(nation_id);
+        $(".address-pop").animate({left:'-100%'},200);
+    }
+
+    //三级联动
+    function add_city(r,area_id){
+        let area = $(r);
+        $.ajax({
+            type: "POST",
+            url: "{url:ucenter/search_city}",
+            data: {"area_id":area_id},
+            dataType:"json",
+            success: function(data){
+                city_name.push(data.name );
+                nation_id.push(area_id,);
+                if(data.content != ''){
+                    var html = '';
+                    html += "<div class=\"address-pop wrap-tlayer add-city\" style=\" z-index: 102\">";
+                    html += "<header class=\"pub-header skin-header\">";
+                    html +="<div class=\"left-nav\"><a href=\"javascript:;\" onclick=\"back(this)\"><i class=\"iconfont\">&#xe65c;</i></a></div>";
+                    html += "<h1 class=\"title\"> 请选择 </h1>";
+                    html +=	"<div class=\"right-nav\"><a href=\"javascript:;\" onclick=\"shut()\" class=\"add-end\">完成</a></div>";
+                    html +=	"</header>";
+                    html +=	"<div class=\"add-sele\">";
+                    html +=	"<ul class=\"add-list\">";
+                    var text = data.content;
+                    $.each(text,function(key,val){
+                        html +=	"<li class=\"item\"><div class=\"city\" onclick=\"add_city(this,"+val['area_id']+")\"  tag="+val.area_id+">"+val.area_name+"</div>" +
+                            "<i class=\"iconfont arrow\">&#xe607;</i></li><input type='hidden' name='area_id' value="+val['area_id']+" />";
+                    });
+                    html +=	"</ul>";
+                    html +=	"</div>";
+                    html +=	"</div>";
+                    area.next().after(html);
+                    area.siblings(".address-pop").animate({left:'0'},200);
+                }else{
+                    $(".address-pop").animate({left:'-100%'},200);
+                    $("#a_id1info").text(city_name);
+                    $("#area_id").val(nation_id);
+                    $(".add-city").remove();
+                }
+            },
+        });
+    }
+
+
+    $('#submit').click(function(){
+        var addressVal = $('#a_id1info').text();
+        $('#address').prop('value',addressVal);
+        return true;
+    });
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+
+
+</script>

@@ -1,0 +1,37 @@
+<div id="pageInfo" style="display:none;"  data-goback="{url:ucenter/agent_index}" data-title="生成海报"></div>
+<div class="posters">
+    <div class="pos-veiw"><img src="{$this->default_img}" alt="" id="big_img_url"></div>
+    <input type="hidden" name ="tid" id ="tid" value="{$this->default_id}">
+	<div class="pos-listbox">
+    <ul class="pos-list " id="ul_poster">
+    {foreach:items=$this->list}
+    <li id ="li_{$item['id']}"><a href="javascript:check_poster('{$item['id']}','/{$item['show_img_url']}');"><img src="/{$item['show_img_url']}" alt=""></a></li>
+    {/foreach}
+    </ul>
+		</div>  
+  </div>
+	<div class="yx-submit">
+	<input type="button" class="btn w100p" value="生成海报" onclick="javascript:create_poster();">
+	
+	</div>
+	<style>
+.abe-header{display:none;}
+</style>
+<script type="application/javascript">
+	$(function(){
+		hideNav();		
+		$("#ul_poster li").first().addClass("active");
+	});
+	function check_poster(lid,imgurl){
+		$("#ul_poster li").removeClass("active");
+		$("#li_"+lid).addClass("active");
+		$("#tid").val(lid);
+		$("#big_img_url").attr("src",imgurl)
+	}
+	function create_poster(){
+		var url="{url:/ucenter/get_agent_poster/tid/ttid}";
+		var tid =$("#tid").val();
+		url =url.replace(/ttid/,tid);
+		window.location.href=url;		
+	}
+	</script>

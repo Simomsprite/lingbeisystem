@@ -1,0 +1,54 @@
+
+	<div class="wrap-box">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 我的货源 </h1>
+		</header>	
+		<!--头部导航结束-->
+
+		<!--筛选结束-->
+		<div class="probox ">
+
+
+			<!--匹配发布的信息-->
+			<ul class="pro-list pdb0">
+				<li>
+					<div class="imgbox"><a href="#"><img src="<?php echo $mlist['infomationinfo']['good_img'] ?>" alt=""></a></div>
+					<h1 class="name"><a href="#"><?php echo $mlist['infomationinfo']['good_name'] ?></a></h1>
+					<div class="time item pb10">发布时间：<?php echo $mlist['infomationinfo']['up_time'] ?></div>
+					<div class="price pb5">
+						<span class="ml-3">￥<?php echo $mlist['infomationinfo']['price'] ?></span>
+					</div>
+					<div class="code item"><span>货源地：<em class="abe-gray1">印度尼西亚</em></span><span class="pl10"><?php echo $mlist['infomationinfo']['number'] ?>件库存</span></div>
+				</li>
+			</ul>
+
+
+			<!--匹配的用户的列表-->
+			<ul class="match-list">
+
+				{foreach:items=$mlist["matchingobjectarray"]}
+
+				<li>
+					<div class="imgbox">
+						<a href="{url:matchmakingDeal/userhomepage/userid/$item['userinfo']['id']}">
+						<!--如果头像字段为空（显示默认头像）-->
+						{if:$item['userinfo']['head_ico'] == ''}
+						<img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+						{/if}
+						<img src="{$item['userinfo']['head_ico']}" alt="">
+						</a></div>
+					<div class="name"><span>{$item['userinfo']['nickname']}</span>
+						<a href="{url:jgim/room/friendid/$item['userinfo']['id']}" class="pub-btn"><i class="iconfont">&#xe63c;</i>立即沟通</a>
+					</div>
+					<div class="price vi-gray2"><span><em class="ft16 vi-red2 pr10">￥{$item["price"]}</em>x <em class="">{$item["number"]}件</em></span></div>
+					<div class="time vi-gray1"><span>时间：<em class="vi-gray3">{$item["up_time"]}</em></span><span class="pl10">交货地：<em class="vi-gray3">中国上海</em></span></div>
+					<a href="#" class="arrow iconfont">&#xe607;</a>
+				</li>
+
+				{/foreach}
+
+			</ul>
+		</div>
+	</div>

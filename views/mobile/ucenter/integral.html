@@ -1,0 +1,36 @@
+{set:$queryPointLog = Api::run('getUcenterPointLog',$this->user['user_id'],$this->c_datetime)}
+{set:$items = $queryPointLog->find()}
+<div id="pageInfo" data-title="我的积分"></div>
+
+<div class="jifen">
+    <div class="abe-txtr"><a href="{url:site/help/id/64}">积分说明<i class="iconfont abe-ft24 mlg_5" style="vertical-align: middle">&#xe62a;</i></a></div>
+    <div class="abe-txtc">
+        <div>当前积分</div>
+        <div class="abe-ft24 pdt_10">{$this->memberRow['point']}</div>
+    </div>
+</div>
+<!--<div class="jifen-tab"><a href="#"><i class="iconfont">&#xe698;</i>积分商城</a><a href="#"><i class="iconfont">&#xe631;</i>兑换记录</a></div>-->
+{if:$items}
+<dl class="record">
+    {foreach:items = $items}
+    <dd>
+        <div class="abe-fl">
+            {$item['intro']}<div class="blank5"></div>
+            <time class="bck">{echo:substr($item['datetime'],0,10)}</time>
+        </div>
+        <div class="abe-fr"><div class="blank10"></div><em class="abe-ft16 jf-green">{$item['value']}</em></div>
+    </dd>
+    {/foreach}
+</dl>
+{$queryPointLog->getPageBar()}
+{else:}
+<section class="nodata">暂时没有积分记录</section>
+{/if}
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+
+})
+</script>

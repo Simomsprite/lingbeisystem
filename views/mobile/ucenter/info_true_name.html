@@ -1,0 +1,41 @@
+{js:artTemplate}
+<div id="pageInfo" data-goback="{url:ucenter/info}" data-title="修改昵称"></div>
+{set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+<form action='{url:/ucenter/info_true_name_act}' id="login_form" name='user_info' method="POST" role="form">
+<ul class="user-form user-form-style2 mtg_10">
+    <li>
+        <input type="text"  datatype="*" errormsg="请填写昵称" nullmsg="请填写昵称" name="true_name" class="txt" value="{$memberInfo['true_name']}">
+    </li>
+</ul>
+
+<div class="exit-sub mtg_15">
+    <input type="submit" value="保存" class="sub-btn">
+</div>
+</form>
+
+<script type="application/javascript">
+    hideNav();
+    //表单回填
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+
+
+</script>

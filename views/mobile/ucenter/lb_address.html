@@ -1,0 +1,191 @@
+<!--{js:artTemplate}-->
+<!--{js:areaSelect}-->
+<div class="wrap-box">
+    <!--头部导航开始-->
+    <header class="pub-header skin-header">
+        <div class="left-nav"><a href="{url:ucenter/lb_info}"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 所在地 </h1>
+    </header>
+    <ul class="pub-form user-form mb7">
+        <input type='hidden' id="area_id" value="" />
+        <input type='hidden' name="_imgList" value="" />
+    </ul>
+    {set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+    <!--<form action='{url:/ucenter/address_save}' id='edit_address' name='edit_address' method="POST" >-->
+        <input type="hidden" name="id" />
+        <input type="hidden" name="is_default" id="is_default" value="0" />
+        <input type="hidden" name="{$this->user['user_id']}"/>
+        <ul class="pub-form pdt0 mb7">
+            <!--<li>-->
+                <!--<span class="tit">所在地</span>-->
+                <!--<div class="txtbox abk" onclick="show_area(this)">-->
+                    <!--<div class="info" id="a_id1info"></div>-->
+                <!--</div>-->
+            <!--</li>-->
+            <li>
+                <span class="tit">所在地</span>
+                <div onclick="show_area(this)" class="txtbox abk">
+                    <div class="info" id="a_id1info"> {$memberInfo['area']} </div>
+                    <input type="hidden" id="address" name="address">
+                    <!--<div class="arrow iconfont">&#xe607;</div>-->
+                </div>
+            </li>
+        </ul>
+        <div class="sub-box">
+            <input type="button" value="保存" id="submit" class="pub-btn vpink-btn">
+        </div>
+    <!--</form>-->
+
+    <div class="address-pop wrap-tlayer add-state">
+        <!--头部导航开始-->
+        <header class="pub-header skin-header">
+            <div class="left-nav"><a href="javascript:;" onclick="back(this)"><i class="iconfont">&#xe65c;</i></a></div>
+            <h1 class="title"> 选择地区 </h1>
+            <div class="right-nav"><a href="javascript:;" onclick="shut()" class="add-end">完成</a></div>
+        </header>
+        <!--头部导航结束-->
+        <div class="add-sele">
+            <ul class="add-list">
+                {foreach:items = $nation}
+                <li class="item">
+                    <div class="city" onclick="add_city(this,{$item['area_id']})" tag="{$item['area_id']}">{$item['area_name']}</div><i class="iconfont arrow">&#xe607;</i>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    //设定起参
+    var count = 0;
+    //地址栏参数
+    var city_id = '';
+    //地址栏展示信息
+    var city_name = [];
+    //地址信息数组
+    var nation_id = [];
+    //图片数组
+    var img_num = [];
+
+
+    // 新建地址弹窗
+    function show_area(d) {
+        city_id = $(d).parent().attr("id");
+        console.log(city_id);
+        city_name = [];
+        nation_id = [];
+        $(".add-state").animate({left:'0'},200);
+    }
+
+    //弹窗后退
+    function back(b) {
+        city_name.pop();
+        nation_id.pop();
+        $(b).parent().parent().parent(".address-pop").animate({left:'-100%'},200);
+    }
+
+    //弹窗完成
+    function shut() {
+        $("#a_id1info").text(city_name);
+        $("#area_id").val(nation_id);
+        $(".address-pop").animate({left:'-100%'},200);
+    }
+
+    //三级联动
+    function add_city(r,area_id){
+        let area = $(r);
+        console.log(area);
+        $.ajax({
+            type: "POST",
+            url: "{url:ucenter/search_city}",
+            data: {"area_id":area_id},
+            dataType:"json",
+            success: function(data){
+                city_name.push(data.name );
+                nation_id.push(area_id);
+                if(data.content != ''){
+                    var html = '';
+                    html += "<div class=\"address-pop wrap-tlayer add-city\" style=\" z-index: 102\">";
+                    html += "<header class=\"pub-header skin-header\">";
+                    html +="<div class=\"left-nav\"><a href=\"javascript:;\" onclick=\"back(this)\"><i class=\"iconfont\">&#xe65c;</i></a></div>";
+                    html += "<h1 class=\"title\"> 请选择 </h1>";
+                    html +=	"<div class=\"right-nav\"><a href=\"javascript:;\" onclick=\"shut()\" class=\"add-end\">完成</a></div>";
+                    html +=	"</header>";
+                    html +=	"<div class=\"add-sele\">";
+                    html +=	"<ul class=\"add-list\">";
+                    var text = data.content;
+                    $.each(text,function(key,val){
+                        html +=	"<li class=\"item\"><div class=\"city\" onclick=\"add_city(this,"+val['area_id']+")\"  tag="+val.area_id+">"+val.area_name+"</div>" +
+                            "<i class=\"iconfont arrow\">&#xe607;</i></li><input type='hidden' name='area_id' value="+val['area_id']+" />";
+                    });
+                    html +=	"</ul>";
+                    html +=	"</div>";
+                    html +=	"</div>";
+                    area.next().after(html);
+                    area.siblings(".address-pop").animate({left:'0'},200);
+                }else{
+                    $(".address-pop").animate({left:'-100%'},200);
+                    $("#a_id1info").text(city_name);
+                    $("#area_id").val(nation_id);
+                    $(".add-city").remove();
+                }
+            },
+        });
+    }
+
+
+    $('#submit').click(function(){
+        var addressVal = $('#a_id1info').text();
+        console.log(addressVal);
+
+        $.ajax({
+            type: "POST",
+            url: "{url:ucenter/location_save}",
+            data: {"address":addressVal},
+            dataType:"json",
+            success: function(data){
+                console.log(data);
+                if (data.info=="添加地址成功") {
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+                }else{
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                }
+
+            }
+        })
+
+    });
+
+
+    /**
+     *
+     * 　　　┏┓　　　┏┓
+     * 　　┏┛┻━━━┛┻┓
+     * 　　┃　　　　　　　┃
+     * 　　┃　　　━　　　┃
+     * 　　┃　┳┛　┗┳　┃
+     * 　　┃　　　　　　　┃
+     * 　　┃　　　┻　　　┃
+     * 　　┃　　　　　　　┃
+     * 　　┗━┓　　　┏━┛Code is far away from bug with the animal protecting
+     * 　　　　┃　　　┃    神兽保佑,代码无bug
+     * 　　　　┃　　　┃
+     * 　　　　┃　　　┗━━━┓
+     * 　　　　┃　　　　　 ┣┓
+     * 　　　　┃　　　　 ┏┛
+     * 　　　　┗┓┓┏━┳┓┏┛
+     * 　　　　　┃┫┫　┃┫┫
+     * 　　　　　┗┻┛　┗┻┛
+     *
+     */
+
+</script>

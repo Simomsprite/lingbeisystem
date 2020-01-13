@@ -1,0 +1,308 @@
+<div class="wrap-box wrap-nav" >
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+<!--			<div class="left-nav"><a href="#"><i class="iconfont">&#xe60b;</i></a></div>-->
+			<div class="head-search skin-serach" style="padding: 0 14px">
+				<div class="cs-box">
+					<input type="text" id="search" class="txt" placeholder="请输入搜索内容">
+					<button class="btn"><i class="iconfont">&#xe60f;</i></button>
+				</div>
+			</div>
+		</header>	
+		<!--头部导航结束-->
+		<!--幻灯片开始-->
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+			{foreach:items=$this->index_slide}
+        	{if:$item['slide_type'] == 1}
+        		<div class="swiper-slide"><a href="{$item['url']}"><img src="{$item[img]}" alt=""></a></div>
+        	{/if}
+        	{/foreach}
+			</div>
+			<!-- 幻灯片导航 -->
+    		<div class="swiper-pagination"></div>
+		</div>
+        <!--头部分类-->
+		<nav class="group-nav mb5">
+			<a href="">
+				<i class="iconfont">&#xe60c;</i>
+				<em>最新产品</em>
+			</a>
+			<a href="">
+				<i class="iconfont vc2">&#xe643;</i>
+				<em>供应信息</em>
+			</a>
+			<a href="">
+				<i class="iconfont vc3">&#xe658;</i>
+				<em>需求信息</em>
+			</a>
+			<a href="">
+				<i class="iconfont vc4">&#xe643;</i>
+				<em>供应信息</em>
+			</a>
+			<a href="">
+				<i class="iconfont vc5">&#xe628;</i>
+				<em>需求信息</em>
+			</a>
+		</nav>
+
+
+		<!--头部分类-->
+	<div class="pbmod mt5 pb5">
+		<div class="titlebar pbtit">
+			<h1><i class="iconfont vi-pink ft20">&#xe7d6;</i>品牌数据</h1>
+		</div>
+		<!--幻灯片结束-->
+		<ul class="ranking hid">
+			<li><a href="{url:release/release_rank/rank/supply/type/transaction}" class="abk"><img src="{skin:lb/images/pm01.jpg}" alt=""></a></li>
+			<li><a href="{url:release/release_rank/rank/supply/type/releases}" class="abk"><img src="{skin:lb/images/pm02.jpg}" alt=""></a></li>
+			<li><a href="{url:release/release_rank/rank/supply/type/browse}" class="abk"><img src="{skin:lb/images/pm03.jpg}" alt=""></a></li>
+			<li><a href="{url:release/release_rank/rank/supply/type/attention}" class="abk"><img src="{skin:lb/images/pm04.jpg}" alt=""></a></li>
+		</ul>
+		</div>
+		<div class="pbmod mt5">		
+			<a class="pb-adver">{echo:Ad::show("首页广告1")}</a>
+		</div>
+		<div class="pbmod mt5">
+			<nav class="tab-title">
+
+				<a href="#" class="actived" id="sell_good"><em>推荐货源</em></a>
+				<a href="#"  id="buy_good"><em>推荐采购</em></a>
+
+			</nav>
+
+		 	<div class="mt10">
+
+				<dl class="rec-pro mb15" id="sell_good_list">
+		 		<dt class="hid">
+					<a href="#" class="item"><img src="{skin:lb/images/temp1.jpg}" alt=""></a>
+					<a href="#" class="item"><img src="{skin:lb/images/temp2.jpg}" alt=""></a>
+				</dt>
+		 		<dd class="hid">
+
+					{foreach:items=$mlist["sell_good_no_list"]}
+					<a href="{url:site/release_view/release_id/$item['id']}" class="item">
+						<?php if(is_null($item['img'])){ ?>
+						<img style="width: 80px; height: 80px" src="{skin:image/tip.png}"  alt="">
+						<?php }else{ ?>
+						<img style="width: 80px; height: 80px" src="$item['img']"  alt="">
+						<?php } ?>
+						<div class="price">￥{$item['price']}/个</div>
+					</a>
+					{/foreach}
+
+				</dd>
+		 	</dl>
+
+				<dl class="rec-pro mb15" id="buy_good_list" style="display: none">
+					<dt class="hid">
+						<a href="#" class="item"><img src="{skin:lb/images/temp1.jpg}" alt=""></a>
+						<a href="#" class="item"><img src="{skin:lb/images/temp2.jpg}" alt=""></a>
+					</dt>
+					<dd class="hid">
+
+						{foreach:items=$mlist["buy_good_no_list"]}
+						<a href="{url:site/release_view/release_id/$item['id']}" class="item">
+							<?php if(is_null($item['img'])){ ?>
+							<img style="width: 80px; height: 80px" src="{skin:image/tip.png}"  alt="">
+							<?php }else{ ?>
+							<img style="width: 80px; height: 80px" src="{$item['img']}"  alt="">
+							<?php } ?>
+
+							<div class="price">￥{$item['price']}/个</div>
+						</a>
+						{/foreach}
+
+					</dd>
+				</dl>
+
+
+			</div>
+		</div>   
+		<div class="pbmod mt5">
+			<nav class="tab-title">
+				<a href="#" class="actived" id="sell_user"><em>推荐供应商</em></a>
+				<a href="#" id="buy_user"><em>推荐采购商</em></a>
+			</nav>
+			<div class="mb15 mt10">
+
+
+				<ul class="brand-list" id="sell_user_list">
+
+					{foreach:items=$mlist["sell_user_id_list"]}
+					<li >
+						<a href="{url:site/userhomepage/userid/$item['id']}">
+							<div class="imgbox" >
+								<?php if(is_null($item['head_ico'])){ ?>
+								<img style="width: 80px; height: 80px" src="{skin:image/tip.png}"   alt="">
+								<?php }else{ ?>
+								<img style="width: 80px; height: 80px" src="{$item['head_ico']}"   alt="">
+								<?php } ?>
+							</div>
+							<div class="name">{$item["nickname"]}</div>
+						</a>
+					</li>
+					{/foreach}
+
+				</ul>
+
+				<ul class="brand-list" style="display: none" id="buy_user_list">
+
+					{foreach:items=$mlist["buy_user_id_list"]}
+					<li>
+						<a href="{url:site/userhomepage/userid/$item['id']}">
+							<div class="imgbox">
+								<?php if(is_null($item['head_ico'])){ ?>
+								<img src="{skin:lb/images/jgimg/defaulthead.png}"  alt="">
+								<?php }else{ ?>
+								<img src="{$item['head_ico']}"  alt="">
+								<?php } ?>
+							</div>
+							<div class="name">{$item["nickname"]}</div>
+						</a>
+					</li>
+					{/foreach}
+				</ul>
+
+			</div>
+		</div> 
+		<!--底部导航开始-->
+
+
+	</div>
+<div class="wrap-box" id="search_text" style="display: none">
+	<!--头部导航开始-->
+	<header class="pub-header">
+		<div class="left-nav"><a href="javascript:;" onclick="index()"><i class="iconfont">&#xe65c;</i></a></div>
+		<div class="head-search skin-search">
+			<div class="cs-box">
+				<input type="text" class="txt" id="search_word">
+				<i class="iconfont icon"  >&#xe60f;</i>
+				<button class="rclear iconfont" onclick="cut()">&#xe602;</button>
+			</div>
+			<button class="btn"  onclick="search()">搜索</button>
+		</div>
+	</header>
+	<!--搜索结果-->
+	<div class="search-result">
+		<div class="hot-tags">
+			<div class="titlebar">
+				<h1 class="tip-none"><em class="vi-gray1 ft14">热门搜索</em></h1>
+				<!--<div class="tb-nav flex-r0">-->
+					<!--<a href="#" class="vi-gray1">换一换</a>-->
+				<!--</div>-->
+			</div>
+			<div class="tags-list">
+				{foreach:items=$mlist["hot_word_list"]}
+				<a href="{url:site/release_search/search_word/$item['word']/type/1}" class="item">{$item['word']}</a>
+				{/foreach}
+			</div>
+		</div>
+		<!--<div class="history-list">-->
+			<!--<div class="titlebar">-->
+				<!--<h1 class="tip-none"><em class="vi-gray1 ft14">热门搜索</em></h1>-->
+				<!--<div class="tb-nav flex-r0">-->
+					<!--<a href="#" class="vi-gray1 iconfont ft20">&#xe699;</a>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<ul class="pub-list">-->
+				<!--<li><a href="#">我是一个大坏帅哥.我是一个大坏帅哥.我是一个大坏帅哥.我是一个大坏帅哥.</a></li>-->
+				<!--<li><a href="#">我是一个大坏帅哥.</a></li>-->
+			<!--</ul>-->
+
+
+
+
+		<!--</div>-->
+
+	</div>
+
+</div>
+<script>
+	$("#search").focus(function () {
+		$(".wrap-nav").hide();
+		$("#search_text").show();
+	});
+	function index() {
+		$(".wrap-nav").show();
+		$("#search_text").hide();
+	}
+
+	function cut() {
+		$("#search_word").val("");
+	}
+
+	function search() {
+		var search = $("#search_word").val();
+		window.location.href = "{url:site/release_search}&search_word="+search+"&type=1";
+	}
+
+	$("#sell_good").click(function () {
+
+		$("#sell_good_list").show();
+		$("#buy_good_list").hide();
+		document.getElementById("sell_good").classList.add("actived");
+		document.getElementById("buy_good").classList.remove("actived");
+	});
+
+	$("#buy_good").click(function () {
+
+		$("#sell_good_list").hide();
+		$("#buy_good_list").show();
+		document.getElementById("buy_good").classList.add("actived");
+		document.getElementById("sell_good").classList.remove("actived");
+
+	});
+
+	$("#sell_user").click(function () {
+
+		$("#sell_user_list").show();
+		$("#buy_user_list").hide();
+		document.getElementById("sell_user").classList.add("actived");
+		document.getElementById("buy_user").classList.remove("actived");
+
+	});
+
+	$("#buy_user").click(function () {
+
+		$("#sell_user_list").hide();
+		$("#buy_user_list").show();
+		document.getElementById("buy_user").classList.add("actived");
+		document.getElementById("sell_user").classList.remove("actived");
+
+	});
+
+	var swiper = new Swiper('.swiper-container',{
+		 pagination: {
+			el: '.swiper-pagination',
+		  },
+	});
+	$(function(){
+		$("#release-btn").click(function(){
+			$(".release-faq").show();
+		});
+		$(".release-faq .close").click(function(){
+			$(this).parent(".release-faq").hide();
+		});
+	});
+
+
+    
+    document.addEventListener('plusready',function(){
+        // 调用5+ API
+        localStorage.setItem("isApp",1);
+        let firstRunTime=localStorage.getItem("firstRunTime");
+        console.log(parseInt(firstRunTime));
+        if (parseInt(firstRunTime)<=0 || isNaN(parseInt(firstRunTime))){
+            localStorage.setItem("firstRunTime",1);
+            console.log("弹出隐私政策页面")
+		}
+        document.getElementById("idxBtn").setAttribute('href',"javascript:void(0)");
+		document.getElementById("idxBtn").addEventListener("click",function () {
+            plus.webview.currentWebview().reload();
+			console.log("isApp")
+        })
+    },false);
+
+	
+</script>

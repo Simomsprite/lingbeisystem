@@ -1,0 +1,44 @@
+{set:$queryAccountLogList = Api::run('getUcenterAccoutLog',$this->user['user_id'])}
+{set:$logList = $queryAccountLogList->find()}
+
+<div id="pageInfo" data-title="我的余额"></div>
+
+<div class="yue">
+    <div class="abe-txtc">
+        <div><img src="{skin:newcss/images/ye.png}" alt=""></div>
+        <div>当前余额</div>
+        <div class="abe-ft24 pdt_10">{$this->memberRow['balance']}</div>
+    </div>
+</div>
+{if:$logList}
+<dl class="record">
+
+    {foreach:items = $logList}
+
+    <dd>
+        <div class="abe-fl">
+            <a href="" class="name bck">{$item['note']}</a><div class="blank5"></div>
+            <time class="bck">{echo:substr($item['time'],0,10)}</time>
+        </div>
+        <div class="abe-fr"><div class="blank10"></div><em class="abe-ft16 jf-green">{$item['amount']}</em></div>
+    </dd>
+
+    {/foreach}
+
+
+
+</dl>
+
+
+{$queryAccountLogList->getPageBar()}
+
+{else:}
+<section class="nodata">暂时没有帐户变动记录</section>
+{/if}
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+})
+</script>

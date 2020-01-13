@@ -1,0 +1,130 @@
+{js:artTemplate} {js:areaSelect} {js:my97date}
+<div id="pageInfo" data-goback="{url:ucenter/index}" data-title="个人资料"></div>
+
+<script src='{theme:javascript/LocalResizeIMG.js}'></script>
+<script src='{theme:javascript/patch/mobileBUGFix.mini.js}'></script>
+
+
+<form action='{url:/ucenter/info_edit_act}' name='user_info' method="POST" role="form">
+    <input type="hidden" name='callback' value="{$callback}" />
+    <ul class="user-form mtg_10">
+        {set:$user_ico = $this->userRow['head_ico']}
+        <li>
+            <span class="tit">头像</span>
+            <a href="javascript:void(0);" class="abe-block item">
+                <div class="info clearfix">
+                    <div class="up-img">
+                        <input id="uploadphoto" type="file">
+                        <img src="{webroot:$user_ico}" id="img"  onerror="this.src='{skin:image/user_ico.jpg}'" alt="">
+                    </div>
+                </div>
+                <div class="arrow iconfont">&#xe603;</div>
+            </a>
+        </li>
+        <li>
+            <span class="tit">昵称</span>
+            <a href="{url:ucenter/info_true_name}" class="abe-block item">
+                <div class="info">{$this->memberRow['true_name']}</div>
+                <div class="arrow iconfont">&#xe603;</div>
+            </a>
+        </li>
+        <li>
+            <span class="tit">性别</span>
+            <a href="{url:ucenter/info_sex}" class="abe-block item">
+                {if:$this->memberRow['sex']==1}
+                <div class="info">男</div>
+                {elseif:$this->memberRow['sex']==2}
+                <div class="info">女</div>
+                {else:}
+                <div class="info">保密</div>
+                {/if}
+                <div class="arrow iconfont">&#xe603;</div>
+            </a>
+        </li>
+
+        <li>
+            <span class="tit">出生日期</span>
+            <a href="{url:ucenter/info_birthday}" class="abe-block item">
+                <div class="info">{$this->memberRow['birthday']}</div>
+                <div class="arrow iconfont">&#xe603;</div>
+            </a>
+        </li>
+        <li>
+            <span class="tit">安全中心</span>
+            <a href="{url:ucenter/password}" class="abe-block item">
+                <div class="info">修改密码</div>
+                <div class="arrow iconfont">&#xe603;</div>
+            </a>
+        </li>
+    </ul>
+    <div class="exit-sub mtg_15">
+        <input type="button" onclick="relink('{url:simple/logout}')" value="退出登录" class="sub-btn">
+    </div>
+    </form>
+
+<script>
+//DOM加载完毕
+$(function(){
+	// 内页隐藏页底导航
+	//hideNav();
+
+
+
+    $('#uploadphoto').localResizeIMG({
+        width: 400,
+        quality: 1,
+        success: function (result) {
+            var submitData={
+                base64_string:result.clearBase64,
+            };
+            console.log(submitData)
+            $.ajax({
+                type: "POST",
+                url: "{url:ucenter/upload_tou}",
+                data: submitData,
+                dataType:"json",
+                success: function(data){
+                    if (0 == data.status) {
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        return false;
+                    }else{
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        var attstr= '<img width="60" height="60" src="'+data.url+'">';
+                        $("#img").attr("src","/"+data.url);
+                        return false;
+                    }
+                },
+                complete :function(XMLHttpRequest, textStatus){
+                },
+                error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+            });
+        }
+    });
+
+	//初始化地域联动
+	var areaInstance = new areaSelect('province');
+	{if:$this->memberRow}
+	{set:$area = explode(',',trim($this->memberRow['area'],','))}
+	areaInstance.init({"province":"{$area[0]}","city":"{$area[1]}","area":"{$area[2]}"});
+	{else:}
+	areaInstance.init();
+	{/if}
+});
+
+//表单回填
+var formObj = new Form('user_info');
+formObj.init({echo:JSON::encode($this->memberRow)});
+
+</script>

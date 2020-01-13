@@ -1,0 +1,82 @@
+<div id="pageInfo" data-title="退款售后" data-goback="{url:/ucenter/refunds}"></div>
+
+<div class="tk-top"> 商家正在处理中... </div>
+<div class="tk-zt">退款状态：<span class="vi-org2">{echo:Order_Class::refundmentText($this->data['pay_status'])}</span></div>
+<div class="tk-tk mtg_5">
+    <ul>
+        <li>退款金额将在商家同意后1-7个工作日内，原路退回</li>
+        <li>如果商家拒绝，您可以修改退款申请后再次发起，商家会重新处理</li>
+    </ul>
+    {if:$this->data['pay_status'] == 0}
+    <div class="abe-txtr pdb_5"><a href="javascript:qv_box(1);" class="pub-btn pb-nobg-gray abe-ft13">撤销申请</a></div>
+    {/if}
+</div>
+
+<dl class="cart-list order-list tuikuan-list mtg_5">
+    <dt>退款信息</dt>
+    <dd class="tkbd">
+        {foreach:items = $this->data['goods']} {set:$goodsInfo = JSON::decode($item['goods_array'])}
+        <div class="item">
+
+            <a href="{url:/site/products/id/$item[goods_id]}">
+                <img src="{url:/pic/thumb/img/$item[img]/w/140/h/140}" alt="" width="100" class="img">
+            </a>
+
+            <h1 class="pro-name">
+                <a href="{url:/site/products/id/$item[goods_id]}">
+                    <!--<i class="tags">OTC</i>-->
+                    {$goodsInfo['name']}</a>
+            </h1>
+            <div class="price">
+                <div class="abe-gray3 abe-ft14"> 商家：来益旗舰店</div>
+            </div>
+        </div>
+        {/foreach}
+    </dd>
+    <dt class="abe-gray3">
+    <div>退款原因：{$this->data['refund_msg']}</div>
+    <div>退款说明：{$this->data['content']}</div>
+    <div>处理时间：{echo:$this->data['dispose_time']?$this->data['dispose_time']:'未处理';}</div>
+    <div>处理建议：{echo:$this->data['dispose_idea']?$this->data['dispose_idea']:'未回复'}</div>
+    {if:$this->data['amount'] > 0}
+    <div>退款金额：￥{$this->data['amount']}</div>
+    {/if}
+    <div>申请时间：{$this->data['time']}</div>
+    <div>订单编号：{$this->data['order_no']}</div>
+    </dt>
+</dl>
+<div class="tklx">
+    <a href="tel:{echo:$this->_siteConfig->phone}"><i class="iconfont">&#xe668;</i>拨打电话</a>
+    <a href="{url:}"><i class="iconfont">&#xe6ae;</i>返回首页</a>
+</div>
+
+
+<div class="online-tel-pop abe-txtc" style="display: none;">
+    <div class="pdt_30 pdl_20 pdr_20 abe-ft14">
+        您将撤销本次申请，如果问题未解决，您可以再次发起。确定继续吗？
+    </div>
+    <div class="on-sub">
+        <a href="javascript:qv_box(2);" class="btn">取消</a>
+        {set:$id = $this->data['id']}
+        <a href="{url:/ucenter/refunds_del/id/$id}'}" class="btn vi-org1">确认</a>
+    </div>
+</div>
+<div class="popup-bg" style="display: none"></div>
+
+<script>
+//DOM加载完毕
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+})
+
+function qv_box(type){
+    if(type == 1){
+        $('.online-tel-pop').show();
+        $('.popup-bg').show();
+    }else{
+        $('.online-tel-pop').hide();
+        $('.popup-bg').hide();
+    }
+}
+</script>

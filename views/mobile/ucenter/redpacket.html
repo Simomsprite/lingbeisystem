@@ -1,0 +1,31 @@
+{set:$queryPropList = Api::run('getPropList',$propId);}
+{set:$ticketList    = $queryPropList->find();}
+
+<div id="pageInfo" data-title="我的代金券"></div>
+{if:$ticketList}
+<section class="coupon_list">
+    <ul>
+        {foreach:items = $ticketList}
+        <li>
+            <time>有效期至 {echo:substr($item['end_time'],0,10)}</time>
+            <i>
+                {echo:ticket::statusText(ticket::status($item))}
+            </i>
+			<u>
+				<strong>面值：</strong>
+				<em>{$item['value']}元</em>
+			</u>
+        </li>
+        {/foreach}
+    </ul>
+</section>
+{$queryPropList->getPageBar()}
+{else:}
+<section class="nodata">您当前暂无代金券</section>
+{/if}
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+})
+</script>

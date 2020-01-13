@@ -1,0 +1,24 @@
+{set:$msg = IReq::get('msg') ? IReq::get('msg') : '发生错误'}
+<div id="pageInfo" data-title="出错啦"></div>
+
+<div class="operating">
+    <i class="iconfont abe-block no">&#xe622;</i>
+    <div class="blank10"></div>
+    <span class="abe-ft18 abe-block">{echo:htmlspecialchars($msg,ENT_QUOTES)}</span>
+    <div class="blank20"></div>
+    <div class="faq">
+        <a href="{url:/ucenter/index}" class="pub-btn pb-bd2">个人中心</a>
+        <a href="{url:/site/index}" class="pub-btn pb-bd2">网站首页</a>
+    </div>
+</div>
+</div>
+
+
+
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+    $(".category-search").hide();
+});
+</script>

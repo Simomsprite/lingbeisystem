@@ -1,0 +1,47 @@
+<div id="pageInfo" data-title="我的积分"></div>
+{set:$queryExpLog = Api::run('getUcenterExpLog',$this->user['user_id'])}
+{set:$items = $queryExpLog->find()}
+<div class="hv-box">
+    {set:$user_ico = $this->user['head_ico']}
+    <div class="jf-head">
+        <img src="{webroot:$user_ico}"  onerror="this.src='{skin:image/user_ico.jpg}'" />
+    </div>
+    <div class="abe-txtc hv-lv">
+        <div class="abe-ft14 pdt_5">{$this->memberRow['true_name']}</div>
+        <div>
+            <img src="{skin:newcss/images/bg/}hv{$this->memberRow['group_id']}.png" width="24%" alt="">
+        </div>
+        <div class="hv-lv-num">成长值：{$this->memberRow['exp']}</div>
+    </div>
+</div>
+
+<div class="pdl_20 pdt_10 abe-ft14">
+    历史纪录
+</div>
+
+{if:$items}
+<dl class="record">
+    {foreach:items = $items}
+    <dd>
+        <div class="abe-fl">
+            {$item['intro']}<div class="blank5"></div>
+            <time class="bck">{echo:substr($item['datetime'],0,10)}</time>
+        </div>
+        <div class="abe-fr"><div class="blank10"></div><em class="abe-ft16 jf-green">+{$item['value']}</em></div>
+    </dd>
+    {/foreach}
+</dl>
+{$queryExpLog->getPageBar()}
+{else:}
+<section class="nodata">暂时没有成长值记录</section>
+{/if}
+
+
+
+<script>
+    $(function(){
+        // 隐藏底部导航
+        hideNav();
+
+    })
+</script>

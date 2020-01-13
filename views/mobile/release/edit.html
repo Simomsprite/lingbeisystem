@@ -1,0 +1,516 @@
+<div class="wrap-box">
+	<!--头部导航开始-->
+	<header class="pub-header skin-header">
+		<div class="left-nav"><a href="#"><i class="iconfont">&#xe602;</i></a></div>
+		<h1 class="title"> 发布货源 </h1>
+	</header>
+	<!--头部导航结束-->
+	<div>
+		<input type='hidden' id="area_id" value="" />
+
+		<ul class="pub-form mb7">
+			<li>
+				<span class="tit">商品条形码</span>
+				<div class="txtbox"><input type="text" name="goods_no" value="{$apply_info['goods_no']}" <?php if($apply_info['status'] > 1):?>readonly<?php else:?> onblur="check(this)"<?php endif;?> class="txt" placeholder="商品条形码"></div>
+			</li>
+			<li>
+				<span class="tit">商品名称</span>
+				<div class="txtbox"><input type="text" name="name"  value="{$goods_info['name']}" class="txt" placeholder="商品名称"></div>
+			</li>
+			<li>
+				<span class="tit">品牌</span>
+				<div class="txtbox"><input type="text" name="brand"  value="{$goods_info['brand']}" class="txt" placeholder="品牌名"></div>
+			</li>
+			<li>
+				<span class="tit">商品简介</span>
+				<div class="txtbox"><textarea class="txtarea" name="content" value="" placeholder="商品简介选填">{$goods_info['content']}</textarea></div>
+			</li>
+			<li>
+				<span class="tit">商品图片</span>
+				<div class="txtbox up-list">
+					<div class="item up-faqbox">
+						<i class="iconfont up-icon">&#xe600;</i>
+						<input type="file" id="uploadphoto" class="up-btn">
+						<img src="{skin:lb/images/transparent.png}" alt="">
+					</div>
+					<div id="add_pic">
+						{foreach:items = $img_path key=$k item=$v}
+						<div class="item"><img src="{url:}{$v}" name="picThumb" style="max-height: 63px;min-width: 63px;" alt="{$v}" /><a href="javascript:;" onclick="del_img(this)" tag="{$k}" class="close iconfont">&#xe767;</a></div>
+						{/foreach}
+					</div>
+					<!--<div class="item"><img src="{skin:release/images/temp6.jpg}" style="max-height: 63px;min-width: 63px;" alt=""><a href="javascript:;" onclick="del_img(this)" class="close iconfont">&#xe767;</a></div>-->
+				</div>
+				<div class="vi-gray2 remark">上传图片大小不超过1M,尺寸450px*450px</div>
+			</li>
+		</ul>
+		<!--选择数量模块-->
+		<div class="release-mod mb7">
+			<div class="titlebar">
+				<h1>起订量价格<sub class="vi-gray1 pl10">(最多可以输入3组)</sub></h1>
+				<div class="tb-nav">
+					<a href="javascript:;" onclick="reset()" class="vi-gray2">重置</a>
+				</div>
+			</div>
+			<ul class="count-form">
+				<li id="add_text">
+					<div class="item">起订数量</div>
+					<div class="item">起订价格</div>
+				</li>
+				{foreach:items = $section_info key=$k item=$v}
+				<li id="aft{$k}">
+					<div class="item">{$v['num_min']}-{$v['num_max']}个</div>
+					<div class="item">{$v['price']}</div>
+				</li>
+				{/foreach}
+				<li id="over">
+					<div class="item item-txts">
+						<input type="text" class="txt fl" name="num_min"  placeholder="起订最小数">-
+						<input type="text" class="txt fr" name="num_max"  placeholder="起订最大数">
+					</div>
+					<div class="item"><input type="text" class="txt" name="price" placeholder="起订价格"></div>
+				</li>
+				<li class="c-sub">
+					<input type="button" onclick="add_trg()" value="添加" class="btn">
+				</li>
+			</ul>
+		</div>
+		<div class="release-mod mb7">
+			<div class="titlebar">
+				<h1 class="hid"><div class="fl">库存：</div><div class="vi-pink2 fl"><input type="text" name="number" class="txt" placeholder="请输入库存"></div></h1>
+			</div>
+		</div>
+		<div class="release-mod mb7">
+			<div class="titlebar">
+				<h1>详细信息</h1>
+			</div>
+			<ul class="pub-form pdt0 mb7">
+				<li>
+					<span class="tit">货源地</span>
+					<div class="txtbox abk" onclick="show_area(this)">
+						<div class="info" id="a_id1info"></div>
+					</div>
+				</li>
+				<li id="time">
+					<span class="tit">备货时间</span>
+					<div class="txtbox"><input type="text" name="delivery_cycle" class="txt" placeholder="备货时间"></div>
+				</li>
+			</ul>
+		</div>
+		<div class="release-mod">
+			<div class="titlebar ft13">
+				<label class="abk"><input type="checkbox" class="psi mr5">设定为精准匹配</label>
+			</div>
+		</div>
+		<div class="sub-box">
+			<input type="button" class="pub-btn vpink-btn" onclick="submit()" value="提交">
+		</div>
+	</div>
+	<!--x操作提示框-->
+	<div class="alert-hint skin-alert ft13 hint-layer" style="display: none">
+		<i class="iconfont">&#xe65b;</i>
+		备货时间预定：15天以内
+		<a href="#" class="close iconfont">&#xe767;</a>
+	</div>
+	<div class="address-pop wrap-tlayer add-state">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="javascript:;" onclick="back(this)"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 选择地区 </h1>
+			<div class="right-nav"><a href="javascript:;" onclick="shut()" class="add-end">完成</a></div>
+		</header>
+		<!--头部导航结束-->
+		<div class="add-sele">
+			<ul class="add-list">
+				{foreach:items = $nation}
+				<li class="item">
+					<div class="city" onclick="add_city(this,{$item['area_id']})" tag="{$item['area_id']}">{$item['area_name']}</div><i class="iconfont arrow">&#xe607;</i>
+				</li>
+				{/foreach}
+			</ul>
+		</div>
+	</div>
+</div>
+<script>
+	//设定起参
+	var count = 0;
+	//地址栏参数
+	var city_id = '';
+	//地址栏展示信息
+	var city_name = [];
+	//地址信息数组
+	var nation_id = [];
+	//图片数组
+	var img_num = [];
+
+
+	// 新建地址弹窗
+	function show_area(d) {
+		city_id = $(d).parent().attr("id");
+		city_name = [];
+		nation_id = [];
+		$(".add-state").animate({left:'0'},200);
+	}
+
+	//弹窗后退
+	function back(b) {
+		city_name.pop();
+		nation_id.pop();
+		$(b).parent().parent().parent(".address-pop").animate({left:'-100%'},200);
+	}
+
+	//弹窗完成
+	function shut() {
+		$("#a_id1info").text(city_name);
+		$("#area_id").val(nation_id);
+		$(".address-pop").animate({left:'-100%'},200);
+	}
+
+	//三级联动
+	function add_city(r,area_id){
+		let area = $(r);
+		$.ajax({
+			type: "POST",
+			url: "{url:release/search_city}",
+			data: {"area_id":area_id},
+			dataType:"json",
+			success: function(data){
+				city_name.push(data.name );
+				nation_id.push(area_id,);
+				if(data.content != ''){
+					var html = '';
+					html += "<div class=\"address-pop wrap-tlayer add-city\" style=\" z-index: 102\">";
+					html += "<header class=\"pub-header skin-header\">";
+					html +="<div class=\"left-nav\"><a href=\"javascript:;\" onclick=\"back(this)\"><i class=\"iconfont\">&#xe65c;</i></a></div>";
+					html += "<h1 class=\"title\"> 请选择 </h1>";
+					html +=	"<div class=\"right-nav\"><a href=\"javascript:;\" onclick=\"shut()\" class=\"add-end\">完成</a></div>";
+					html +=	"</header>";
+					html +=	"<div class=\"add-sele\">";
+					html +=	"<ul class=\"add-list\">";
+					var text = data.content;
+					$.each(text,function(key,val){
+						html +=	"<li class=\"item\"><div class=\"city\" onclick=\"add_city(this,"+val['area_id']+")\"  tag="+val.area_id+">"+val.area_name+"</div><i class=\"iconfont arrow\">&#xe607;</i></li>";
+					});
+					html +=	"</ul>";
+					html +=	"</div>";
+					html +=	"</div>";
+					area.next().after(html);
+					area.siblings(".address-pop").animate({left:'0'},200);
+				}else{
+					$(".address-pop").animate({left:'-100%'},200);
+					$("#a_id1info").text(city_name);
+					$("#area_id").val(nation_id);
+					$(".add-city").remove();
+				}
+			},
+		});
+	}
+
+	//添加起订信息
+	function add_trg() {
+
+		if(count <= 3){
+			var price = $("input[name='price']").val();
+			var num_min = parseInt($("input[name='num_min']").val());
+			var num_max = parseInt($("input[name='num_max']").val());
+
+			if(isNaN(num_min)){
+				layer.open({
+					content: '起订最小数须为整数',
+					skin: 'msg',
+					time: 2 //2秒后自动关闭
+				});
+				return false;
+			}
+			if(isNaN(num_max)){
+				layer.open({
+					content: '起订最大数须为整数',
+					skin: 'msg',
+					time: 2 //2秒后自动关闭
+				});
+				return false;
+			}
+			if(num_min >= num_max){
+				layer.open({
+					content: '起订最小数不能大于等于起订最大数',
+					skin: 'msg',
+					time: 2 //2秒后自动关闭
+				});
+				return false;
+			}
+			var f = /(?!0\.00)(\d+\.\d{2}$)/;
+			if(!f.test(price)){
+				layer.open({
+					content: '请输入正确的价格',
+					skin: 'msg',
+					time: 2 //2秒后自动关闭
+				});
+				return false;
+			}
+			if(count < 3){
+				count++;
+				var html = '';
+				html += "<li id='aft"+count+"'>";
+				html += "<div class=\"item\" id='num"+count+"' num_max='"+num_max+"' num_min='"+num_min+"'>"+num_min+"-"+num_max+"</div>";
+				html += "<div class=\"item\" id='price"+count+"'>"+price+"</div>";
+				html += "</li>";
+				$("#over").before(html);
+			}
+			if(count == 3){
+				$("#over").hide();
+				$(".c-sub").hide();
+			}
+			$("input[name='price']").val("");
+			$("input[name='num_min']").val("");
+			$("input[name='num_max']").val("");
+		}else{
+			alert('起订量价格信息最多可以输入3组');
+		}
+	}
+
+	//起订信息重置
+	function reset() {
+		var text1 = $("#aft1");
+		var text2 = $("#aft2");
+		var text3 = $("#aft3");
+		if(text1){
+			text1.remove();
+		}
+		if(text2){
+			text2.remove();
+		}
+		if(text3){
+			text3.remove();
+		}
+		count = 0;
+		$("#over").show();
+		$(".c-sub").show();
+		$("input[name='price']").val("");
+		$("input[name='num_min']").val("");
+		$("input[name='num_max']").val("");
+	}
+
+	//上传图片
+	$(function(){
+		document.querySelector("#uploadphoto").addEventListener('change', function (){
+			var file=this.files[0];
+			if (window.FileReader) {
+				var reader = new FileReader();
+				reader.readAsDataURL(file);
+				//监听文件读取结束后事件    
+				reader.onloadend = function (e) {
+					var submitData={
+						base64_string: e.target.result,
+					};
+					$.ajax({
+						type: "POST",
+						url: "{url:release/upload_pic}",
+						data: submitData,
+						dataType:"json",
+						success: function(data){
+							if(data.status == 1){
+								var html = "<div class=\"item\"><img src=\""+data.url+"\" name=\"picThumb\" style=\"max-height: 63px;min-width: 63px;\" alt=\""+data.url+"\"><a href=\"javascript:;\" onclick=\"del_img(this)\" tag=\""+data.url+"\" class=\"close iconfont\">&#xe767;</a></div>";
+								$("#add_pic").append(html);
+								return false;
+							}else{
+
+							}
+						},
+						complete :function(XMLHttpRequest, textStatus){
+						},
+						error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+						}
+					});
+				}
+			}
+		});
+	});
+	//删除图片
+	function del_img(obj){
+		$(obj).parent().remove();
+	}
+
+	//校验条形码
+	function check(c) {
+		var good_no = $(c).val();
+		if(good_no != ''){
+			var submitData={
+				code:good_no,
+			};
+			$.ajax({
+				type: "POST",
+				url: "{url:release/check_code}",
+				data: submitData,
+				dataType:"json",
+				success: function(data){
+					if(data.status == 1){
+						layer.open({
+							content: '商品已存在,即将加载商品信息',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						//携带商品ID  2秒后跳转
+						setTimeout(function(){
+							window.location.href="{url:release/index}&goods_id="+data.id+"";
+						},2000);
+					}
+				},
+			});
+		}
+	}
+
+	//提交
+	function submit() {
+		var name = $("input[name='name']").val();
+		if(name == ''){
+			layer.open({
+				content: '请填写商品名称',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='name']").focus();
+			},2000);
+		}
+		var brand = $("input[name='brand']").val();
+		if(brand == ''){
+			layer.open({
+				content: '请填写品牌名称',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='brand']").focus();
+			},2000);
+		}
+		var goods_no = $("input[name='goods_no']").val();
+		var delivery_cycle = $("input[name='delivery_cycle']").val();
+		if(delivery_cycle == ''){
+			layer.open({
+				content: '请填写备货时间',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='delivery_cycle']").focus();
+			},2000);
+		}
+		var number = $("input[name='number']").val();
+		if(number == ''){
+			layer.open({
+				content: '请填写库存数量',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='number']").focus();
+			},2000);
+		}
+		var content = $("[name='content']").val();
+
+		var goodsPhoto = [];
+		$('#add_pic  img[name="picThumb"]').each(function(){
+			goodsPhoto.push(this.alt);
+		});
+		if(goodsPhoto.length <= 0){
+			layer.open({
+				content: '请上传商品图片',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+		}
+		var area_id = $("#area_id").val();
+		if(area_id == ''){
+			layer.open({
+				content: '请选择货源地',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='area_id']").focus();
+			},2000);
+		}
+		var num_min1 = $("#num1").attr('num_min');
+		var num_max1 = $("#num1").attr('num_max');
+		if(num1 == ''){
+			layer.open({
+				content: '请填写起订数量',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='num1']").focus();
+			},2000);
+		}
+		var price1 = $("#price1").text();
+		if(price1 == ''){
+			layer.open({
+				content: '请填写起订价格',
+				skin: 'msg',
+				time: 2 //2秒后自动关闭
+			});
+			setTimeout(function(){
+				$("input[name='price1']").focus();
+			},2000);
+		}
+		var num_min2 = $("#num2").attr('num_min');
+		var num_max2 = $("#num2").attr('num_max');
+		var price2 = $("#price2").text();
+		var num_min3 = $("#num3").attr('num_min');
+		var num_max3 = $("#num3").attr('num_max');
+		var price3 = $("#price3").text();
+		var is_exact = 0;
+		if($("input[type='checkbox']").is(':checked')){
+			is_exact = 1;
+		}
+		return false;
+		var submit_data ={
+			name:name,
+			brand:brand,
+			goods_no:goods_no,
+			content:content,
+			img:goodsPhoto,
+			area_id:area_id,
+			num_min1:num_min1,
+			num_max1:num_max1,
+			price1:price1,
+			num_min2:num_min2,
+			num_max2:num_max2,
+			price2:price2,
+			num_min3:num_min3,
+			num_max3:num_max3,
+			price3:price3,
+			delivery_cycle:delivery_cycle,
+			number:number,
+			is_exact:is_exact,
+		};
+		$.ajax({
+			type: "POST",
+			url: "{url:release/save}",
+			data: submit_data,
+			dataType:"json",
+			success: function(data){
+				if(data.status == 1){
+					layer.open({
+						content: '提交成功，请耐心等待审核结果',
+						skin: 'msg',
+						time: 2 //2秒后自动关闭
+					});
+
+					//携带商品ID  2秒后跳转
+					// setTimeout(function(){
+					// 	window.location.href="{url:release/index}&goods_id="+data.id+"";
+					// },2000);
+				}else if(data.status == 2){
+					// layer.open({
+					// 	content: '提交失败',
+					// 	skin: 'msg',
+					// 	time: 2 //2秒后自动关闭
+					// });
+				}
+			},
+		});
+	}
+
+
+
+</script>

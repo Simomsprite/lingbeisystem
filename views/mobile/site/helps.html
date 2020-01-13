@@ -1,0 +1,16 @@
+<div id="pageInfo" data-title="{$this->cat_row['name']}"></div>
+{query: name=help where= cat_id eq $this->cat_row['id'] order = sort desc,id desc}
+<div class="word-detail">
+    <h1 class="wtit">{$item['name']}</h1>
+    <div class="user-info">
+    </div>
+    <div class="wtd-info">
+        {$item['content']}
+    </div>
+</div>
+<div class="blank10"></div>
+{/query}
+
+<script type="text/javascript">
+    $(".category-search").hide();
+</script>

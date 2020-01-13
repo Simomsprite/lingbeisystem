@@ -1,0 +1,55 @@
+<div id="pageInfo" data-title="订单已提交" data-goback="{url:/ucenter/index}"></div>
+
+
+<div class="sub-order">
+    <div class="brief mtg_10">
+        <ul>
+            <li><span class="tit abe-gray3">订单编号：</span><span>{$this->order_num}</span></li>
+            <li><span class="tit abe-gray3">订单金额：</span><span>{$this->final_sum}</span></li>
+            <li><span class="tit abe-gray3">支付方式：</span><span>{$this->payment}</span></li>
+            <li><span class="tit abe-gray3">收货人名：</span><span>{$accept_name}</span></li>
+            <li><span class="tit abe-gray3">联系方式：</span><span>{$mobile}</span></li>
+            {if:$this->tax_title}
+            <li><span class="tit abe-gray3">发票抬头：</span><span>{$this->tax_title}</span></li>
+            {/if}
+
+            {if:$this->is_prescription == 2}
+            <li><img src="{skin:newcss/images/chufang-step.png}" alt="" width="100%" class="abe-block"></li>
+            {/if}
+
+
+        </ul>
+        {if:$this->is_prescription == 2}
+        <div class="abe-txtc pdt_10 pdb_10">药师会在20分钟之内审核您的预定订单</div>
+        <div class="abe-txtc">
+            <a href="{url:ucenter/chuorder}" class="pub-btn pb-bd2 mrg_20">查看预订</a>
+            <a href="{url:}" class="pub-btn pb-bd2">返回首页</a>
+        </div>
+        {/if}
+
+
+    </div>
+    {if:$this->is_prescription == 2}
+    <div class="pdt_10 pdl_15 pdr_15 abe-gray2"><i class="iconfont mrg_10">&#xe623;</i>温馨提示：预定成功后，您可到个人中心-处方需求查看订单状态。</div>
+    {/if}
+
+</div>
+
+
+{if:$this->deliveryType != 1 && $this->paymentType == 1} {set:$tmpId=$this->order_id;}
+<footer id="viewport_bottom">
+	<div class="btn_bottom">
+	    <form action='{url:/block/doPay/order_id/$tmpId}' method='post'>
+	        <input type="submit" value="立即支付" class="foot-btn" style="border: none"/>
+	    </form>
+	</div>
+</footer>
+{/if}
+<script>
+$(function(){
+    // 隐藏底部导航
+    hideNav();
+    $(".category-search").hide();
+
+})
+</script>

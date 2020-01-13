@@ -1,0 +1,84 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js" integrity="sha256-/npggYbFj0k38b9PHhnbZG6of/27IipS9zvFJaZdxf8=" crossorigin="anonymous"></script>
+<div class="wrap-box wrap-login">
+    <!--头部导航开始-->
+    <header class="pub-header">
+        <div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 登录 </h1>
+    </header>
+    <!--头部导航结束-->
+    <div class="login-title mb20 mt20 appShow">
+        <em>快捷登录</em>
+    </div>
+    <div class="pl40 pr40 appShow">
+        <a href="javascript:void(0);" onclick="wxLoginClick();" class="pub-btn fast-btn"><i class="iconfont ft20 mr5">&#xe66f;</i>微信快捷登录</a>
+    </div>
+    <div class="login-title mb20 mt20">
+        <em>邮箱快捷登录</em>
+    </div>
+    <form action='{url:/simple/login_act}' id="login_form" method='post'>
+        <input type="hidden" name='callback' value="{$callback}" />
+        <input type="hidden" name="_csrf" value="{$csrf}">
+        <ul class="login-form">
+            <li class="txtbox"><input type="text" class="txt" name="login_info" datatype="e" nullmsg="请输入邮箱地址" errormsg="请填写正确邮箱地址" placeholder="输入邮箱地址"><i class="iconfont">&#xe635;</i></li>
+            <li class="txtbox"><input type="password" class="txt" name="password" datatype="*6-16" nullmsg="请输入密码" errormsg="密码范围在6~16位之间！" placeholder="输入密码"><i class="iconfont">&#xe626;</i></li>
+            <li class="pt10"><input type="submit" value="登录" class="pub-btn vpink-btn"></li>
+            <li><a href="{url:simple/reg}" class="fl vi-gray2">快速注册</a><a href="{url:simple/lbfind_password}" class="fr vi-gray2">忘记密码</a></li>
+        </ul>
+        <div class="deal">已同意<span class="vi-pink2">《拎贝用户协议》</span></div>
+    </form>
+</div>
+<script>
+    $(function(){
+        hideNav();
+        $(".category-search").hide();
+
+        $("#login_form").Validform({
+            tiptype:function(msg){
+                layer.open({
+                    content: msg
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+            },
+            tipSweep:true,
+            ajaxPost:true,
+            callback:function(data){
+                console.log(data.url);
+                console.log(data.info);
+                if(data.info =="登录成功"){
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+                }else{
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        });
+
+    });
+
+    let h5js=null;
+    document.addEventListener('plusready',function(){
+        // 调用5+ API
+        h5js=plus;
+    },false);
+    function wxLoginClick() {
+        if (h5js==null) {
+            alert('网络波动,请稍后重试')
+        }else{
+            h5js.webview.currentWebview().loadURL("_www/pages/login.html?"+'csrf='+$("input[name='_csrf']").val());
+        }
+    }
+    if(parseInt(localStorage.isApp)<=0 || isNaN(parseInt(localStorage.isApp))){
+        $('.appShow').hide();
+    }
+</script>
+
+

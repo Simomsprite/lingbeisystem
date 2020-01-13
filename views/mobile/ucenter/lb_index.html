@@ -1,0 +1,70 @@
+<div class="user-top hid mb5">
+    {set:$user_ico = $this->user['head_ico']}
+    <a href="#" class="uhead">
+        {if:stripos($user_ico,"http://")!== true}
+        <!--<img id="user_ico_img" src="{$user_ico}" onerror="this.src='{skin:image/user_ico.jpg}'"/>-->
+        <img src="{skin:lb/images/transparent.png}" alt="" style="background-image: url({$user_ico})" >
+        {else:}
+        <img src="{skin:lb/images/transparent.png}" alt="" style="background-image: url({skin:image/tip.png})"/>
+        {/if}
+    </a>
+    <h1 class="uname">{$user['nickname']}</h1>
+    <div class="collection">
+        <a href="{url:ucenter/myselfcollect}"><i class="iconfont">&#xe683;</i>我的收藏<em class="pl5 ft12 vi-gray1"></em></a>
+        <a href="#"><i class="iconfont">&#xe611;</i>我的关注<em class="pl5 ft12 vi-gray1"></em></a>
+    </div>
+</div>
+<ul class="pub-form user-menu">
+    <li>
+        <a href="{url:ucenter/lb_info}" class="txtbox abk">
+        <span class="tit"><i class="iconfont vi-red mr5">&#xe630;</i>个人资料</span>
+            <div class="info"></div>
+            <div class="arrow iconfont">&#xe607;</div>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="txtbox abk">
+        <span class="tit"><i class="iconfont mr5 vi-purple">&#xe604;</i>供应商认证</span>
+
+            <div class="info"></div>
+            <div class="arrow iconfont">&#xe607;</div>
+        </a>
+    </li>
+    <li>
+        <a href="{url:ucenter/matchinglist/type/1}" class="txtbox abk">
+        <span class="tit"><i class="iconfont mr5 vi-org2">&#xe63b;</i>我的货源</span>
+
+            <div class="info"></div>
+            <div class="arrow iconfont">&#xe607;</div>
+        </a>
+    </li>
+    <li>
+        <a href="{url:ucenter/matchinglist/type/0}" class="txtbox abk">
+        <span class="tit"><i class="iconfont mr5 vi-blue2">&#xe60e;</i>我的求购</span>
+
+            <div class="info"></div>
+            <div class="arrow iconfont">&#xe607;</div>
+        </a>
+    </li>
+    <li>
+        <a href="{url:ucenter/friendlist}" class="txtbox abk">
+        <span class="tit"><i class="iconfont mr5 vi-green2">&#xe774;</i>我的消息</span>
+
+            <div class="info"></div>
+            <div class="arrow iconfont">&#xe607;</div>
+        </a>
+    </li>
+    <li>
+        <a href="{url:ucenter/info_setup}" class="txtbox abk">
+        <span class="tit"><i class="iconfont mr5 vi-pink3">&#xe610;</i>系统设置</span>
+            <div class="info"></div>
+            <div class="arrow iconfont">&#xe607;</div>
+        </a>
+    </li>
+</ul>
+<div class="pro-share">
+    <a href="#"><i class="iconfont abk">&#xe63b;</i>一键分享货源</a>
+    <a href="#"><i class="iconfont abk">&#xe63b;</i>一键分享货源</a>
+</div>
+<div class="blank50"></div>
+

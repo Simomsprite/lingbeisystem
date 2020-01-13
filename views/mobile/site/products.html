@@ -1,0 +1,566 @@
+<div id="pageInfo" data-title="商品详情"></div>
+<script src="{theme:javascript/products.js}"></script>
+<style>
+    .set-meal a.current {
+        border: 1px solid #fca844;
+        color: #fca844;
+    }
+    .shop-pop{
+        height: auto;
+        min-height: 50px;
+    }
+</style>
+<div class="products-detail">
+    <div class="pro-slide">
+
+        <!--幻灯片-->
+        <div class="swiper-container abe-pic-slider">
+            <div class="swiper-wrapper">
+                {foreach:items=$photo}
+                <div class="swiper-slide">
+                    <img src="{url:/pic/thumb/img/$item[img]/w/500/h/500}">
+                </div>
+                {/foreach}
+            </div>
+            <div class="swiper-pagination swp1"></div>
+        </div>
+        <script>
+            $(document).ready(function(e) {
+                var mySwiper = new Swiper('.abe-pic-slider',{
+                    loop: false,
+                    autoplay: 3000,
+                    pagination : '.swp1'
+                });
+            });
+        </script>
+        <!--幻灯片-->
+
+    </div>
+    <div class="pro-mod1">
+        <h1 class="pro-name">
+            {if:$goods_type == 1}
+            <i class="tags" style="background: #d90023">OTC</i>
+            {elseif:$goods_type == 2}
+            <i class="tags" style="background: #00602e">OTC</i>
+            {elseif:$goods_type == 3}
+            <i class="tags" style="background: #cc1717">RX</i>
+            {/if}
+            {$name}
+        </h1>
+        <h2 class="pro-name-fb">{$long_name}</h2>
+        <div class="pro-price">
+            <div class="abe-fl">
+                <em class="vi-org1 abe-ft20">¥ {$sell_price}</em>
+                <del class="abe-gray3 mlg_10">¥ {$market_price}</del>
+            </div>
+            <div class="abe-fr">已售：{$sale}件</div>
+        </div>
+    </div>
+    <div class="pro-mod2">
+        <ul>
+
+            {if:$goodsgift_extend_list}
+            <li> <span class="tit">赠品</span>
+                {foreach:items=$goodsgift_extend_list}
+                {if:$key==0}
+                <div class="pm-zengpin vi-org2">{$item['extend_name']}</div>
+                {/if}
+                {/foreach}
+                <div class="arrow"><a href="#" class="abe-block" id="get-zengpin"><i class="iconfont">&#xe603;</i></a></div>
+            </li>
+            {/if}
+
+            {if:$this->ticket_list}
+            {set:$coupon_num = count($this->ticket_list)}
+            <li>
+                <span class="tit">领券</span>
+                <div class="pm2-info coupons">
+                    {foreach:items=$this->ticket_list}
+                    {if:$key<=1}
+                    <em class="item">{$item['name']}</em>
+                    {/if}
+                    {/foreach}
+                </div>
+                <div class="arrow"><a href="javascript:void(0)" class="abe-block" id="get-coupons">共{$coupon_num}张<i class="iconfont">&#xe603;</i></a></div>
+            </li>
+
+            {/if}
+            <li style="display: none;">
+                <span class="tit">促销</span>
+                <div class="pm2-info promotions">
+                    <dl>
+                        <dd><em class="tags">满减</em>全场满99元减5元，来益叶黄素专区...</dd>
+                    </dl>
+                </div>
+                <div class="arrow"><a href="#" class="abe-block"><i class="iconfont">&#xe603;</i></a></div>
+            </li>
+        </ul>
+    </div>
+    <div class="pro-mod3 comments">
+        <div class="title">
+            <span class="abe-fl">商品评价：</span>
+            <a href="{url:site/comments_list/id/$id}" class="arrow abe-fr">评论数 <em class="vi-org1">{$comments}</em>
+                <i class="iconfont">&#xe603;</i></a>
+        </div>
+        <ul class="comments-list" id="commentBox">
+
+
+        </ul>
+
+        <script type='text/html' id='commentRowTemplate'>
+            <li>
+                <div class="abe-ofl">
+                    <div class="star abe-fl"><i class="abe-block" style="width:<%=bilie%>%"></i></div>
+                    <em class="abe-fr abe-gray3"><%=username%>&nbsp;&nbsp;&nbsp;&nbsp;<%=comment_time%></em> </div>
+                <p> <%=contents%></p>
+            </li>
+        </script>
+
+
+    </div>
+    <div class="pro-tab"><a class="active">商品介绍</a><a>规格参数</a><a>服务说明</a></div>
+    <div class="ptzw" style=" height:auto;display:none;"></div>
+    <div class="spec-box">
+        <div class="pro-mod3 pro-detail-info specification" id="sp-md1">
+            {if:isset($content) && $content}
+            <article class="article_detail">{$content}</article>
+            {/if}
+        </div>
+        <div class="pro-mod4 specification" id="sp-md2">
+            <div class="spec-tit">商品属性</div>
+            <table class="spec-table">
+                <tbody>
+                {if:isset($brand) && $brand}
+                <tr>
+                    <th>品牌</th>
+                    <td>{$brand}</td>
+                </tr>
+                {/if}
+
+                {if:isset($unit) && $unit}
+                <tr>
+                    <th>单位</th>
+                    <td>{$unit}</td>
+                </tr>
+                {/if}
+                {if:($attribute)}
+                {foreach:items=$attribute}
+                <tr>
+                    <th>{$item['name']}</th>
+                    <td>{$item['attribute_value']}</td>
+                </tr>
+                {/foreach}
+                {/if}
+                </tbody>
+            </table>
+            <div class="spec-tit" style="display: none">注意事项 </div>
+            <div class="spec-art-box" style="display: none">
+            {query:name=help where=id eq 74}
+                {$item['content']}
+            {/query}
+            </div>
+        </div>
+        <div class="pro-mod5 specification" id="sp-md3">
+            <div class="spec-tit">服务说明 </div>
+            <div class="spec-art-box">
+                正品保障：来益健康网获得国家食药监局批准的合法网上药店，所销售的每一件产品都是正品。<br>
+                隐私配送：购物无忧，隐私发货。您在来益健康网上药店注册时产生的个人信息将被保密，快递包装上不会出现您的购物内容。<br>
+                专业服务：支持货到付款，放心购
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="shop-menu">
+
+    {if:$is_xiangou == 1}
+    <div class="abe-fl sm-iconbox">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=3500551512&site=qq&menu=yes"><i class="iconfont">&#xe609;</i>客服</a>
+        <a  href="javascript:void(0);" onclick="favorite_add_ajax({$id},this);" class="{$this->favorite_class} ">
+            <i class="iconfont item1">&#xe617;</i>
+            <i class="iconfont item2">&#xe729;</i>
+            <span class="item1">收藏</span>
+            <span class="item2">已收藏</span>
+        </a>
+    </div>
+    {if:$this->is_xiangou_ok == 1}
+    <div class="abe-fr sm-btnbox">
+        <input type="button" value="限时抢购" onclick="open_detai_qianggou(2);" class="pub-btn ">
+    </div>
+    {else:}
+    <div class="abe-fr sm-btnbox">
+        <input type="button" value="活动结束" style="background: #ccc;border: 1px solid#ccc" class="pub-btn ">
+    </div>
+    {/if}
+    {else:}
+
+    {if:$is_prescription==1}
+    <div class="abe-fl sm-iconbox">
+        <a href="{url:jgim/cccc}"><i class="iconfont">&#xe609;</i>客服</a>
+        <a href="{url:simple/cart}"><i class="iconfont">&#xe601;</i>购物车<em name="mycart_count">0</em></a>
+        <a  href="javascript:void(0);" onclick="favorite_add_ajax({$id},this);" class="{$this->favorite_class} ">
+            <i class="iconfont item1">&#xe617;</i>
+            <i class="iconfont item2">&#xe729;</i>
+            <span class="item1">收藏</span>
+            <span class="item2">已收藏</span>
+        </a>
+    </div>
+    <div class="abe-fr sm-btnbox">
+
+        <input type="button" value="加入购物车" onclick="open_detail(1);" class="pub-btn pb-nobg ">
+        <input type="button" value="立即购买"  onclick="open_detail(2);" class="pub-btn ">
+
+    </div>
+    {else:}
+    <div class="abe-fl sm-iconbox">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=3500551512&site=qq&menu=yes"><i class="iconfont">&#xe609;</i>客服</a>
+        <a  href="javascript:void(0);" onclick="favorite_add_ajax({$id},this);" class="{$this->favorite_class} ">
+            <i class="iconfont item1">&#xe617;</i>
+            <i class="iconfont item2">&#xe729;</i>
+            <span class="item1">收藏</span>
+            <span class="item2">已收藏</span>
+        </a>
+    </div>
+    <div class="abe-fr sm-btnbox">
+        <input type="button" value="咨询药师" onclick="zx_show();" class="pub-btn pb-nobg ">
+        <input type="button" value="提交需求" onclick="open_detail(2);" class="pub-btn ">
+    </div>
+    {/if}
+
+    {/if}
+
+</div>
+<!--优惠券弹窗-->
+<div class="shop-pop coupons-pop" style="display: none;">
+    <a href="#" class="close close1 iconfont">&#xe641;</a>
+    <div class="tit">优惠券</div>
+    <ul>
+        {foreach:items=$this->ticket_list}
+        {set:$isHasTicket = true;}
+        <li>
+            <div class="abe-ft18 vi-org1">{$item['value']}元</div>
+            <div style="width: 75%">{$item['name']}
+                {if:$item['goods_id']>0}
+                限{echo:block::getGoodsnfo($item['goods_id'])}使用
+                {else:}
+                    {if:$item['cat_id'] == 0}
+                    全站通用
+                    {else:}
+                    限{echo:block::getCateInfo($item['cat_id'])}分类
+                    {/if}
+                {/if}
+            </div>
+            {if:$item['point']>0}
+            <div class="abe-gray3"> 需要{$item['point']}积分兑换</div>
+            {/if}
+            <!--<div class="abe-gray3"> {echo:substr($item['start_time'],0,10)}至{echo:substr($item['end_time'],0,10)}</div>-->
+            {if:$item['point']>0}
+            <a href="javascript:point_dui({$item['id']},this);" class="pub-btn pb-nobg">兑换</a>
+            {else:}
+                {if:$this->user['user_id']}
+                {set:$is_qu = Block::checkTicketByUserId($item['id'],$this->user['user_id'])}
+                    {if:$is_qu == 1}
+                    <a href="javascript:void(0);" class="pub-btn pb-nobg-gray">已领取</a>
+                     {else:}
+                    <a href="javascript:void(0);" onclick="point_dui({$item['id']},this)" class="pub-btn pb-nobg">领取</a>
+                    {/if}
+                {else:}
+                 <a href="javascript:void(0);" onclick="point_dui({$item['id']},this)" class="pub-btn pb-nobg">领取</a>
+                {/if}
+            {/if}
+        </li>
+        {/foreach}
+    </ul>
+    <input type="button" value="完成" class="subbtn">
+</div>
+<!--优惠券弹窗-->
+<!--加入购物车弹窗-->
+<div class="shop-pop cart-pop" style="display: none;">
+    <a href="javascript:void(0);" id="close_foot_buy" class="close iconfont">&#xe641;</a>
+    <ul>
+        <li class="item-img">
+            <img id="item_img" src="{url:/pic/thumb/img/$img/w/80/h/80}" alt="" class="img">
+
+            {if:$promo == ''}
+                {if:$group_price}
+                    <!--当前用户有会员价-->
+                 <span class="abe-ft16 vi-org1" id="data_groupPrice">{$group_price}</span>
+                 <span class="abe-ft16 vi-org1" style="display: none;" id="data_sellPrice">{$sell_price}</span>
+                {else:}
+                <span class="abe-ft16 vi-org1" id="data_sellPrice">{$sell_price}</span>
+                {/if}
+            {/if}
+        </li>
+
+
+        {if:$goods_extend_list}
+        <li>
+            <div class="tit">套装{$id}</div>
+            <div class="set-meal">
+                <a class="active" price="{$sell_price}" big="{url:/pic/thumb/img/$img/w/500/h/500}" img="{url:/pic/thumb/img/$img/w/80/h/80}" rel="{url:site/products/id/$id}" href="javascript:void(0);" onclick="qv_img({$id},this)">
+                    {$small_name}
+                </a>
+                {foreach:items=$goods_extend_list}
+                <a class="" price="{$item['sell_price']}" big="{url:/pic/thumb/img/$img/w/500/h/500}" img="{url:/pic/thumb/img/$item[img]/w/80/h/80}" rel="{url:site/products/id/$item[extend_id]}" href="javascript:void(0);" onclick="qv_img({$item['extend_id']},this)">
+                    {$item['extend_name']}
+                </a>
+                {/foreach}
+            </div>
+        </li>
+        {/if}
+        {if:$spec_array}
+
+        <li>
+
+            {foreach:items=JSON::decode($spec_array)}
+            <div class="tit">{$item['name']}</div>
+            <div class="set-meal">
+                {foreach:items=$item['value'] item=$spec_value key=$specValueKey}
+                {set:list($item['tip'],$item['value'])=each($spec_value);}
+                <a  specId="{$item['id']}" id="{$item['id']}{$specValueKey}" title="{echo:htmlspecialchars($item['tip'])}">
+						{$item['value']}
+					</a>
+                <script>$('#{$item['id']}{$specValueKey}').data('specData',{echo:JSON::encode($item)});</script>
+                {/foreach}
+            </div>
+            {/foreach}
+
+        </li>
+        {/if}
+
+        {if:$is_xiangou == 1}
+        <li class="cart-num abe-ofl">
+            <div class="abe-fl">限购时间<em class="abe-gray3"></em></div>
+            <div class=" abe-fr">
+                {echo:substr($xiangou_start_date,0,10)}至{echo:substr($xiangou_end_date,0,10)}
+            </div>
+        </li>
+        <li class="cart-num abe-ofl">
+            <div class="abe-fl">限购数量<em class="abe-gray3"></em></div>
+            <div class=" abe-fr">
+              {$xiangou_num}
+            </div>
+        </li>
+        {/if}
+        <li class="cart-num abe-ofl">
+            <div class="abe-fl">购物数量<em class="abe-gray3"></em></div>
+            <div class="num abe-fr">
+                <button class="iconfont jian" id="buyReduceButton">&#xe64e;</button>
+                <button class="iconfont jia" id="buyAddButton">&#xe61f;</button>
+                <input type="text"  {if:$is_xiangou == 1}  maxNums="{$xiangou_num}" {/if} class="txt" id="buyNums" onblur="checkBuyNums();" value="1">
+            </div>
+        </li>
+    </ul>
+    {if:$is_prescription==1}
+    <input type="button" style="display: none" value="立即购买" id="buyNowButton" class="subbtn">
+    <input type="button" style="display: none" value="加入购物车" id="joinCarButton" class="subbtn">
+    {else:}
+    <input type="button" style="display: none" value="提交需求" id="buyNowButton" class="subbtn">
+    {/if}
+
+</div>
+<!--加入购物车弹窗-->
+{if:$goodsgift_extend_list}
+<!--赠品弹窗-->
+<div class="shop-pop zengpin-pop" style="display:none ; bottom: 0">
+    <a href="#" class="close1 close iconfont">&#xe641;</a>
+    <div class="abe-txtc abe-ft14 pdt_10 pdb_10">赠品详情</div>
+    <dl class="cart-list order-list">
+        {foreach:items=$goodsgift_extend_list}
+        <dd>
+            <div class="item">
+                <a href="javascript:void(0);">
+                    <img src="{url:/pic/thumb/img/$item[img]/w/200/h/200}" alt="" width="100" class="img">
+                </a>
+                <h1 class="pro-name">
+                    <a href="javascript:void(0);">
+                        {if:$item['goods_type'] == 1}
+                        <i class="tags" style="background: #d90023">OTC</i>
+                        {elseif:$item['goods_type'] == 2}
+                        <i class="tags" style="background: #00602e">OTC</i>
+                        {elseif:$item['goods_type'] == 3}
+                        <i class="tags" style="background: #cc1717">RX</i>
+                        {/if}
+                        {$item['extend_name']}</a>
+                </h1>
+                <div class="price">￥{$item['sell_price']} <em>x1</em></div>
+            </div>
+        </dd>
+        {/foreach}
+
+        <dd class="clt-bnd"></dd>
+    </dl>
+    <div class="blank20"></div>
+</div>
+<!--优惠券弹窗-->
+{/if}
+<div class="popup-bg" style="display: none;"></div>
+<div id ="div_zx" class="shop-pop online-pop" style="display: none;">
+  	<div class="online-service">
+  		<a href="http://wpa.qq.com/msgrd?v=3&uin=3500551512&site=qq&menu=yes"><div><i class="iconfont">&#xe609;</i>在线咨询</div></a>
+		<a href="tel:{echo:$this->_siteConfig->phone}" class="onphone"><div><i class="iconfont">&#xe62d;</i>拨打电话给药师<br><span>工作时间：9:00-18:00</span></div></a>
+		<a href="javascript:sj_show();"><div><i class="iconfont">&#xe62d;</i>请药师联系我</div></a>
+  		<a href="javascript:zx_hide();" class="oncanel">取消</a>
+  	</div>
+</div>
+<div id ="div_sj" class="online-tel-pop abe-txtc" style="display:none ;">
+	<div>
+  		<div class="tit">请药师联系我</div>
+  		<input type="text" class="txt" placeholder="请输入您的手机号" id="mobile">
+  	</div>
+  	<div class="on-sub"><a href="javascript:sj_hide();" class="btn">取消</a><a href="javascript:zx_tj();" class="btn vi-org1">确认</a></div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        var productInstance = new productClass("{$id}","{$this->user['user_id']}","{$promo}","{$active_id}");
+        hideNav();
+        //弹窗
+        $("#get-coupons").click(function(){
+
+            $(".coupons-pop").show();
+            $(".coupons-pop").animate({'bottom':'0'});
+            $(".popup-bg").show();
+
+        });
+
+        $("#get-zengpin").click(function(){
+
+            $(".zengpin-pop").show();
+            $(".zengpin-pop").animate({'bottom':'0'});
+            $(".popup-bg").show();
+
+        });
+
+        $(".shop-pop .close1").click(function(){
+            $(".shop-pop").animate({'bottom':'-500px'});
+            $(".shop-pop").hide(300);
+            $(".popup-bg").hide();
+        });
+        //选项卡切换
+        var pt_top = $(".pro-tab").offset().top;
+        var ptfix = $(".pro-tab");
+        var pta_item = $(".pro-tab a");
+        var spec_item = $(".spec-box .specification");
+        $(".wrap-box").scroll(function(){
+            var wt_scroll = $(this).scrollTop();
+            if(wt_scroll>pt_top){
+                ptfix.addClass("ptfixed");
+                $(".ptzw").show();
+            }else{
+                ptfix.removeClass("ptfixed");
+                $(".ptzw").hide();
+            }
+        });
+        pta_item.click(function(){
+            pta_item.removeClass("active");
+            $(this).addClass("active");
+            var pta_num = $(this).index();
+            var spec_top = spec_item.eq(pta_num).offset().top + $(".wrap-box").scrollTop() - 42;
+            //alert(spec_top)
+            $(".wrap-box").scrollTop(spec_top);
+        });
+
+
+        productInstance.comment_ajax();
+    });
+
+
+    function open_detail(type){
+        $(".cart-pop").show();
+        $(".cart-pop").animate({'bottom':'0'});
+        $(".popup-bg").show();
+        if(type == 1){
+            $("#buyNowButton").hide();
+            $("#joinCarButton").show();
+        }else{
+            $("#buyNowButton").show();
+            $("#joinCarButton").hide();
+        }
+    }
+
+    function open_detai_qianggou(type){
+        $(".cart-pop").show();
+        $(".cart-pop").animate({'bottom':'0'});
+        $(".popup-bg").show();
+        if(type == 1){
+            $("#buyNowButton").hide();
+            $("#joinCarButton").show();
+        }else{
+            $("#buyNowButton").val("限时抢购")
+            $("#buyNowButton").show();
+            $("#joinCarButton").hide();
+        }
+    }
+
+
+    function point_dui(id,obj){
+        $.getJSON(creatUrl("site/trade_ticket"),{'ticket_id':id,'random':Math.random},function(json)
+        {
+            layer.open({
+                content: json.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            $(obj).removeClass("pb-nobg");
+            $(obj).addClass("pb-nobg-gray");
+            $(obj).html("已领取");
+            $(".shop-pop").animate({'bottom':'-500px'});
+            $(".shop-pop").hide(300);
+            $(".popup-bg").hide();
+        });
+    }
+
+    function qv_img(id,obj){
+        $(".set-meal a").removeClass("active");
+        $(obj).addClass("active");
+        var img = $(obj).attr("img");
+        var price = $(obj).attr("price");
+        $("#item_img").attr("src",img);
+        $("#data_sellPrice").html(price);
+
+        var productInstance = new productClass(id,"{$this->user['user_id']}","{$promo}","{$active_id}");
+    }
+	
+    function zx_show(){
+    	$(".online-pop").show();
+		$(".online-pop").animate({'bottom':'0'});
+		$(".popup-bg").show();
+    }
+	function zx_hide(){
+		$(".shop-pop").animate({'bottom':'-500px'});
+		$(".shop-pop").hide(300);
+		$(".popup-bg").hide();
+    }
+    function sj_show(){
+    	$(".shop-pop").animate({'bottom':'-500px'});
+		$(".shop-pop").hide();
+    	$("#div_sj").show();
+    }
+    
+    function sj_hide(){
+    	$("#div_sj").hide();
+    	$(".popup-bg").hide();
+    }
+    function zx_tj(){
+    	var mobile=$("#mobile").val();    	
+    	if(!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(mobile))){ 
+            alert("请输入正确的手机号"); 
+            $("#mobile").focus(); 
+            return false; 
+        }else{
+        	$.getJSON(creatUrl("site/ys_zx"),{'mobile':mobile,'goods_id':{$id},'random':Math.random},function(json){
+        		if(!json.error){
+        			$("#div_sj").hide();
+    	        	$(".popup-bg").hide();        	                	            
+        		}
+        		layer.open({
+	                content: json.info
+	                ,skin: 'msg'
+	                ,time: 2 //2秒后自动关闭
+	            });
+    		});
+        }
+    }
+    
+</script>

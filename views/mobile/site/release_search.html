@@ -1,0 +1,128 @@
+<div class="wrap-box" id="words">
+    <!--头部导航开始-->
+    <header class="pub-header">
+        <div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+        <div class="head-search skin-search">
+            <div class="cs-box">
+                <em class="tip" id="do_this"><span>{$search_word}</span> <a href="javascript:;" onclick="shut_word(this)"><i class="iconfont">&#xe602;</i></a></em>
+                <input type="text" class="txt" id="search_content1" name="search_word">
+                <i class="iconfont icon">&#xe60f;</i>
+                <button class="rclear iconfont" onclick="cut()">&#xe602;</button>
+            </div>
+            <button class="btn" onclick="do_search()">搜索</button>
+        </div>
+    </header>
+    <!--头部导航结束-->
+    <div class="filter filter-search">
+        <a href="{url:/site/release_search/search_word/$search_word/type/1}" {if:$type == '1'} class="actived"{/if} >货源</a>
+        <a href="{url:/site/release_search/search_word/$search_word/type/0}" {if:$type == '0'} class="actived"{/if} >求购</a>
+    </div>
+    <!--<div class="alert-hint alert-search ft13 mt5">
+        更高效的提高匹配精准度，让更多用户看到你的需求！<a href="#" class="pub-btn">精准匹配</a>
+    </div>-->
+    <div class="screen">
+        <span class="fl">共{$number}个{if:$type=='1'}货源{elseif:$type=='0'}求购{/if}</span>
+        <a href="#" class="fr"><i class="iconfont mr5 psi">&#xe606;</i>筛选</a>
+    </div>
+    <!--筛选结束-->
+    <div class="probox mt5">
+        <div class="titlebar">
+            <h1>发布排名</h1>
+            <!--<div class="tb-nav">
+                <a href="#" class="actived">货源排名</a>
+                <a href="#">求购排名</a>
+            </div>-->
+        </div>
+        {foreach:items = $goods_list}
+
+        <ul class="pro-list">
+            {foreach:items = $item['release_list'] item=$v}
+            <li>
+                <div class="imgbox"><a href="{url:site/release_view/release_id/$v['id']}"><img src="{url:}{$item['img']}" alt=""></a></div>
+                <h1 class="name"><a href="{url:site/release_view/release_id/$v['id']}">{$item['name']}</a></h1>
+                <div class="time item pb10">发布时间：{$v['up_time']}</div>
+                <div class="price pb5">
+                    <span class="ml-3">￥{$v['price']}</span>
+                    {set:$memberInfo = Api::run('getMemberInfo',$v['user_id']);}
+                    <a href="{url:site/userhomepage/userid/$v['user_id']}" class="share">{$memberInfo['nickname']}</a>
+                </div>
+                <div class="code item">
+                    {set:$areaInfo = Api::run('getAreaInfo',$v['area_id']);}
+                    <span>货源地:<em>{$areaInfo}</em></span>
+                </div>
+            </li>
+            {/foreach}
+        </ul>
+        {/foreach}
+        <div style="height: 80px">
+        </div>
+
+    </div>
+</div>
+<div class="wrap-box" id="search_text" style="display: none">
+    <!--头部导航开始-->
+    <header class="pub-header">
+        <div class="left-nav"><a href="javascript:;" onclick="index()"><i class="iconfont">&#xe65c;</i></a></div>
+        <div class="head-search skin-search">
+            <div class="cs-box">
+                <input type="text" class="txt" id="search_content2" name="search_word">
+                <i class="iconfont icon"  >&#xe60f;</i>
+                <button class="rclear iconfont" onclick="cut()">&#xe602;</button>
+            </div>
+            <button class="btn" onclick="search()">搜索</button>
+        </div>
+    </header>
+    <!--搜索结果-->
+    <div class="search-result">
+        <div class="hot-tags">
+            <div class="titlebar">
+                <h1 class="tip-none"><em class="vi-gray1 ft14">热门搜索</em></h1>
+                <div class="tb-nav flex-r0">
+                    <a href="#" class="vi-gray1">换一换</a>
+                </div>
+            </div>
+            <div class="tags-list">
+                {foreach:items=$hot_word_list}
+                <a href="{url:site/release_search/search_word/$item['word']/type/1}" class="item">{$item['word']}</a>
+                {/foreach}
+            </div>
+        </div>
+        <!--<div class="history-list">-->
+            <!--<div class="titlebar">-->
+                <!--<h1 class="tip-none"><em class="vi-gray1 ft14">热门搜索</em></h1>-->
+                <!--<div class="tb-nav flex-r0">-->
+                    <!--<a href="#" class="vi-gray1 iconfont ft20">&#xe699;</a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<ul class="pub-list">-->
+                <!--<li><a href="#">我是一个大坏帅哥.我是一个大坏帅哥.我是一个大坏帅哥.我是一个大坏帅哥.</a></li>-->
+                <!--<li><a href="#">我是一个大坏帅哥.</a></li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    </div>
+</div>
+<script>
+    function shut_word(r) {
+        $(r).parent($("em.tip")).hide();
+        $("#words").hide();
+        $("#search_text").show();
+    }
+    function cut() {
+        $("input[name='search_word']").val("");
+        $("em.tip").remove();
+    }
+    function index() {
+        window.location.href = "{url:site/index}";
+    }
+    function search() {
+        var search = $("#search_content2").val();
+        window.location.href = "{url:site/release_search}&search_word="+search+"";
+    }
+    function do_search() {
+        var search = $("#search_content1").val();
+        window.location.href = "{url:site/release_search}&search_word="+search+"";
+    }
+
+
+
+</script>

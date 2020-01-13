@@ -1,0 +1,43 @@
+<div id="pageInfo"  data-goback="{url:ucenter/index}" data-title="浏览记录"></div>
+<dl class="cart-list order-list record-list">
+    {set:$user_id=$this->user['user_id']}
+    {set:$page= (isset($_GET['page'])&&(intval($_GET['page'])>0))?intval($_GET['page']):1;}
+    {query: name=goods_history where=user_id eq $user_id  order=id desc page=$page pagesize=50 }
+
+    <dd>
+        <div class="item">
+            <a href="{url:/site/products/id/$item['goods_id']}">
+                <img src="{url:/pic/thumb/img/$item[goods_img]/w/140/h/140}" alt="" width="100" class="img"></a>
+            <h1 class="pro-name">
+                <a href="{url:/site/products/id/$item['goods_id']}">
+                    {if:$item['goods_type'] == 1}
+                    <i class="tags" style="background: #ff0000">OTC</i>
+                    {elseif:$item['goods_type'] == 2}
+                    <i class="tags" style="background: #00602e">OTC</i>
+                    {elseif:$item['goods_type'] == 3}
+                    <i class="tags" style="background: #cc1717">RX</i>
+                    {/if}
+                    {$item['goods_name']}</a>
+            </h1>
+            <div class="price">￥{$item['sell_price']}
+                <del class="abe-gray3 abe-ft12">￥{$item['market_price']}</del>
+            </div>
+        </div><a href="javascript:void(0)" onclick="delModel({link:'{url:/ucenter/history_del/id/$item[id]}',msg:'是否删除浏览记录？'});" class="del iconfont">&#xe6b2;</a>
+    </dd>
+
+    {/query}
+
+    <dd class="clt-bnd"></dd>
+</dl>
+{if:isset($item)}
+{$query->getPageBar()}
+{else:}
+<section class="nodata">暂无浏览记录!</section>
+{/if}
+
+<script>
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+})
+</script>

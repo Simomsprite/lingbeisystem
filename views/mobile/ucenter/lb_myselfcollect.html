@@ -1,0 +1,156 @@
+
+	<div class="wrap-box wrap-blayer">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+			<h1 class="title"> 我的收藏 </h1>
+			<div class="right-nav"><a href="#" class="pr10" id="edit-del"><i class="iconfont psi">&#xe699;</i>删除</a></div>
+		</header>	
+		<!--头部导航结束-->
+		<div class="inside-search">
+			<div class="head-search skin-search">
+			  <div class="cs-box">
+				<input type="text" class="txt" placeholder="请输入商品名，关键词或条形码" >
+				<i class="iconfont icon">&#xe60f;</i>  
+				<button class="rclear iconfont hide">&#xe602;</button>
+			  </div>
+			  <button class="btn">搜索</button>	
+			</div>
+		</div>
+		<!--筛选结束-->
+		<div class="filter filter-collect mb5">
+			<a href="#" class="actived" id="sellbtn"><i class="iconfont psi">&#xe643;</i>货源</a>
+			<a href="#" id="buybtn"><i class="iconfont psi">&#xe609;</i>求购</a>
+		</div>
+
+		<!--<?php print_r($mlist); ?>-->
+		<div class="probox mt1">
+
+			<!--默认货源-->
+			<ul class="pro-list" id="sell">
+
+				{foreach:items=$mlist["selllist"]}
+
+				<li>
+					<div class="imgbox"><a href="#"><img src="{url:/pic/thumb/img/$item['informationinfo']['goodimg']/w/80/h/80}" alt=""></a></div>
+					<h1 class="name"><a href="#">{$item['informationinfo']['goodname']}</a></h1>
+					<div class="time item pb10">发布时间：{$item['informationinfo']['up_time']}</div>
+					<div class="price pb5">
+						<span class="ml-3">￥{$item['informationinfo']['price']}</span>
+					</div>
+					<div class="code item">
+						<span>货源地:<em>{$item['informationinfo']['areaname']}</em></span>
+
+						<a href="#" onclick="cancelcollect(this)" id="{$item['informationinfo']['id']}"  class="like liked" >
+<!--							<a href="{url:ucenter/deletecollect/informationid/{$item['informationinfo']['id']}}" onclick="cancelcollect(this)"  class="like liked" >-->
+						<i class="icon"></i>收藏
+						</a>
+					</div>
+				</li>
+
+				{/foreach}
+
+			</ul>
+
+			<!--默认货源-->
+			<ul class="pro-list" style="display: none" id="buy">
+
+				{foreach:items=$mlist["buylist"]}
+
+				<li>
+					<div class="imgbox"><a href="#"><img src="{url:/pic/thumb/img/$item['informationinfo']['goodimg']/w/80/h/80}" alt=""></a></div>
+					<h1 class="name"><a href="#">{$item['informationinfo']['goodname']}</a></h1>
+					<div class="time item pb10">发布时间：{$item['informationinfo']['up_time']}</div>
+					<div class="price pb5">
+						<span class="ml-3">￥{$item['informationinfo']['price']}</span>
+					</div>
+					<div class="code item">
+						<span>货源地:<em>{$item['informationinfo']['areaname']}</em></span>
+<!--						<a href="{url:ucenter/deletecollect/informationid/$item['informationinfo']['id']}"  class="like liked" >-->
+							<a href="#" onclick="cancelcollect(this)" id="{$item['informationinfo']['id']}"  class="like liked" >
+						<i class="icon"></i>收藏
+						</a>
+					</div>
+				</li>
+
+				{/foreach}
+
+			</ul>
+
+
+		</div>
+		<!--底部操作浮层-->
+		<div class="footer-operation" style="display: none">
+			<label class="fl all-check" id="all-check">全选</label>
+			<div class="fr pr5"><a href="#" class="pub-btn vpink-btn mr10">删除</a><a href="#" class="pub-btn" id="cancel">取消</a></div>
+		</div>
+		<script >
+		$(function(){
+			$("#edit-del").click(function(){
+				$(".pro-list").addClass("edit-del-list");
+				$(".footer-operation").show();
+			});
+			$("#cancel").click(function(){
+				$(".pro-list").removeClass("edit-del-list");
+				$(".footer-operation").hide();
+			});
+			$(".pro-list li").click(function(){
+				if($(this).hasClass("actived")){
+					$(this).removeClass("actived");
+				}else{
+					$(this).addClass("actived");
+				}
+			});
+			$("#all-check").click(function(){
+				if($(this).hasClass("actived")){
+					$(this).removeClass("actived");
+					$(".pro-list li").removeClass("actived");
+				}else{
+					$(this).addClass("actived");
+					$(".pro-list li").addClass("actived");
+				}
+			});
+		});
+
+		//点击货源的时候
+		$("#sellbtn").click(function () {
+			//显示货源
+			$("#sell").show();
+			$("#buy").hide();
+			// $("#sell").classList.remove("actived");
+			document.getElementById("sellbtn").classList.add("actived");
+			document.getElementById("buybtn").classList.remove("actived");
+		});
+
+
+
+
+
+		//点击货源的时候
+		$("#buybtn").click(function () {
+			//显示货源
+			$("#sell").hide();
+			$("#buy").show();
+			document.getElementById("sellbtn").classList.remove("actived");
+			document.getElementById("buybtn").classList.add("actived");
+		});
+
+
+		function cancelcollect(obj) {
+
+			var  id =obj.id;
+			$.get("{url:ucenter/deletecollect}",{"informationid":id},function(content){
+
+				if(content==='1'){
+					$(obj).parents("li").remove();
+				}else{
+
+				}
+			});
+
+		}
+
+
+		</script>
+
+	</div>

@@ -1,0 +1,140 @@
+
+	<div class="wrap-box wrap-blayer">
+		<div class="user-top hid mb5">
+
+			<?php if(is_null($mlist['userinfo']['head_ico'])){ ?>
+			<a class="uhead"><img src="{skin:lb/images/jgimg/defaulthead.png}" alt=""></a>
+			<?php }else{ ?>
+			<a class="uhead"><img src="{$mlist['userinfo']['head_ico']}" alt=""></a>
+			<?php } ?>
+
+			<h1 class="uname">{$mlist['userinfo']['nickname']}</h1>
+			<div class="collection">
+				<!--<a href="#"><i class="iconfont">&#xe683;</i>我的收藏<em class="pl5 ft12 vi-gray1">56</em></a>
+				<a href="#"><i class="iconfont">&#xe611;</i>我的关注<em class="pl5 ft12 vi-gray1">56</em></a>-->
+				<a href="#"><i class="iconfont">&#xe629;</i>{$mlist['userinfo']['companyname']}</a>
+				<a href="#"><i class="iconfont">&#xe664;</i>常住地:{$mlist['userinfo']['area']}</a>
+			</div>
+		</div>
+		<div class="filter filter-search">
+			<a href="#" class="actived" id="sellbtn">货源</a>
+			<a href="#" id="buybtn">求购</a>
+		</div>
+		<div class="probox mt1">
+
+
+			<!--默认货源-->
+			<ul class="pro-list" id="sell">
+
+				{foreach:items=$mlist["selllist"]}
+
+				<li>
+					<div class="imgbox"><a href="#"><img src="{$item['goodsimg']}" alt=""></a></div>
+					<h1 class="name"><a href="#">{$item['goodsname']}</a></h1>
+					<div class="time item pb10">发布时间：{$item['up_time']}</div>
+					<div class="price pb5">
+						<span class="ml-3">￥{$item['price']}</span>
+					</div>
+					<div class="code item">
+						<span>货源地:<em>{$item['areaname']}</em></span>
+
+						<a href="#" onclick="collect(this)" id="{$item['id']}" <?php if($item['iscollect']==='0'){ ?>class="like"<?php }else{ ?>class="like liked"<?php } ?> >
+
+							<i class="icon"></i>收藏
+						</a>
+					</div>
+				</li>
+
+				{/foreach}
+				
+			</ul>
+
+			<!--默认货源-->
+			<ul class="pro-list" style="display: none" id="buy">
+
+				{foreach:items=$mlist["buylist"]}
+
+				<li>
+					<div class="imgbox"><a href="#"><img src="{$item['goodsimg']}" alt=""></a></div>
+					<h1 class="name"><a href="#">{$item['goodsname']}</a></h1>
+					<div class="time item pb10">发布时间：{$item['up_time']}</div>
+					<div class="price pb5">
+						<span class="ml-3">￥{$item['price']}</span>
+					</div>
+					<div class="code item">
+						<span>货源地:<em>{$item['areaname']}</em></span>
+							<a href="#" onclick="collect(this)" id="{$item['id']}" <?php if($item['iscollect']==='0'){ ?>class="like"<?php }else{ ?>class="like liked"<?php } ?> >
+							<i class="icon"></i>收藏
+						</a>
+					</div>
+				</li>
+
+				{/foreach}
+
+			</ul>
+
+
+
+
+		</div>
+		
+		<!--底部导航开始-->
+		<nav class="footer-nav skin-fnav">
+			<a href="#"><i class="iconfont">&#xe605;</i><em>首页</em></a>
+			<a href="#"><i class="iconfont">&#xe63a;</i><em>发现</em></a>
+			<a href="#"><i class="release"><em class="iconfont">&#xe6bc;</em></i><i></i><em>发布</em></a>
+			<a href="#"><i class="iconfont">&#xe63c;</i><em>消息</em></a>
+			<a href="#" class="active"><i class="iconfont">&#xe612;</i><em>我的</em></a>
+		</nav>
+		<!--底部导航结束-->
+	</div>
+
+
+<script>
+
+	//点击货源的时候
+	$("#sellbtn").click(function () {
+		//显示货源
+		$("#sell").show();
+		$("#buy").hide();
+		// $("#sell").classList.remove("actived");
+		document.getElementById("sellbtn").classList.add("actived");
+		document.getElementById("buybtn").classList.remove("actived");
+
+
+	});
+
+	//点击货源的时候
+	$("#buybtn").click(function () {
+		//显示货源
+		$("#sell").hide();
+		$("#buy").show();
+		document.getElementById("sellbtn").classList.remove("actived");
+		document.getElementById("buybtn").classList.add("actived");
+	});
+
+
+	/**
+	 *
+	 * @param obj 点击的元素
+	 */
+	function collect(obj){
+
+		var  id =obj.id;
+		console.log(id);
+		$.get("{url:matchmakingDeal/collect}",{"informationid":id},function(content){
+			console.log(content);
+			if(content === '0'){
+				$(obj).attr("class","like");
+				console.log("取消收藏");
+			} else if (content === '1') {
+				$(obj).attr("class","like liked");
+				console.log("收藏");
+			}
+		});
+	}
+
+
+
+</script>
+

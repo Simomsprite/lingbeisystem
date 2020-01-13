@@ -1,0 +1,179 @@
+{set:$breadGuide = goods_class::catRecursion($this->catId)}
+{set:$goodsObj = search_goods::find(array('category_extend' => $this->childId),20);$resultData = $goodsObj->find()}
+<div id="pageInfo" data-title="{$this->catRow['name']}"></div>
+<style>
+    .cs-sele-info .item-box a {
+        display: block;
+        float: left;
+        width: 31.33333%;
+        height:35px;
+        line-height: 35px;
+        padding: 0px 6px;
+        margin: 0 1%;
+        box-sizing: border-box;
+        position: relative;
+        font-size: 14px;
+        overflow: hidden;
+        padding-right: 10px;
+    }
+</style>
+{if:$resultData}
+<div class="cate-box"><!--这是我加的-->
+<div class="cate-tab">
+    {foreach:items=search_goods::getOrderType()}
+    <a href="javascript:gourl('{echo:search_goods::searchUrl(array('order','by'),array($key,search_goods::getOrderBy($key)))}');" class="">{$item}</a>
+    {/foreach}
+</div>
+
+<div class="cate-sele">
+    <div class="cs-top">
+        {foreach:items = search_goods::$attrSearch}
+        <a href="javascript:void(0);">{$item['name']}<i class="iconfont">&#xe604;</i></a>
+        {/foreach}
+    </div>
+    <div class="cs-sele-info">
+        <!--商品属性-->
+        {foreach:items = search_goods::$attrSearch}
+        <div class="item-box clearfix" id='attr_dd_{$item['id']}'>
+        <a style="width: 48%" class="active" href="{echo:search_goods::searchUrl('attr['.$item["id"].']','')}">不限</a>
+        {foreach:items=$item['value'] item=$attr}
+            <a style="width: 48%" href="{echo:search_goods::searchUrl('attr['.$item["id"].']',$attr)}"  id="attr_{$item['id']}_{echo:md5($attr)}">{$attr}<i class="iconfont">&#xe6ab;</i></a>
+            {/foreach}
+        </div>
+        {/foreach}
+        <!--<div class="cs-sub clearfix">-->
+            <!--<input type="button" value="重置" class="btn">-->
+            <!--<input type="button" value="确定" class="btn btn-org" id="close-cs-sele">-->
+        <!--</div>-->
+    </div>
+</div>
+</div><!--这是我加的-->
+
+
+
+<div class="pro-box">
+    <dl class="pro-list">
+    {foreach:items=$resultData}
+        <dd>
+            <a href="{url:/site/products/id/$item[id]}" title="{$item['name']}" class="item">
+            <img src="{url:/pic/thumb/img/$item[img]/w/200/h/200}" alt="{$item['name']}" width="100" class="img">
+            <h1 class="pro-name">
+                {if:$item['goods_type'] == 1}
+                <i class="tags" style="background: #d90023">OTC</i>
+                {elseif:$item['goods_type'] == 2}
+                <i class="tags" style="background: #00602e">OTC</i>
+                {elseif:$item['goods_type'] == 3}
+                <i class="tags" style="background: #cc1717">RX</i>
+                {/if}
+                {$item['name']}</h1>
+            <div class="price">￥{$item['sell_price']}</div>
+            <div class="clearfix abe-gray3">
+                <div class="abe-fl"><em class="vi-org2">{$item['comments']}</em>条评价  </div>
+                <em class="pdl_10">人气 {$item['visit']}</em>
+                <div class="abe-fr">已售{$item['sale']}件</div></div>
+        </a>
+        </dd>
+
+    {/foreach}
+    </dl>
+</div>
+
+{$goodsObj->getPageBar()}
+{else:}
+<section class="nodata">商品进货中，请稍后关注上架情况</section>
+{/if}
+<div class="csinfo-bg" style="display:none;"></div>
+
+<script>
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+	// 切换导航样式
+	var order = getUrlParam("order");
+	var by = getUrlParam("by");
+	console.log(by)
+	var sortBtn = $(".cate-tab").children('a');
+	// sortBtn.eq(2).append('<i>');
+	if(order=="sale"){
+		if (by=="desc") {sortBtn.eq(0).addClass('active').append('<i class="icon-angle-down"></i>')}
+		else {sortBtn.eq(0).addClass('active').append('<i class="icon-angle-up"></i>');}
+
+	}else if (order=="cpoint"){
+		if (by=="desc") {sortBtn.eq(1).addClass('active').append('<i class="icon-angle-down"></i>')}
+		else {sortBtn.eq(1).addClass('active').append('<i class="icon-angle-up"></i>');}
+	}else if(order=="price"){
+		if (by=="desc") {sortBtn.eq(2).addClass('active').append('<i class="icon-angle-down"></i>')}
+		else {sortBtn.eq(2).addClass('active').append('<i class="icon-angle-up"></i>');}
+	}else if(order=="new"){
+		if (by=="desc") {sortBtn.eq(3).addClass('active').append('<i class="icon-angle-down"></i>')}
+		else {sortBtn.eq(3).addClass('active').append('<i class="icon-angle-up"></i>');}
+	}else{
+        $('#order_{$orderValue}').addClass('current');
+	};
+
+
+
+    var tab_tit_item = $('.cate-sele .cs-top a');
+    var tb_item = $('.cate-sele .cs-sele-info .item-box');
+    tab_tit_item.click(function(){
+        var tbnum = $(this).index();
+        $('.cs-sele-info').show();
+        $('.csinfo-bg').show();
+        tab_tit_item.removeClass('active');
+       $(this).addClass('active');
+        tb_item.hide();
+        tb_item.eq(tbnum).show();
+    });
+//    tb_item.children("a").click(function(){
+//        $(this).toggleClass('active');
+//    });
+    $('#close-cs-sele').click(function(){
+        $('.cs-sele-info').hide();
+        $('.csinfo-bg').hide();
+        tab_tit_item.removeClass('active');
+    });
+    $('.csinfo-bg').click(function(){
+        $(this).hide();
+        $('.cs-sele-info').hide();
+        tab_tit_item.removeClass('active');
+    });
+//筛选框浮动
+    var pt_top = $(".cate-box").offset().top;
+    var ptfix = $(".cate-box");
+    $(".cate-box").after("<div class='ptzw'></div>");
+    $(".wrap-box").scroll(function(){
+        var wt_scroll = $(this).scrollTop();
+        if(wt_scroll>pt_top){
+            ptfix.addClass("catefixed");
+            $(".ctzw").show();
+        }else{
+            ptfix.removeClass("catefixed");
+            $(".ctzw").hide();
+        }
+    });
+
+    //品牌模块高亮和预填充
+    {set:$brand = IFilter::act(IReq::get('brand'),'int');}
+    {if:$brand}
+        $('#brand_dd>*').removeClass('active');
+        $('#brand_{$brand}').addClass('active');
+    {/if}
+
+        //属性模块高亮和预填充
+        {set:$tempArray = IReq::get('attr')}
+        {if:$tempArray}
+        {set:$json = JSON::encode(array_map('md5',$tempArray))}
+        var attrArray = {$json};
+        for(val in attrArray)
+        {
+            if(attrArray[val])
+            {
+                $('#attr_dd_'+val+'>*').removeClass('active');
+                $('#attr_'+val+'_'+attrArray[val]).addClass('active');
+            }
+        }
+        {/if}
+
+
+});
+</script>

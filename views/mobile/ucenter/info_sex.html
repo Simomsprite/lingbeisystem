@@ -1,0 +1,54 @@
+{js:artTemplate}
+<div id="pageInfo" data-goback="{url:ucenter/info}" data-title="修改性别"></div>
+{set:$memberInfo = Api::run('getMemberInfo',$this->user['user_id']);}
+<form action='{url:/ucenter/info_sex_act}' id="login_form" name='user_info' method="POST" role="form">
+    <input type="hidden" value="{$memberInfo['sex']}" id="sex" name="sex">
+<ul class="user-form user-form-style2 mtg_10">
+    <li>
+        <label  onclick="qv_class(this,1)"  {if:$memberInfo['sex'] == 1} class="active" {/if} rel="1">男<i class="iconfont" style="bottom:0px">&#xe615;</i></label>
+    </li>
+    <li>
+        <label onclick="qv_class(this,2)" {if:$memberInfo['sex'] == 2} class="active" {/if}  rel="2">女<i class="iconfont" style="bottom:0px">&#xe615;</i></label>
+    </li>
+    <li>
+        <label  onclick="qv_class(this,0)"  {if:$memberInfo['sex'] == 0} class="active" {/if}  rel="0">保密<i class="iconfont" style="bottom:0px">&#xe615;</i></label>
+    </li>
+</ul>
+
+<div class="exit-sub mtg_15">
+    <input type="submit" value="保存" class="sub-btn">
+</div>
+</form>
+
+<script type="application/javascript">
+    hideNav();
+    //表单回填
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+
+
+    function qv_class(obj,value){
+        $(".user-form label").removeClass("active");
+        $(obj).addClass("active");
+        $("#sex").val(value)
+    }
+
+</script>

@@ -1,0 +1,96 @@
+
+	<div class="wrap-box">
+		<!--头部导航开始-->
+		<header class="pub-header skin-header">
+			<div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+			{if:$mlist['type'] === '1'}
+			<h1 class="title"> 我的货源 </h1>
+			{elseif:$mlist['type'] === '0'}
+			<h1 class="title"> 我的求购 </h1>
+			{/if}
+		</header>	
+		<!--头部导航结束-->
+
+
+		<?php if(count($mlist["mlist"])!=0){ ?>
+		<div class="inside-search">
+			<div class="head-search skin-search">
+			  <div class="cs-box">
+				<input type="text" class="txt" placeholder="请输入商品名，关键词或条形码" >
+				<i class="iconfont icon">&#xe60f;</i>  
+				<button class="rclear iconfont hide">&#xe602;</button>
+			  </div>
+			  <button class="btn">搜索</button>	
+			</div>
+		</div>
+		<!--筛选结束-->
+		<div class="probox mt5">
+
+			<!--<?php print_r($mlist); ?>-->
+			<ul class="pro-list">
+
+				{foreach:items=$mlist["mlist"]}
+
+				<li>
+
+					<div class="imgbox">
+						<a href="#"><img src="{$item['good']['img']}" alt=""></a>
+					</div>
+
+					<h1 class="name"><a href="#">{$item["good"]["name"]}</a></h1>
+
+					<div class="time item pb10">发布时间：{$item["up_time"]}</div>
+
+					<div class="price pb5">
+						<span class="ml-3">￥{$item["price"]}</span>
+						<a href="#" class="share"><i class="iconfont">&#xe613;</i>分享</a>
+					</div>
+
+					<!--********************状态判断显示*****************-->
+					{if:$item['status'] == '0'}
+					<div class="state vi-org1"><i class="iconfont">&#xe63e;</i>待审核</div>
+					{elseif:$item['status'] == '1'}
+					<div class="state vi-gray2"><i class="iconfont">&#xe616;</i>已拒绝</div>
+					{elseif:$item['status'] == '2'}
+					{if:$item['matchingnum'] == ''}
+					<div class="state vi-blue1"><i class="iconfont">&#xe60d;</i>撮合中</div>
+					{/if}
+					<a href="{url:matchmakingDeal/matchingdetailslist/infomationid/$item['matchingnum']}">
+					<div class="state vi-green1"><i class="iconfont">&#xe60d;</i>已撮合({$item["matchingnum"]})</div>
+					</a>
+					{elseif:$item['status'] == '3'}
+					<div class="state vi-gray2"><i class="iconfont">&#xe616;</i>已下架</div>
+					<!--********************状态判断显示*****************-->
+					{/if}
+					<div class="code item"><span>货源地:<em>{$item["areaname"]}</em></span><span class="pl10">库存:<em>{$item["number"]}</em></span></div>
+
+				</li>
+
+				{/foreach}
+
+
+			</ul>
+		</div>
+		<?php }else{ ?>
+		<!--没有一条发布记录的时候-->
+		<div class="operation-hint">
+			<div class="hint-icon">
+				<img src="{skin:lb/images/matchimg/unpublish.png}" alt="">
+			</div>
+
+			{if:$mlist['type'] == '1'}
+			<h1 class="hint-title">您还没有发布货源</h1>
+			{elseif:$mlist['type'] === '0'}
+			<h1 class="hint-title">您还没有发布求购</h1>
+			{/if}
+			<div class="hint-sub">
+				<a href="#" class="pub-btn hgbtn hpbtn">发布你的第一个货源</a>
+			</div>
+		</div>
+
+		<?php } ?>
+
+
+
+
+	</div>

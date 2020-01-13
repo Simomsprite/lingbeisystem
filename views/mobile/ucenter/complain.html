@@ -1,0 +1,44 @@
+<div id="pageInfo" data-title="帮助反馈" data-goback="{url:/ucenter/index}"></div>
+<form action="{url:/ucenter/complain_edit}" id="edit_address" method="post" >
+<ul class="cart-ul-info address address-edit">
+    <li><span class="tit">标题：</span>
+        <input name="title" type="text" datatype="*" nullmsg="请输入标题" errormsg="请输入标题" placeholder="请输入标题">
+    </li>
+    <li><span class="tit">建议内容：</span>
+        <textarea name="content" datatype="*" nullmsg="请输入建议内容" errormsg="请输入建议内容" p placeholder="请输入建议内容"></textarea>
+    </li>
+
+</ul>
+<div class="exit-sub mtg_15 pdb_15">
+    <input type="submit" value="提交建议" class="sub-btn">
+</div>
+</form>
+<script>
+
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+
+    $("#edit_address").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: "操作成功"
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('gourl("'+creatUrl("ucenter/index")+'")',2000);//1秒后执行
+        }
+    });
+
+})
+</script>

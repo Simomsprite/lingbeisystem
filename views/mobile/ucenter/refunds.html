@@ -1,0 +1,49 @@
+<div id="pageInfo" data-goback="{url:ucenter/index}" data-title="退款售后"></div>
+
+{set:$queryRefundmentDocList = Api::run('getRefundmentDocList',$this->user['user_id'])}
+{set:$items = $queryRefundmentDocList->find()}
+{if:$items}
+
+<div class="order-box">
+    {foreach:items = $items}
+    <dl class="cart-list order-list">
+        <dt>
+            <em onclick="gourl('{url:/ucenter/refunds_detail/id/$item[id]}')">{$item['order_no']}</em>
+
+        </i>
+        {set:$orderGoodsRow = Block::getOrderGoodsInfo($item['order_goods_id'])}
+        {set:$good_info = JSON::decode($orderGoodsRow['goods_array'])}
+        <dd>
+            <div class="item">
+                <a href="{url:/ucenter/refunds_detail/id/$item[id]}">
+                    <img src="{url:/pic/thumb/img/$orderGoodsRow[img]/w/140/h/140}" alt="" width="100" class="img">
+                </a>
+                <a href="{url:/ucenter/refunds_detail/id/$item[id]}">
+                    <!--<i class="tags">OTC</i>-->
+                    {$good_info['name']}
+                </a>
+                <div class="price">￥{$orderGoodsRow['real_price']} <em>x{$orderGoodsRow['goods_nums']}</em></div>
+            </div>
+        </dd>
+        <dt class="tot-up">
+        <div class="abe-txtr">状态：{echo:Order_Class::refundmentText($item['pay_status'])}</div>
+        {if:$item['pay_status']==0}
+        <!--<div class="abe-txtr"><a href="javascript:void(0)" onclick="delModel({link:'{url:/ucenter/refunds_del/id/$item[id]}'})" class="pub-btn pb-bd2">取消退款</a></div>-->
+        {/if}
+        </dt>
+
+    </dl>
+
+    {/foreach}
+</div>
+{$queryRefundmentDocList->getPageBar()}
+{else:}
+<section class="nodata">您当前没有退款信息</section>
+{/if}
+<script>
+//DOM加载完毕
+$(function(){
+	// 隐藏底部导航
+	hideNav();
+})
+</script>

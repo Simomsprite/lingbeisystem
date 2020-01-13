@@ -1,0 +1,346 @@
+{js:fileUpload}
+<meta http-equiv="refresh" content="60">
+<script src="{skin:lb/js/lrz.all.bundle.js}"></script>
+<div class="wrap-box wrap-nav">
+  <?php $fusername= $messagelist["fusername"]; $myusername= $messagelist["myusername"];$myheadpoto= $messagelist["myheadpoto"];$fuheadpoto= $messagelist["fuheadpoto"];$defultpoto=$messagelist["defultpoto"]; ?>
+  <header class="pub-header skin-header">
+    <div class="left-nav"><a href="javascript:history.go(-1)" class="return"><i class="iconfont">&#xe65c;</i></a></div>
+    <h1 class="title"><?php echo $fusername; ?></h1>
+  </header>
+
+  <section class="chat" id="scrolldIV">
+
+    <dl id="divP">
+      {foreach:items=$messagelist}
+      {if:$item['from_id'] == 'hahcc' && $item['msg_type'] == 'text'}
+      <dd class="c-right"><a href="{url:ucenter/myselfcollect}" class="u-head">
+
+        {if:$fuheadpoto == ''}
+        <img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+        {/if}
+        <img src="<?php echo $fuheadpoto; ?>" alt="">
+
+
+        <i>{$myusername}</i></a>
+        <p class="fr"><span>{$item["msg_body"]["text"]}</span></p>
+      </dd>
+      {elseif:$item['from_id'] == '442572136' && $item['msg_type'] == 'text'}
+      <dd class="c-left"><a href="{url:ucenter/myselfcollect}" class="u-head">
+        {if:$myheadpoto == ''}
+       <img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+        {/if}
+        <img src="<?php echo $myheadpoto; ?>" alt="">
+
+
+        <i> {$fusername}</i></a>
+        <p class="fl"><span>{$item["msg_body"]["text"]}</span></p>
+      </dd>
+      {elseif:$item['from_id'] == 'hahcc' && $item['msg_type'] == 'image'}
+      <dd class="c-right"> <a href="{url:ucenter/myselfcollect}" class="u-head">
+        {if:$fuheadpoto == ''}
+        <img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+        {/if}
+        <img src="<?php echo $fuheadpoto; ?>" alt="">
+        <i>{$myusername}</i></a>
+        <p class="fr"><span><a href="<?php echo $item['msg_body']['url'] ?>"><img class="example-image" src="<?php echo $item['msg_body']['url'] ?>" alt="image-1"/></a></span></p>
+      </dd>
+      {elseif:$item['from_id'] == '442572136' && $item['msg_type'] == 'image'}
+      <dd class="c-left"> <a href="{url:ucenter/myselfcollect}" class="u-head">
+        {if:$myheadpoto == ''}
+        <img src="{skin:lb/images/jgimg/defaulthead.png}" alt="">
+        {/if}
+        <img src="<?php echo $myheadpoto; ?>" alt="">
+        <i>{$fusername}</i></a>
+        <p class="fl"><span><a href="<?php echo $item['msg_body']['url'] ?>"><img class="example-image" src="<?php echo $item['msg_body']['url'] ?>" alt="image-1"/></a></span></p>
+      </dd>
+      {/if}
+      {/foreach}
+    </dl>
+
+
+  </section>
+
+
+  <div class="chat-txt">
+    <div class="ct-top"><a class="audio iconfont">&#xe7fb;</a>
+
+      <form class="form-inline" id="add-form" action="" method="post">
+        <!--<?php $messagearray=reset($biglist);?> &lt;!&ndash;取集合中的&ndash;&gt;-->
+
+        <?php ?> <!--取集合中的-->
+        <!--<input type="hidden" name="from_id" value="{$messagearray['from_id']}"/>    &lt;!&ndash;传发送者id&ndash;&gt;-->
+        <!--<input type="hidden" name="target_id" value="{$messagearray['target_id']}"/>  &lt;!&ndash;传接收者id&ndash;&gt;-->
+
+        <div contenteditable="true"  class="txt"></div>
+
+        <input type="hidden" name="text" id="text" value=""/>
+
+
+<!--        <input type="file" style="display: none" name="img" id="img" value="" onchange="hahahh(this)"/>-->
+<!--        <input type="file" style="display: none" id="fileUpload" name="_goodsFile" multiple="multiple" class="up-btn" data-url="{url:/ucenter/pic}">-->
+        <input type="hidden" value="{$fusername}" id="fusername">
+        <input id="uploadphoto"  style="display: none"   name="_goodsFile" type="file" >
+        <input type="file" style="display: none" accept="image/*" capture="camera" id="came" onchange="came(this)">
+        <input type="hidden" name="ccccc" id="ccccc" value=""/>
+      </form>
+
+    <!--<div contenteditable="true" class="txt"></div>-->
+
+
+      <a class="iconfont face" id="expression">&#xe649;</a>
+      <a class="iconfont unfold" id="extend">&#xe716;</a>
+
+	  <a href="#" class="sub-btn" id="shend" onclick="send()" style="display: none">发送</a>
+
+	  </div>
+    <div class="ct-bottom" style="display:none">
+      
+      <a class="item">
+        <div class="iconfont" onclick="image()">&#xe63f;</div>
+        <p>相册</p>
+        </a>
+      <a class="item">
+        <div class="iconfont" id="camera" onclick="camera()">&#xe62a;</div>
+        <p>拍照</p>
+        </a>
+      
+      </div>  
+    </div>
+</div>
+
+<script>
+
+  $(function () {
+
+    var div = document.getElementById('scrolldIV');
+    div.scrollTop = (div.scrollHeight+100);
+
+    $(".unfold").click(function(){
+      $(".ct-bottom").show();
+    });
+    $(".chat dl").click(function(){
+      $(".ct-bottom").hide();
+    });
+
+
+    document.querySelector("#uploadphoto").addEventListener('change', function () {
+      var that = this;
+      lrz(that.files[0], {width: 400}).then(function (rst) {
+        var img = new Image();
+        img.src = rst.base64;
+
+        var submitData = {
+          base64_string: img.src,
+          fusername:$("#fusername").val()
+        };
+
+        $.ajax({
+          type: "POST",
+          url: "{url:jgim/upload}",
+          data: submitData,
+          dataType: "json",
+          async:true,
+          success: function (data) {
+          console.log(data);
+          var img=data.img;
+          var flag=data.flag;
+
+            if (flag == 1) {
+
+              $("#divP").append(" <dd class=\"c-right\"> <a href=\"{url:ucenter/myselfcollect}\" class=\"u-head\">" +
+                      "{if:$fuheadpoto == ''}" +
+                      " <img src=\"{skin:lb/images/jgimg/defaulthead.png}\" alt=\"\">" +
+                      "{/if}" +
+                      "<img src=\"<?php echo $fuheadpoto; ?>\" alt=\"\">" +
+                      "<i>{$myusername}</i></a>" +
+                      "<p class=\"fr\"><span><a href='" + img + "'><img class=\"example-image\" src='" + img + "' alt=\"image-1\"/></a></span></p>" +
+                      "</dd>"
+              );
+
+              var div = document.getElementById('scrolldIV');
+              div.scrollTop = div.scrollHeight;
+
+            }else{
+              alert("发送失败");
+            }
+
+          }
+
+        });
+      });
+    });
+
+
+  });
+
+
+
+/*
+
+  $(function() {
+
+
+    //jquery图片上传
+    $('[name="_goodsFile"]').fileupload({
+      dataType: 'json',
+      done: function (e, data)
+      {
+        if(data.result && data.result.flag == 1)
+        {
+
+          var img=data.result.img;
+          var submitData={
+            imgpath:data.result.img,
+          };
+
+          $.ajax({
+            type: "POST",
+            url: "{url:jgim/sendimage}",
+            data: submitData,
+            dataType:"json",
+            success: function(data) {
+
+              if (data == 1) {
+
+                $("#divP").append(" <dd class=\"c-right\"> <a href=\"{url:ucenter/myselfcollect}\" class=\"u-head\">" +
+                        "{if:$fuheadpoto == ''}" +
+                        " <img src=\"{skin:lb/images/jgimg/defaulthead.png}\" alt=\"\">" +
+                        "{/if}" +
+                        "<img src=\"<?php echo $fuheadpoto; ?>\" alt=\"\">" +
+                        "<i>{$myusername}</i></a>" +
+                        "<p class=\"fr\"><span><a href='" + img + "'><img class=\"example-image\" src='" + img + "' alt=\"image-1\"/></a></span></p>" +
+                        "</dd>"
+                );
+              }else{
+              alert("发送失败");
+              }
+
+            }
+
+          });
+
+
+        }
+        else
+        {
+          alert("上传成功");
+          layer.open({
+            content: '上传失败',
+            skin: 'msg',
+            time: 2 //2秒后自动关闭
+          });
+        }
+      },
+    });
+  });
+
+*/
+
+
+
+    //点击文本框的时候(将表情和扩展隐掉,将发送显示出来)
+    $(".txt").click(function () {
+      $("#expression").hide();
+      $("#extend").hide();
+      $("#shend").show();
+    });
+
+    $("section").click(function(){
+      $("#expression").show();
+      $("#extend").show();
+      $("#shend").hide();
+    });
+
+  function image(){
+    // $("#img").click();
+    $("#uploadphoto").click();
+
+  }
+  function camera(){
+    $("#uploadphoto").click();
+    // $("#came").click();
+  }
+
+
+
+
+  function send(){
+
+    var submitData={
+      textcontent:$(".txt").html(),
+      fusername:$("#fusername").val()
+    };
+
+    $.ajax({
+      type: "POST",
+      url: "{url:jgim/sendtext}",
+      data: submitData,
+      dataType:"json",
+      success: function(data){
+        //console.log(data);
+        if(data==1){
+        $("#divP").append("<dd class=\"c-right\"><a href=\"{url:ucenter/myselfcollect}\" class=\"u-head\">" +
+                " {if:$myheadpoto == ''}" +
+                " <img src=\"{skin:lb/images/jgimg/defaulthead.png}\" alt=\"\">" +
+                "{/if}" +
+                "<img src=\"<?php echo $myheadpoto; ?>\" alt=\"\">" +
+                "<i> {$fusername}</i></a>"+
+                "<p class=\"fr\"><span>"+$(".txt").html()+"</span></p>" +
+                "</dd>"
+        );
+        $(".txt").html("");
+          var div = document.getElementById('scrolldIV');
+          div.scrollTop = div.scrollHeight;
+
+        }else{
+          alert("发送失败");
+        }
+      }
+
+    });
+
+  }
+
+
+  /**
+   * 暂时废掉的方法
+   * 因为linux上不支持此种上传方法
+   * @param obj
+   */
+
+    function hahahh(obj) {
+      var file=obj.files[0];
+      if (window.FileReader) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        //监听文件读取结束后事件    
+        reader.onloadend = function (e) {
+
+          //console.log(e.target.result);
+          var submitData={
+            base64_string:e.target.result,
+          };
+
+          $.ajax({
+            type: "POST",
+            url: "{url:jgim/sendimage}",
+            data: submitData,
+            dataType:"json",
+            success: function(data){
+
+            }
+
+          });
+
+        }
+      }
+    }
+
+
+
+
+
+</script>
+
+
+

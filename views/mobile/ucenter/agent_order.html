@@ -1,0 +1,114 @@
+<link rel="stylesheet" href="{skin:newcss/style/mobiscroll.css}">
+<link rel="stylesheet" href="{skin:newcss/style/mobiscroll_date.css}">
+<script src='{skin:newcss/js/mobiscroll_date.js}'></script>
+<script src='{skin:newcss/js/mobiscroll.js}'></script>
+<div id="pageInfo"  data-goback="{url:ucenter/index}" data-title="推广订单"></div>
+<form action='{url:/ucenter/agent_order}' id="agent_order_form" name='agent_order_form' method="POST">
+    <ul class="yx-fitter">
+      <li class="w100p"> <span class="tit">日期</span>
+        <div class="txtbox">
+          <label>
+            <input type="text" class="txt" id="Start_Date" name="start_date" value="{$this->start_date}">
+            <i class="iconfont">&#xe719;</i></label>
+          <em>-</em>
+          <label>
+            <input type="text" class="txt" id="End_Date" name="end_date" value="{$this->end_date}">
+            <i class="iconfont">&#xe719;</i></label>
+          <button type="submit"><i class="iconfont">&#xe896;</i></button>
+        </div>
+      </li>
+      <li> <span class="tit">产品 </span>
+        <div class="txtbox">
+          <label>
+            <input type="text" class="txt" name="goods_txt" id="goods_txt" value="{$this->goods_txt}" onclick="javascript:goods_show();" readonly>
+            <i class="iconfont">&#xe64f;</i></label>
+            <input type="hidden" name="goods_id" id ="goods_id" value="0">
+			<ul id ="ul_goods" class="pop-sele-menu" style="display:none;">
+	<li id ="li_goods_0" {if:$this->goods_id == 0}class="active"{/if}  onclick ="javascript:selectgoods('li_goods_0',0,'全部');"><a>全部</a></li>
+	{foreach:items=$this->goodslist}
+	<li id ="li_goods_{$item['id']}" {if:$this->goods_id == $item['id']}class="active"{/if} onclick ="javascript:selectgoods('li_goods_{$item['id']}',{$item['id']},'{$item['name']}');"><a>{$item['name']}</a></li>	
+	{/foreach}
+	</ul>
+        </div>
+      </li>
+      <li> <span class="tit">状态</span>
+        <div class="txtbox">          
+          <select name="status">
+          <option value="0" {if:$this->status == 0}selected{/if}>全部</option>
+          <option value="2" {if:$this->status == 2}selected{/if}>已支付</option>
+          <option value="5" {if:$this->status == 5}selected{/if}>已完成</option>
+          </select>
+        </div>
+      </li>
+    </ul>
+    </form>
+  <div class="yx-order" >
+  {foreach:items=$this->list}
+    <dl>
+      <dt><span class="abe-fl">日期：{$item['creatime']}</span><span class="abe-fr vi-org2">状态：{echo:$item['status'] == 2 ? '已支付' : '已完成'}</span></dt>
+      <dd><span class="abe-gray3">客户名：</span>{$item['username']}</dd>
+		<dd><div class="abe-fl"><span class="abe-gray3">产品名：</span>{$item['name']}</div><div class="abe-fr"><span class="abe-gray3">数量：</span>×{$item['goods_nums']}</div></dd>
+    </dl>
+    {/foreach}
+  </div>
+	
+	<div class="popup-bg" style="display:none;"></div>	
+	<script type="application/javascript">
+	$(function(){
+		hideNav();
+	});
+    //表单回填
+
+    var currYear = (new Date()).getFullYear();
+    var opt={};
+    opt.date = {preset : 'date'};
+    opt.datetime = {preset : 'datetime'};
+    opt.time = {preset : 'time'};
+    opt.default = {
+        theme: 'android-ics light', //皮肤样式
+        display: 'modal', //显示方式
+        mode: 'scroller', //日期选择模式
+        dateFormat: 'yyyy-mm-dd',
+        lang: 'zh',
+        showNow: true,
+        nowText: "今天",
+        startYear: currYear - 50, //开始年份
+        endYear: currYear + 10 //结束年份
+    };
+    $("#Start_Date").mobiscroll($.extend(opt['date'], opt['default']));
+    $("#End_Date").mobiscroll($.extend(opt['date'], opt['default']));
+
+    $("#login_form").Validform({
+        tiptype:function(msg){
+            layer.open({
+                content: msg
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        },
+        tipSweep:true,
+        ajaxPost:true,
+        callback:function(data){
+            layer.open({
+                content: data.info
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            setTimeout('relink("'+data.url+'")',2000);//1秒后执行
+        }
+    });
+    function goods_show(){
+    	$(".popup-bg").show();
+    	$("#ul_goods").show();
+    }
+    function selectgoods(li_id,goods_id,goods_txt){
+    	$("#ul_goods li").removeClass("active");
+    	$("#"+li_id).addClass("active");
+    	$("#goods_id").val(goods_id);
+    	$("#goods_txt").val(goods_txt);
+    	$(".popup-bg").hide();
+    	$("#ul_goods").hide();
+    }
+
+
+</script>

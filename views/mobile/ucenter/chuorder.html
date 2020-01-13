@@ -1,0 +1,178 @@
+<div id="pageInfo" data-title="需求详情" data-goback="{url:ucenter/index}"></div>
+<script src='{theme:javascript/LocalResizeIMG.js}'></script>
+<script src='{theme:javascript/patch/mobileBUGFix.mini.js}'></script>
+<input type="hidden" name="order_id" id="order_id">
+<div class="order-box">
+    {set:$user_id = $this->user['user_id']}
+    {set:$queryOrderList = Api::run('getOrderList',$user_id,2)}
+    {set:$orderList = $queryOrderList->find()}
+    {if:$orderList}
+    {foreach:items = $orderList}
+    <dl class="cart-list order-list">
+        <dt>
+            <span class="abe-fl" onclick="gourl('{url:/ucenter/chuorder_detail/id/$item[id]}');">{$item['order_no']}</span>
+            <a href="{url:/ucenter/order_detail/id/$item[id]}" class="abe-fr vi-org2">
+                {if:$item['status'] == 3}
+                    {echo:Order_Class::orderStatusText(Order_Class::getOrderStatus($item))}
+                {else:}
+                    {if:$item['prescription_status'] == 0}
+                    等待审核
+                    {elseif:$item['prescription_status'] == 1}
+                    {echo:Order_Class::orderStatusText(Order_Class::getOrderStatus($item))}
+                    {else:}
+                    审核失败
+                    {/if}
+                {/if}
+            </a>
+        </dt>
+        {set:$order_id=$item['id']}
+        {foreach:items=Api::run('getOrderGoodsListByGoodsid',array('#order_id#',$order_id)) item=$good}
+        {set:$good_info = JSON::decode($good['goods_array'])}
+
+        <dd>
+            <div class="item">
+                <img src="{url:/pic/thumb/img/$good[img]/w/100/h/100}" alt="" width="100" class="img">
+                <h1 class="pro-name">
+                    <a href="{url:/ucenter/chuorder_detail/id/$item[id]}">
+                        {if:$good['goods_type'] == 1}
+                        <i class="tags" style="background: #ff0000">OTC</i>
+                        {elseif:$good['goods_type'] == 2}
+                        <i class="tags" style="background: #00602e">OTC</i>
+                        {elseif:$good['goods_type'] == 3}
+                        <i class="tags" style="background: #cc1717">RX</i>
+                        {/if}
+                        {$good_info['name']}</a>
+                </h1>
+                <div class="price">￥{$good['goods_price']} <em>x{$good['goods_nums']}</em></div>
+
+            </div>
+        </dd>
+
+        {/foreach}
+
+
+        <dd class="bdn" style="border-top: 1px solid #dadada">
+            <div class="prescription">
+                <div class="clearfix pdb_5"><span class="tit abe-fl abe-ft14">
+      		    处方信息
+        	    </span>
+                {if:$item['prescription_status'] == 0 && $item['status'] == 1}
+                <label for="" class="up-chufang abe-fr">
+                <input class="uploadphoto" rel="{$item['id']}" type="file">
+                <i class="iconfont">&#xe61d;</i>
+                </label>
+                {/if}
+                <label for="" class="up-chufang abe-fr" id="order_img_{$item['id']}">
+                    <img width="100" src='{webroot:}{$item['order_img']}'>
+                </label>
+                </div>
+                <p class="vi-org2">本品为处方药，您提交需求后，展示药品的药店
+                    会根据处方审核结果主动与您联系。上传处方可缩短审核时间（仅限一张）
+                </p>
+            </div>
+        </dd>
+
+            <dt class="tot-up">
+            <div class="abe-txtr" style="font-size: 12px;">
+            {$item['create_time']}　　
+            总计：
+            <em class="vi-org2 abe-ft15 abe-space" style="padding: 0px;font-size: 12px;">￥{$item['order_amount']}</em>
+            </div>
+
+        <div class="abe-txtr">
+
+        {set:$orderStatus = Order_Class::getOrderStatus($item)}
+        {if:in_array($orderStatus,array(1,2))}
+            <a href="javascript:qv_order_canl(1,{link:'{url:/ucenter/order_status/order_id/$item[id]/op/cancel}',msg:'你确定要取消订单？'})" class="pub-btn pb-bd2">取消订单</a>
+        {/if}
+        {if:$orderStatus == 2}
+            <a href="javascript:gourl('{url:/block/doPay/order_id/$item[id]}');" class="pub-btn">立即付款</a>
+        {/if}
+        {if:in_array($orderStatus,array(11,3))}
+            <a href="javascript:gourl('{url:/ucenter/order_status/order_id/$item[id]/op/confirm}');" class="pub-btn">确认收货</a>
+        {/if}
+        </div>
+
+         </dt>
+    </dl>
+    {/foreach}
+
+    {$queryOrderList->getPageBar()}
+
+    {else:}
+    <div class="nodata">当前暂无数据</div>
+    {/if}
+</div>
+
+
+<div class="online-tel-pop abe-txtc" style="display: none;min-height: 80px;" >
+    <div class="pdt_30 pdl_20 pdr_20 abe-ft14">
+        您确定要取消需求吗？
+    </div>
+    <div class="on-sub">
+        <a href="javascript:qv_order_canl(2,'');" class="btn">取消</a>
+        <a href="" id="hl_ok" class="btn vi-org1">确认</a>
+    </div>
+</div>
+<div class="popup-bg" style="display: none"></div>
+
+<script>
+$(function(){
+	hideNav();
+
+    $('.uploadphoto').localResizeIMG({
+        width: 400,
+        quality: 1,
+        success: function (result) {
+            var order_id = $("#order_id").val();
+            var submitData={
+                base64_string:result.clearBase64,
+                order_id:order_id,
+            };
+            $.ajax({
+                type: "POST",
+                url: "{url:ucenter/upload_pic_order}",
+                data: submitData,
+                dataType:"json",
+                success: function(data){
+                    if (0 == data.status) {
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        return false;
+                    }else{
+                        layer.open({
+                            content: data.content
+                            ,skin: 'msg'
+                            ,time: 2 //2秒后自动关闭
+                        });
+                        var attstr= '<img width="100" height="100" src="/'+data.url+'">';
+                        $("#order_img_"+order_id).html(attstr);
+                        return false;
+                    }
+                },
+                complete :function(XMLHttpRequest, textStatus){
+                },
+                error:function(XMLHttpRequest, textStatus, errorThrown){ //上传失败
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+            });
+        }
+    });
+})
+
+function qv_order_canl(type,conf){
+    if(type == 1){
+        $("#hl_ok").attr("href",conf.link);
+        $(".online-tel-pop").show();
+        $(".popup-bg").show();
+    }else{
+        $(".online-tel-pop").hide();
+        $(".popup-bg").hide();
+    }
+}
+</script>

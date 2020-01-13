@@ -1,0 +1,127 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js" integrity="sha256-/npggYbFj0k38b9PHhnbZG6of/27IipS9zvFJaZdxf8=" crossorigin="anonymous"></script>
+<div class="wrap-box wrap-login">
+    <!--头部导航开始-->
+    <header class="pub-header">
+        <div class="left-nav"><a href="javascript:history.go(-1)"><i class="iconfont">&#xe65c;</i></a></div>
+        <h1 class="title"> 注册 </h1>
+    </header>
+    <!--头部导航结束-->
+    <form action='{url:/simple/reg_act}' id="login_form" method='post'>
+        <input type="hidden" name='callback' value="{$callback}" />
+        <input type="hidden" name="_csrf" value="{$csrf}">
+    <ul class="login-form reg-form mt30">
+        <li class="txtbox"><input type="text" datatype="e" id="username" name="username" errormsg="请填写正确的邮箱地址" nullmsg="请输入邮箱" class="txt" placeholder="请输入您的邮箱地址"></li>
+        <li class="txtbox"><input type="password" class="txt" id="password" name="password"  datatype="*6-16" nullmsg="请设置密码！" errormsg="密码范围在6~16位之间！" placeholder="密码为6~16位数字与字母组合"></li>
+        <li class="txtbox"><input type="password" class="txt" id="repassword" name="repassword" datatype="*" recheck="password" nullmsg="请再输入一次密码！" errormsg="您两次输入的密码不一致！" placeholder="请再次输入密码"></li>
+        <li class="txtbox"><input type="text" datatype="*" id="nickname" name="nickname" errormsg="昵称格式错误" nullmsg="请输入昵称" class="txt" placeholder="请输入您的昵称"></li>
+        <li class="pt10"><input type="submit" id="reg" value="注册" class="pub-btn "></li>
+    </ul>
+    </form>
+    <div class="login-title mb20 mt20 appShow">
+        <em>社交账号一键登录</em>
+    </div>
+    <div class="pl40 pr40 appShow">
+        <a href="javascript:void(0);" onclick="wxLoginClick();" class="pub-btn fast-btn"><i class="iconfont ft20 mr5">&#xe66f;</i>微信快捷登录</a>
+    </div>
+    <span class="deal" id="xieyi">
+        <!--<input type="checkbox" id="xieyi"  name="xieyi" style="display: none"  >-->
+        <em></em>已同意<span class="vi-pink2">《拎贝用户协议》</span></span>
+</div>
+<script type="application/javascript">
+    $("input").on("input",function(){
+        let username=$('#username').val();
+        let password=$('#password').val();
+        let repassword=$('#repassword').val();
+        if (username!='' & password!='' & repassword!='' ){
+            $('#reg').attr('class','pub-btn vpink-btn');
+        }
+    });
+
+    $('#xieyi').click(function () {
+        if ($('#xieyi').attr('class')=='deal'){
+            $('#xieyi').attr('class','deal deal-actived');
+        }else{
+            $('#xieyi').attr('class','deal');
+
+        }
+    });
+
+    $('#reg').click(function(){
+        if ($('#xieyi').attr('class')=='deal'){
+            layer.open({
+                content: '请同意拎贝用户协议才可注册'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false;
+        }else{
+            return true;
+        }
+    });
+
+
+
+    $(function(){
+        hideNav();
+        $(".category-search").hide();
+        //checkbox选中样式
+
+        //checkbox选中样式
+        $(".checkhl2").click(function(){
+            if($(this).hasClass("mn-checked")){
+                $(this).removeClass("mn-checked")
+            }else{
+                $(this).addClass("mn-checked");
+            }
+        });
+
+        $(".checkhl").click(function(){
+            $(".checkhl").removeClass("mn-checked")
+            $(this).addClass("mn-checked");
+        });
+
+        $("#login_form").Validform({
+            tiptype:function(msg){
+                layer.open({
+                    content: msg
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+            },
+            tipSweep:true,
+            ajaxPost:true,
+            callback:function(data){
+                if(data.info == "注册成功,请去您的邮箱点击激活链接激活账号"){
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 10 //2秒后自动关闭
+                    });
+                    setTimeout('relink("'+data.url+'")',10000);//1秒后执行
+                }else{
+                    layer.open({
+                        content: data.info
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        });
+
+    });
+    let h5js=null;
+    document.addEventListener('plusready',function(){
+        // 调用5+ API
+        h5js=plus;
+    },false);
+    function wxLoginClick() {
+        if (h5js==null) {
+            alert('网络波动,请稍后重试')
+        }else{
+            h5js.webview.create("_www/pages/register.html?"+'csrf='+$("input[name='_csrf']").val());
+        }
+    }
+    if(parseInt(localStorage.isApp)<=0 || isNaN(parseInt(localStorage.isApp))){
+        $('.appShow').hide();
+    }
+</script>
